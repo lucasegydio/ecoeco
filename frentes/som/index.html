@@ -1,0 +1,58 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ecoeco · mapa de som e vibração</title>
+<style>
+:root{--bg:#10201f;--card:#1a3331;--ink:#f1f3e6;--mut:#9fb8b0;--amb:#f2b86b;--cor:#ee8a78;--lil:#a99be0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 Nunito,system-ui,sans-serif;padding:16px;max-width:980px;margin:auto}
+h1{font-size:22px;margin:4px 0}p.s{color:var(--mut);margin:0 0 12px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;background:var(--card);border-radius:18px;padding:12px;margin-bottom:12px}
+.bar label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mut)}select,input{accent-color:var(--amb)}
+select{background:#0d1a19;color:var(--ink);border:1px solid #365;border-radius:10px;padding:4px}
+.ev{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;background:var(--card);border-radius:18px;padding:12px;margin-bottom:8px;align-items:center}
+.ev button{grid-row:span 2;width:48px;height:48px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#ffd9a0,var(--amb));color:#3a2200;font-size:18px;cursor:pointer}
+.ev button:active,.ev button.on{transform:scale(.92)}
+.ev h3{margin:0;font-size:16px}.ev .i{color:var(--mut);font-size:13px}
+.tags{grid-column:2/4;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+.tags span{background:#0d1a19;border-radius:99px;padding:2px 9px;color:var(--mut)}
+.tags .c{color:var(--lil)}.tags .p{color:var(--amb)}.tags .v{color:var(--cor)}
+.vib{font-size:12px;color:var(--cor);text-align:right}
+#st{font-size:12px;color:var(--mut)}
+</style></head><body>
+<h1>Mapa de som e vibração</h1><p class="s">Placeholders sintetizados (WebAudio) + <code>navigator.vibrate</code>. Toque ▶ em cada evento. Vibração só funciona no Android/Chrome.</p>
+<div class="bar">
+<label>Volume <input id="vol" type="range" min="0" max="1" step=".05" value=".6"></label>
+<label>Vibração <select id="vibm"><option value="0">desligada</option><option value=".6">suave</option><option value="1" selected>normal</option></select></label>
+<label>Proximidade do eco <input id="prox" type="range" min="0" max="1" step=".05" value=".5"></label>
+<label><input id="loop" type="checkbox"> eco contínuo</label>
+<span id="st"></span></div>
+<div id="list"></div>
+<script>
+let ac,master;const $=s=>document.querySelector(s);
+function ctx(){if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.connect(ac.destination)}if(ac.state=='suspended')ac.resume();master.gain.value=+$('#vol').value;return ac}
+// tom: freq inicial, final, duração, tipo, ganho, atraso
+function tone(f,f2,d,type='sine',g=.3,t0=0,att=.01){const c=ctx(),t=c.currentTime+t0,o=c.createOscillator(),v=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+att);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v).connect(master);o.start(t);o.stop(t+d+.02)}
+function noise(d,f1,f2,g=.2,t0=0,q=1){const c=ctx(),t=c.currentTime+t0,b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),a=b.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const fl=c.createBiquadFilter();fl.type='bandpass';fl.Q.value=q;fl.frequency.setValueAtTime(f1,t);fl.frequency.exponentialRampToValueAtTime(f2,t+d);const v=c.createGain();v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+d*.15);v.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(fl).connect(v).connect(master);s.start(t)}
+const prox=()=>+$('#prox').value; // 0 longe .. 1 perto
+const E=[
+{id:'toque',n:'Toque',i:'Bolha pequena: o vidro responde ao dedo.',d:70,cam:'UI',pri:3,vib:[8],mov:'mola de pressão (press)',s:()=>tone(520,700,.07,'sine',.25)},
+{id:'abrir-anel',n:'Abrir o anel',i:'Floração: as bolhas se abrem em leque, sobe suave.',d:260,cam:'UI',pri:3,vib:[10],mov:'leque abre (mola k/c)',s:()=>[320,420,560].forEach((f,k)=>tone(f,f*1.03,.18,'sine',.2,k*.06))},
+{id:'aceitar',n:'Aceitar',i:'Confirmação calorosa, duas notas subindo.',d:220,cam:'UI',pri:4,vib:[12,30,18],mov:'estado aceito (brilho âmbar)',s:()=>{tone(523,0,.15,'triangle',.25);tone(784,0,.2,'triangle',.25,.09)}},
+{id:'falta',n:'Falta material',i:'Toque opaco e gentil, sem punir: "ainda não".',d:180,cam:'UI',pri:4,vib:[30,50,30],mov:'tremor curto (estado falta)',s:()=>{tone(220,170,.09,'triangle',.3);tone(210,160,.1,'triangle',.25,.1)}},
+{id:'coletar',n:'Coletar',i:'Estalo cristalino: pegou algo do planeta.',d:150,cam:'Mundo',pri:3,vib:[15],mov:'item voa até o chip',s:()=>{tone(700,1100,.1,'sine',.25);tone(1400,1800,.1,'sine',.12,.04)}},
+{id:'eco',n:'Eco (proximidade)',i:'Pulso de sonar; mais perto = mais agudo, mais forte, mais rápido.',d:600,cam:'Eco',pri:2,vib:'eco',mov:'anel do eco pulsa (borda da tela)',s:()=>eco()},
+{id:'choro',n:'Choro do bichinho',i:'Lamento curto e fofo, indica criatura próxima precisando de algo.',d:500,cam:'Eco',pri:2,vib:[20,40,20,40,30],mov:'eco com tremor lento',s:()=>{const c=ctx(),t=c.currentTime,o=c.createOscillator(),l=c.createOscillator(),lg=c.createGain(),v=c.createGain();o.type='sine';o.frequency.setValueAtTime(620,t);o.frequency.exponentialRampToValueAtTime(380,t+.5);l.frequency.value=9;lg.gain.value=18;l.connect(lg).connect(o.frequency);v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(.28,t+.05);v.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(v).connect(master);o.start(t);l.start(t);o.stop(t+.55);l.stop(t+.55)}},
+{id:'nova-especie',n:'Nova espécie',i:'Descoberta: arpejo brilhante de 4 notas.',d:700,cam:'Recompensa',pri:5,vib:[15,40,15,40,40],mov:'cartão sobe + brilho',s:()=>[523,659,784,1047].forEach((f,k)=>tone(f,0,.35,'sine',.22,k*.11))},
+{id:'foto',n:'Foto',i:'Obturador macio: clique de ar + tom.',d:120,cam:'UI',pri:4,vib:[25],mov:'flash branco curto',s:()=>{noise(.06,3000,1500,.25);tone(900,500,.08,'square',.06,.03)}},
+{id:'evolucao',n:'Evolução',i:'Crescendo de acorde que abre e se acalma.',d:1600,cam:'Recompensa',pri:5,vib:[10,30,20,30,30,30,50],mov:'bichinho muda de forma (spring lento)',s:()=>[262,330,392,523].forEach((f,k)=>tone(f,f*1.01,1.5,'sine',.15,k*.18,.5))},
+{id:'decolagem',n:'Decolagem',i:'Sopro que sobe e some: a nave deixa o planeta.',d:2400,cam:'Mundo',pri:5,vib:[20,40,30,40,40,40,60,40,80],mov:'zoom out + nave sobe',s:()=>{noise(2.4,200,2400,.3,0,.8);tone(90,260,2.4,'sawtooth',.06)}},
+{id:'navegar',n:'Navegar no menu',i:'Tique mínimo ao trocar de aba ou folha.',d:40,cam:'UI',pri:1,vib:[5],mov:'transição de folha (curta)',s:()=>tone(900,0,.04,'sine',.15)}
+];
+function eco(){const p=prox();tone(500+p*700,(500+p*700)*.8,.6,'sine',.12+.3*p);tone((500+p*700)*2,0,.3,'sine',.05+.08*p,.02)}
+function vib(pat){const k=+$('#vibm').value;if(!k||!navigator.vibrate)return;const p=pat=='eco'?[Math.round(10+40*prox())]:pat;navigator.vibrate(p.map((x,i)=>i%2?x:Math.max(3,Math.round(x*k))))}
+function play(e,btn){e.s();vib(e.vib);if(btn){btn.classList.add('on');setTimeout(()=>btn.classList.remove('on'),e.d)}}
+$('#list').innerHTML=E.map((e,k)=>`<div class="ev"><button data-k="${k}" aria-label="Tocar ${e.n}">▶</button><div><h3>${e.n}</h3><div class="i">${e.i}</div></div><div class="vib">${e.vib=='eco'?'vib: 10–50 ms por pulso (prox.)':'vib: '+e.vib.join('-')+' ms'}</div><div class="tags"><span>${e.d} ms</span><span class="c">${e.cam}</span><span class="p">prioridade ${e.pri}</span><span class="v">↔ ${e.mov}</span></div></div>`).join('');
+$('#list').onclick=ev=>{const b=ev.target.closest('button');if(b)play(E[b.dataset.k],b)};
+let tm;function lp(){clearTimeout(tm);if(!$('#loop').checked)return;play(E[5]);tm=setTimeout(lp,1400-1100*prox())}
+$('#loop').onchange=lp;
+$('#st').textContent=navigator.vibrate?'vibração disponível':'sem vibração neste aparelho';
+window.EV=E;
+</script></body></html>
