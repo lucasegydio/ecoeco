@@ -1,0 +1,61 @@
+/* ecoeco · HUD permanente (frente hud, 22). Importe depois de vidro.css/proto.css.
+   Variações via data-hud="gota|ilhas|calmo" em .game-stage. Estados: observing, menu (planetária). */
+.game-stage { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); --sal: env(safe-area-inset-left, 0px); --sar: env(safe-area-inset-right, 0px); }
+.game-stage[data-notch=on] { --sat: 47px; --sab: 34px; }
+.game-stage[data-hud] .hud-top { inset-inline: calc(12px + var(--sal)) calc(12px + var(--sar)); top: calc(10px + var(--sat)); flex-wrap: nowrap; align-items: flex-start; }
+.game-stage[data-hud] .hud-chip { transition: opacity .5s, scale .5s var(--spring), translate .5s; }
+.hud-notch { display: none; position: absolute; z-index: 30; left: 50%; top: 9px; translate: -50% 0; width: 34%; height: 30px; border-radius: 20px; background: #05050a; pointer-events: none; }
+.game-stage[data-notch=on] .hud-notch { display: block; }
+/* chip do planeta + pontinhos do arco */
+.hud-planet { gap: 8px; }
+.hud-dots { display: inline-flex; gap: 4px; align-items: center; }
+.hud-dots i { width: 6px; height: 6px; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; background: #ffffff38; box-shadow: inset 0 0 0 1px #ffffff30; transition: background .6s, box-shadow .6s, scale .6s var(--spring); }
+.hud-dots i.ok { background: radial-gradient(circle at 36% 32%, #fff0a0, #ff9f43); box-shadow: 0 0 8px #ffb36b99; }
+.hud-dots i.now { scale: 1.45; background: #fff; box-shadow: 0 0 10px #fff9; animation: dotNow 2.4s ease-in-out infinite; }
+@keyframes dotNow { 50% { scale: 1.15; opacity: .7; } }
+/* inventário: gota + total (gota, calmo) */
+.hud-inv { align-items: center; }
+.game-stage[data-hud=gota] .hud-inv, .game-stage[data-hud=calmo] .hud-inv { min-width: 34px; min-height: 34px; padding: 4px 10px 4px 8px; gap: 6px; flex-wrap: nowrap; }
+.game-stage[data-hud=gota] .hud-inv .inv-item, .game-stage[data-hud=calmo] .hud-inv .inv-item, .game-stage[data-hud=gota] .hud-inv .inv-empty, .game-stage[data-hud=calmo] .hud-inv .inv-empty { display: none; }
+.game-stage[data-hud=gota] .hud-inv::before, .game-stage[data-hud=calmo] .hud-inv::before { content: ""; width: 14px; height: 14px; flex: none; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; background: radial-gradient(circle at 36% 30%, #ffe39a, #d08a2a); }
+.game-stage[data-hud=gota] .hud-inv::after, .game-stage[data-hud=calmo] .hud-inv::after { content: attr(data-n); font-family: var(--num); font-weight: 500; font-variant-numeric: tabular-nums; }
+.game-stage[data-hud=gota] .hud-inv[data-n="0"], .game-stage[data-hud=calmo] .hud-inv[data-n="0"] { padding-inline: 8px; }
+.game-stage[data-hud=gota] .hud-inv[data-n="0"]::before, .game-stage[data-hud=calmo] .hud-inv[data-n="0"]::before { background: none; box-shadow: inset 0 0 0 1.5px #ffffff66; }
+.game-stage[data-hud=gota] .hud-inv[data-n="0"]::after, .game-stage[data-hud=calmo] .hud-inv[data-n="0"]::after { content: none; }
+/* Ilhas: recursos separados, pontinhos soltos sob o chip */
+.game-stage[data-hud=ilhas] .hud-inv { gap: 8px; flex-wrap: nowrap; }
+.game-stage[data-hud=ilhas] .hud-planet { position: relative; }
+.game-stage[data-hud=ilhas] .hud-planet .hud-dots { position: absolute; left: 10px; top: calc(100% + 7px); }
+/* pílula de pista: curta, some sozinha (gota/calmo), fixa em ilhas */
+.game-stage[data-hud] .hud-hint { bottom: calc(76px + var(--sab)); max-width: min(300px, calc(100% - 28px)); padding: .45rem .9rem; font-size: clamp(12px, 3.5cqi, 14px); }
+.game-stage[data-hud=ilhas] .hud-hint { bottom: calc(18px + var(--sab)); left: calc(12px + var(--sal)); translate: 0 0; text-align: left; max-width: calc(100% - 96px - var(--sal) - var(--sar)); }
+.game-stage[data-hud=gota] .hud-hint.in, .game-stage[data-hud=calmo] .hud-hint.in { animation: hintIn .5s var(--spring), hudFade .7s ease 6s forwards; }
+@keyframes hudFade { to { opacity: 0; translate: -50% 6px; } }
+/* acesso ao menu: gota que afasta a câmera até a escala planetária */
+.hud-menu { position: absolute; z-index: 12; width: 48px; aspect-ratio: 1; border: 0; padding: 0; cursor: pointer; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; display: grid; place-items: center; color: #fff;
+  background: linear-gradient(160deg, #ffffff30, #ffffff0c); -webkit-backdrop-filter: blur(12px) saturate(1.8); backdrop-filter: blur(12px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #ffffffa0, inset 0 0 0 1px #ffffff26, 0 8px 18px -8px #0008; transition: opacity .5s, scale .5s var(--spring); }
+.hud-menu svg { width: 26px; fill: currentColor; } .hud-menu:active { scale: .9; }
+.game-stage[data-hud=gota] .hud-menu, .game-stage[data-hud=calmo] .hud-menu { left: 50%; translate: -50% 0; bottom: calc(16px + var(--sab)); }
+.game-stage[data-hud=ilhas] .hud-menu { right: calc(12px + var(--sar)); bottom: calc(14px + var(--sab)); }
+.game-stage:not([data-hud]) .hud-menu, .game-stage:not([data-hud]) .hud-dots, .game-stage:not([data-hud]) .hud-notch { display: none; }
+/* calmo: ocioso 3 s, tudo cai para 35% (e volta ao tocar) */
+.game-stage[data-hud=calmo][data-idle=true] .hud-top, .game-stage[data-hud=calmo][data-idle=true] .hud-menu { opacity: .35; }
+.game-stage[data-hud=calmo] .hud-top, .game-stage[data-hud=calmo] .hud-menu { transition: opacity 1.2s; }
+/* Observar: some chip do planeta, menu e pílula; fica só o inventário */
+.game-stage[data-observing=true] .hud-planet, .game-stage[data-observing=true] .hud-menu, .game-stage[data-observing=true] .hud-hint,
+.game-stage[data-force=observar] .hud-planet, .game-stage[data-force=observar] .hud-menu, .game-stage[data-force=observar] .hud-hint { opacity: 0; scale: .8; pointer-events: none; }
+/* escala planetária: some inventário, pílula e gota (o menu já abriu); fica o chip do planeta */
+.game-stage[data-menu=true] .hud-inv, .game-stage[data-menu=true] .hud-menu, .game-stage[data-force=planeta] .hud-inv, .game-stage[data-force=planeta] .hud-menu, .game-stage[data-force=planeta] .hud-hint { opacity: 0; scale: .8; pointer-events: none; }
+/* barra de teste (só no estudo) */
+.hud-lab { position: fixed; z-index: 60; left: 8px; top: 8px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100vw - 16px); font: 700 11px/1 var(--ui, system-ui); }
+.hud-lab button { border: 0; padding: 7px 9px; border-radius: 100px; color: #fff; background: #000a; box-shadow: inset 0 0 0 1px #fff3; cursor: pointer; }
+.hud-lab button[aria-pressed=true] { background: radial-gradient(circle at 30% 40%, #ffb36b, #ff5f9e); }
+.hud-lab span { align-self: center; color: #fffc; padding: 0 2px; }
+#jogo .game-stage { width: min(var(--hw, 400px), 100%, calc(100svh * .486)); }
+.hud-lab-t { display: none; }
+@media (max-width: 760px) { .hud-lab-t { display: block; position: fixed; z-index: 61; top: 54px; left: 50%; translate: -50% 0; border: 0; border-radius: 100px; padding: 6px 9px; font: 700 10px var(--ui, system-ui); color: #fff; background: #0008; box-shadow: inset 0 0 0 1px #fff3; }
+  .hud-lab { top: 90px; left: 4px; max-width: calc(100vw - 8px); gap: 3px; font-size: 10px; } .hud-lab:not(.open) { display: none; } .hud-lab button { padding: 5px 7px; } }
+/* legibilidade sobre rocha clara */
+.game-stage[data-hud] .hud-chip, .game-stage[data-hud] .hud-menu { background: linear-gradient(160deg, #ffffff2e, #ffffff0c), #1d1e2c70; text-shadow: 0 1px 2px #0008; }
+.novo { display: none; }

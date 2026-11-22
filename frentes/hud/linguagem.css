@@ -1,0 +1,12 @@
+/* estado novo: bloqueado. Vidro fosco e cinza, sem luz, sem forma viva; cadeado de pincel no canto */
+.leque-stage.liquid .fan-item[data-state=bloqueado] .drop {
+  background: linear-gradient(160deg, #ffffff18, #ffffff06 60%, #00000022);
+  box-shadow: inset 0 1px 1px #ffffff40, 0 8px 18px -10px #0009; animation: none;
+  -webkit-backdrop-filter: blur(16px) saturate(.2) brightness(.8); backdrop-filter: blur(16px) saturate(.2) brightness(.8);
+}
+.leque-stage.liquid .fan-item[data-state=bloqueado] .caustic, .leque-stage.liquid .fan-item[data-state=bloqueado] .rim { opacity: .08; }
+.leque-stage.liquid .fan-item[data-state=bloqueado] .ico svg { stroke: #ffffff55; color: #ffffff55; filter: none; }
+.leque-stage.liquid .fan-item[data-state=bloqueado] { cursor: not-allowed; }
+.lock { position: absolute; right: 6%; bottom: 8%; width: 28%; aspect-ratio: 1 / .85; border-radius: 30%; background: #2b2a3fe0; border: 1.5px solid #ffffff70; z-index: 3; }
+.lock::before { content: ""; position: absolute; left: 24%; right: 24%; bottom: 80%; height: 70%; border: 1.5px solid #ffffffa0; border-bottom: 0; border-radius: 99px 99px 0 0; }
+.lock::after { content: ""; position: absolute; left: 44%; top: 34%; width: 12%; aspect-ratio: 1; border-radius: 50%; background: #fff; }
