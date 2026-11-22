@@ -76,9 +76,9 @@
 <div class="switch jogo-insist" role="group" aria-label="Insistência das pistas"><button type="button" data-insist="sutil" aria-pressed="false">Sutil</button><button type="button" data-insist="padrao" aria-pressed="true">Padrão</button><button type="button" data-insist="explicita" aria-pressed="false">Explícita</button></div>
 <p style="margin:6px 0 0"><span id="jogo-level" class="level-chip">buscar · pista 0</span></p>
 <div class="zoom-controls"><input type="range" id="jogo-zoom" min="0" max="100" value="50" aria-label="Pinça"></div>
-<div class="ctl"><button type="button" id="jogo-reset">↻ Recomeçar</button><button type="button" data-pular-dex="visto">Abrir a coleção</button><button type="button" data-pular="evolucao">Evolução</button><button type="button" data-pular="decolagem">Decolagem</button></div>
+<div class="ctl"><button type="button" id="tela-cheia">⛶ Tela cheia</button><button type="button" id="jogo-reset">↻ Recomeçar</button><button type="button" data-pular-dex="visto">Abrir a coleção</button><button type="button" data-pular="evolucao">Evolução</button><button type="button" data-pular="decolagem">Decolagem</button></div>
 </div></aside>
 <script>document.getElementById("novo-btn").onclick=function(){var c=document.getElementById("novo-caixa");c.hidden=!c.hidden;this.setAttribute("aria-expanded",String(!c.hidden))}</script>
 </section>
 <script>(function(){var st=document.querySelector(".game-stage"),bs=document.querySelectorAll(".hud-sel button");function set(k,u){st.dataset.hud=k;bs.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.hud===k))});if(u){var q=new URLSearchParams(location.search);q.set("hud",k);history.replaceState(null,"","?"+q)}}
-bs.forEach(function(b){b.onclick=function(){set(b.dataset.hud,1)}});window.addEventListener("load",function(){set(st.dataset.hud||"calmo")});})();</script></body></html>
+bs.forEach(function(b){b.onclick=function(){set(b.dataset.hud,1)}});window.addEventListener("load",function(){set(st.dataset.hud||"calmo")});})();</script><script>document.getElementById("tela-cheia").onclick=function(){var d=document,e=d.documentElement;if(d.fullscreenElement){d.exitFullscreen()}else if(e.requestFullscreen){e.requestFullscreen()}else if(e.webkitRequestFullscreen){e.webkitRequestFullscreen()}};</script></body></html>
