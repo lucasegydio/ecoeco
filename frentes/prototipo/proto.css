@@ -58,3 +58,14 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #14151f; col
 .mapa .mapa-voltar { position: absolute; z-index: 2; left: 12px; top: 12px; padding: .45rem .9rem; font-size: .76rem; }
 /* tela cheia: o celular cresce até a altura da tela */
 :fullscreen #jogo .game-stage { width: min(100%, calc(100svh * .486)); }
+/* correções de QA */
+.mapa[hidden], .cine-card[hidden], .cine[hidden] { display: none; }
+#jogo { grid-template-columns: 1fr; }
+#jogo #entrada { aspect-ratio: 9 / 18.5; }
+@media (max-width: 520px) {
+  #jogo #entrada { aspect-ratio: auto; }
+  .novo { left: 8px; right: auto; bottom: 8px; }
+  .novo > button { width: 40px; height: 40px; padding: 0; font-size: 0; display: grid; place-items: center; }
+  .novo > button::before { content: "⚙"; font-size: 18px; }
+  .novo .caixa { right: auto; left: 0; }
+}

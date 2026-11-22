@@ -802,7 +802,7 @@
         octx.beginPath(); octx.ellipse(x * k, y * k, Math.max(.5, r * q[2] * k), r * k, Math.atan2(-q[1], q[0]), 0, Math.PI * 2); octx.fill();
       }
       ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-      ctx.globalAlpha = .85; ctx.drawImage(off, 0, 0, W, H); ctx.globalAlpha = 1;
+      ctx.globalAlpha = .85; if (off.width && off.height) ctx.drawImage(off, 0, 0, W, H); ctx.globalAlpha = 1;
       const sh = ctx.createRadialGradient(v.cx - v.R * .3, v.cy - v.R * .35, v.R * .2, v.cx, v.cy, v.R * 1.02);
       sh.addColorStop(0, "rgba(255,240,210,.18)"); sh.addColorStop(.7, "rgba(0,0,0,0)"); sh.addColorStop(1, "rgba(10,12,30,.45)");
       ctx.fillStyle = sh; ctx.fillRect(0, 0, W, H);
