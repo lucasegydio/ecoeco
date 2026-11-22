@@ -1,0 +1,82 @@
+.site-head {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--paper);
+}
+.site-head nav a[aria-current="location"] {
+  text-decoration: underline;
+  text-underline-offset: .35em;
+}
+main section[id] { scroll-margin-top: 6.4rem; }
+
+.visual-review {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, .42fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 14px 24px;
+  min-inline-size: 0;
+  padding: 14px 0 22px;
+  margin: 20px 0 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+.visual-review legend { padding: 0; font-weight: 650; }
+.review-decisions { display: flex; flex-wrap: wrap; gap: 7px; }
+.review-choice {
+  min-height: 44px;
+  padding: .5rem .75rem;
+  border-radius: 100px;
+  border: 1px solid #aaa79b;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 600;
+  font-size: .875rem;
+}
+.review-choice[aria-pressed="true"][data-decision="aprovado"] { background: #e4ecb9; border-color: #798443; color: #2d3718; }
+.review-choice[aria-pressed="true"][data-decision="reprovado"] { background: #f1d9d3; border-color: #926257; color: #66382d; }
+.review-comment { display: grid; gap: 6px; font-size: .875rem; font-weight: 600; }
+.visual-review textarea, .review-summary textarea {
+  width: 100%;
+  min-height: 62px;
+  padding: .6rem .7rem;
+  resize: vertical;
+  border: 1px solid #aaa79b;
+  border-radius: 10px;
+  color: var(--ink);
+  background: #fff8;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.review-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 24px;
+  align-items: start;
+  padding-block: 26px;
+}
+.review-summary h2 { font-size: 1.25rem; margin-bottom: 4px; }
+.review-summary p { color: var(--muted); font-size: .875rem; }
+.review-summary button { background: transparent; }
+.review-summary button:hover { background: var(--ink); color: var(--paper); }
+#review-status:empty, #review-fallback[hidden] { display: none; }
+#review-fallback { grid-column: 1 / -1; }
+
+@media (max-width: 760px) {
+  .site-head { height: auto; min-height: 70px; align-items: flex-start; flex-direction: column; gap: 0; padding: 4px 0 6px; }
+  .site-head .brand { padding-block: 7px; }
+  .site-head nav { max-width: 100%; width: 100%; overflow: auto; gap: clamp(10px, 3.7vw, 25px); scrollbar-width: none; }
+  .site-head nav a { display: inline-flex; align-items: center; min-height: 36px; flex: none; }
+  .visual-review { grid-template-columns: 1fr; }
+  .review-summary { grid-template-columns: 1fr; justify-items: start; }
+}
+
+@media (max-width: 460px) {
+  #jogo > .study, #planeta > .study { display: flex; flex-direction: column; }
+  #jogo > .study > *, #planeta > .study > * { width: 100%; min-width: 0; }
+}
+
+/* A folha e o mapa fechados não podem capturar toques ou foco sobre o planeta. */
+#jogo .game [hidden] { display: none !important; }
