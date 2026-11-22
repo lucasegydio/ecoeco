@@ -220,6 +220,7 @@
   }
   const INSIST = { sutil: [12, 24], padrao: [6, 12], explicita: [0, 3] };
   let insist = "padrao", step = "", stepAt = performance.now(), level = -1;
+  document.addEventListener("ecoeco:iniciar", () => { stepAt = performance.now(); level = -1; });
   root.querySelectorAll(".jogo-insist button").forEach((b) => b.addEventListener("click", () => {
     insist = b.dataset.insist;
     root.querySelectorAll(".jogo-insist button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));

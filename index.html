@@ -88,7 +88,7 @@
   <div class="po-luz" aria-hidden="true"></div>
   <div class="orbital" aria-hidden="true"></div><div class="entrada-miolo">
     <span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt="ecoeco™"></span>
-    <p class="entrada-creditos">@lucasegydio · @joaquim · @peixe · @theo</p>
+    <p class="entrada-creditos">Lucas · Joaquim · Peixe · Theo</p>
     <div class="gota-iniciar"><button type="button" id="iniciar">Iniciar</button></div>
   </div>
 </div>
@@ -356,6 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(transitionTimer);
     menu.hidden = true;
     game.inert = false;
+    // as pistas começam a contar quando o jogo começa, não durante a abertura
+    document.dispatchEvent(new CustomEvent('ecoeco:iniciar'));
   }
   menu.querySelector('button').onclick = () => {
     if (menu.classList.contains('saindo')) return;
