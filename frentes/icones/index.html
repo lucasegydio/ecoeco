@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ecoeco · família de ícones</title>
+<style>
+:root{--noite:#202130;--noite2:#282939;--creme:#fff3e0;--ambar:#ffb36b;--coral:#ff5f9e;--lilas:#b58cff;--tx:#f4ecdf;--mudo:#a9a3b8;--ui:Nunito,system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(900px 500px at 15% -10%,#3a2f4d,transparent),var(--noite);color:var(--tx);font:15px/1.45 var(--ui);padding:20px 16px 60px}
+main{max-width:980px;margin:auto}
+h1{font-size:26px;margin:0 0 4px}h2{font-size:19px;margin:38px 0 6px}p.s{color:var(--mudo);margin:0 0 14px}
+.ic{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+.ic .f{fill:currentColor;stroke:none}.ic .t{stroke-width:1.9}
+/* bolha de vidro */
+.b{--c1:#ffd9a8;--c2:#ff8a4a;--d:56px;width:var(--d);height:var(--d);border-radius:46% 54% 50% 50%/52% 48% 54% 46%;display:grid;place-items:center;position:relative;color:var(--creme);
+ background:linear-gradient(145deg,#ffffff2e,#ffffff0d);border:1px solid #ffffff3a;box-shadow:inset 0 1px 1px #ffffff55,0 8px 20px #0005;backdrop-filter:blur(8px);transition:transform .25s,background .25s,box-shadow .25s}
+.b .ic{width:50%;height:50%}
+.b.foco{transform:scale(1.17);box-shadow:inset 0 1px 1px #ffffff77,0 0 0 2px #ffffff55,0 0 26px 4px color-mix(in srgb,var(--c1) 55%,transparent)}
+.b.sel{transform:scale(1.3);background:linear-gradient(145deg,var(--c1),var(--c2));border-color:#ffffff88;color:#fff;box-shadow:inset 0 1px 2px #fff9,0 10px 26px color-mix(in srgb,var(--c2) 60%,transparent)}
+.b.bloq{background:#8a8c9a22;border-color:#ffffff1c;color:#8b8d9c;box-shadow:inset 0 1px 1px #ffffff22;backdrop-filter:blur(10px) saturate(.2)}
+.b.bloq::after{content:"";position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:50%;background:#2a2b3a;border:1px solid #ffffff30}
+.b.bloq .lk{position:absolute;right:0;bottom:0;width:14px;height:14px;z-index:2;color:#c8c9d4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:18px 8px}
+.cell{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:12px;color:var(--mudo)}
+.cell b{color:var(--tx);font-weight:700;font-size:12.5px}
+.real{display:flex;gap:10px;align-items:center}.real i{display:block;color:var(--creme)}
+.sheet{background:#ffffff0c;border:1px solid #ffffff1a;border-radius:20px;padding:16px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}td,th{padding:6px 8px;border-bottom:1px solid #ffffff14;text-align:left;vertical-align:middle}th{color:var(--mudo);font-weight:600}
+td .ic{width:24px;height:24px;color:var(--creme);display:block}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;background:#ffffff18}.tag.n{background:#ffb36b33;color:#ffd9a8}
+.mx{display:grid;grid-template-columns:90px repeat(4,1fr);gap:22px 8px;align-items:center;justify-items:center;text-align:center}.mx>div:first-child{justify-self:start}
+.hd{color:var(--mudo);font-size:12px}
+.phone{width:375px;max-width:100%;margin:0 auto;border-radius:34px;padding:18px 14px 20px;background:linear-gradient(#2c4a3a,#1d2a30 55%,#202130);border:1px solid #ffffff22;overflow:hidden}
+.phone .top{display:flex;justify-content:space-between;margin-bottom:10px;font-size:13px}
+.chip{display:flex;align-items:center;gap:6px;padding:5px 12px 5px 8px;border-radius:99px;background:#ffffff22;border:1px solid #ffffff30}.chip .ic{width:18px;height:18px}
+.ringp{position:relative;height:210px;margin:6px 0 4px}.ringp .b{position:absolute;margin:-28px 0 0 -28px}
+.tabs{display:flex;justify-content:space-around;margin-top:10px;padding:12px 4px;border-radius:22px;background:#0003}
+.res{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.res span{display:flex;align-items:center;gap:5px;padding:4px 10px 4px 6px;border-radius:99px;background:#ffffff1a;font-size:12.5px}.res .ic{width:18px;height:18px}
+.faltam li{margin:4px 0}
+@media(max-width:560px){.mx{grid-template-columns:70px repeat(4,1fr);gap:18px 2px}.mx .b{--d:48px}}
+</style></head><body><main>
+<h1>Família de ícones · ecoeco</h1>
+<p class="s">52 ícones de pincel: traço ~2,8 px numa grade de 32, ponto cheio recorrente, detalhe fino (1,9 px) e filtro <code>#pincel</code>. Rodada 1 da frente icones. Refs: Atlas Therapy e Sereth. Lucas pediu: refinar todos, reorganizar e criar novos na mesma identidade.</p>
+
+<h2>Família em tamanho real e na bolha</h2>
+<p class="s">Cada ícone em 32 px e dentro da bolha de vidro de 56 px. O nome só aparece aqui; no jogo ele sai no foco ou na pista.</p>
+<div id="familia"></div>
+
+<h2>Estados na bolha</h2>
+<p class="s">Normal, foco (cresce e brilha), selecionado (enche de cor, ícone branco) e bloqueado (vidro fosco cinza, sem luz, cadeado).</p>
+<div class="sheet"><div class="mx" id="estados"></div></div>
+
+<h2>Em 375 px</h2>
+<p class="s">Anel por contexto, chips e abas do menu com os mesmos ícones.</p>
+<div class="phone" id="phone"></div>
+
+<h2>Inventário: o que o jogo usa e o que falta</h2>
+<div class="sheet" style="overflow-x:auto"><table id="inv"></table></div>
+<h2>O que ainda falta</h2>
+<ul class="faltam s">
+<li><b>Passarela</b> e <b>Placa</b> como receitas: hoje usam <i>construir</i> e <i>placa</i>; criar versões próprias só se Lucas quiser distinguir ação de resultado.</li>
+<li>Criaturas e regiões dos próximos planetas (vulcânico, deserto): um glifo por bicho novo, no padrão de <i>brotinho/cinza/lagarto/rabanete</i>.</li>
+<li>Ícone de <b>Receitas individuais</b> (Canal, Passarela, Nave) e de <b>conquistas</b>, se o bestiário ganhar metas.</li>
+<li>Ícone do app (a frente inicio já fez) e marca: ficam fora desta família.</li>
+</ul>
+</main>
+<script src="icons.js"></script>
+<script>
+const I=window.ECO_ICONS,M=window.ECO_ICON_META,G=window.ECO_ICON_GROUPS;
+const P={carinho:["#ffc2a8","#ff5f7e"],polinizar:["#fff0a0","#ff9f43"],minerar:["#ffcf8a","#e8572a"],construir:["#d6f5b0","#4fb06d"],plantar:["#f2ff9e","#5fcf4a"],canal:["#c9e6ff","#6a7bff"],
+fibra:["#e6ff86","#1fbf5b"],pedra:["#e4e0f2","#8a83a8"],semente:["#ffe39a","#d08a2a"],nucleo:["#ffb3d6","#ff4f86"],placa:["#bfe0ff","#4f63f2"],gota:["#c9e6ff","#6a7bff"],fruto:["#ffd0a8","#ff7a4a"]};
+const GP={acoes:["#ffe2b0","#ff9a4a"],menu:["#e2d0ff","#8a5cf0"],materiais:["#e6ff86","#1fbf5b"],estados:["#ffc2d8","#ff5f9e"],eco:["#ffe2b0","#ff9a4a"],bestiario:["#d6f5b0","#4fb06d"]};
+const grp=n=>G.find(g=>g[2].includes(n))[0];
+const col=n=>P[n]||GP[grp(n)];
+const svg=n=>`<svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><g filter="url(#pincel)">${I[n]}</g></svg>`;
+const bub=(n,st="",d)=>{const c=col(n);return `<div class="b ${st}" style="--c1:${c[0]};--c2:${c[1]};${d?`--d:${d}px`:""}">${svg(n)}${st==="bloq"?`<span class="lk">${svg("bloqueado")}</span>`:""}</div>`};
+document.getElementById("familia").innerHTML=G.map(([id,t,l])=>`<h3 style="font-size:15px;margin:20px 0 10px;color:var(--ambar)">${t} · ${l.length}</h3><div class="grid">${l.map(n=>`<div class="cell">${bub(n)}<div class="real"><i style="width:32px;height:32px">${svg(n)}</i></div><b>${n}</b></div>`).join("")}</div>`).join("");
+const pick=["carinho","minerar","plantar","fibra","eco","brotinho"];
+document.getElementById("estados").innerHTML=`<div></div>${["normal","foco","selecionado","bloqueado"].map(s=>`<div class="hd">${s}</div>`).join("")}`+pick.map(n=>`<div class="hd">${n}</div>${bub(n)}${bub(n,"foco")}${bub(n,"sel")}${bub(n,"bloq")}`).join("");
+document.getElementById("inv").innerHTML="<tr><th></th><th>Ícone</th><th>Grupo</th><th>Uso</th><th>Status</th></tr>"+G.flatMap(([id,t,l])=>l.map(n=>`<tr><td>${svg(n)}</td><td><b>${n}</b></td><td>${t}</td><td>${M[n][0]}</td><td><span class="tag ${M[n][1]==="novo"?"n":""}">${M[n][1]}</span></td></tr>`)).join("");
+const ring=["carinho","polinizar","colher","fotografar"],pos=[[20,140],[95,70],[195,70],[268,140]];
+document.getElementById("phone").innerHTML=`<div class="top"><div class="chip">${svg("planeta")}Planeta Terra</div><div class="chip">${svg("inventario")}5</div></div>
+<div class="ringp">${ring.map((n,i)=>`<div style="position:absolute;left:${pos[i][0]}px;top:${pos[i][1]}px">${bub(n,i==1?"foco":"",56)}</div>`).join("")}<div style="position:absolute;left:150px;top:150px">${bub("eco","",44)}</div></div>
+<div class="res"><span>${svg("fibra")}2/2</span><span>${svg("pedra")}1/2</span><span>${svg("semente")}1</span><span>${svg("nucleo")}0</span><span>${svg("gota")}</span></div>
+<div class="tabs">${["receitas","colecao","som","ajustes"].map(n=>bub(n,n==="som"?"bloq":"",48)).join("")}</div>`;
+</script></body></html>
