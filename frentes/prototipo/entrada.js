@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const go = (e) => { ent.dataset.e = e; };
   const setCont = () => { ent.classList.toggle("e-cont", cont); $(".e-estado").hidden = !cont; $("#iniciar").setAttribute("aria-label", cont ? "Continuar" : "Tocar para começar"); };
   function mostra(splash) {
-    clearTimeout(tm); ent.classList.remove("viaja"); ent.style.opacity = ""; ent.hidden = false; setCont();
+    clearTimeout(tm); try { cont = localStorage.getItem(KEY) === "1"; } catch (e) {} ent.classList.remove("viaja"); ent.style.opacity = ""; ent.hidden = false; setCont();
     if (splash && !reduce) { go("splash"); const sp = $(".e-espiral"); sp.style.animation = "none"; void sp.offsetWidth; sp.style.animation = ""; tm = setTimeout(() => go("titulo"), 1800); } else go("titulo");
   }
   function entrar() {
