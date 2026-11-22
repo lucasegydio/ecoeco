@@ -22,7 +22,7 @@ export function mount(canvas, src, mode = 'foto') {
   tex.colorSpace = THREE.SRGBColorSpace;
   let ready = false, zoom = 1, vx = 0, vy = 0, drag = false, t0 = performance.now();
   const pts = new Map(); let pinch0 = 0, zoom0 = 1;
-  const sil = new THREE.Color('#1b1630');
+  const sil = new THREE.Color('#3b2f66');
   function paint() { mats.forEach(m => { if (mode === 'foto') m.color.setScalar(.55 + .45 * m.userData.k); else m.color.copy(sil).multiplyScalar(.6 + .8 * m.userData.k); }); }
   const AX = new THREE.Vector3(1, 0, 0), AY = new THREE.Vector3(0, 1, 0), q = new THREE.Quaternion();
   function spin(dx, dy) { q.setFromAxisAngle(AY, dx).multiply(new THREE.Quaternion().setFromAxisAngle(AX, dy)); g.quaternion.premultiply(q); }
