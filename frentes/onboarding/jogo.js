@@ -156,7 +156,7 @@
   }
   const ghostEl = document.createElement("div"); ghostEl.className = "dedo-fantasma"; ghostEl.setAttribute("aria-hidden", "true");
   ghostEl.innerHTML = "<i></i><i></i><i></i><i></i>"; game.append(ghostEl);
-  function dismissGhost() { stage.dataset.ghost = ""; stepAt = performance.now(); level = -1; }
+  function dismissGhost() { stage.dataset.ghost = ""; stepAt = performance.now() + 4000; level = -1; }
   const GHOST = { buscar: "arrastar", perto: "pinca" };
   const PULSE = { arvore: "tree", fruto: "fruit", pedras: "stones", colheita: "fruit2", decolar: "nave" };
   let txtOn = true, lastNudge = 0;
