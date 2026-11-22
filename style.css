@@ -73,3 +73,7 @@
   .site-head nav { gap: 10px; font-size: .79rem; }
   .site-head .brand { width: 91px; }
 }
+
+.nav-frentes{position:relative;display:inline-block}.nav-frentes summary{cursor:pointer;list-style:none}.nav-frentes summary::-webkit-details-marker{display:none}.nav-frentes summary:after{content:" ▾"}
+.nav-frentes div{position:absolute;right:0;top:100%;z-index:20;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px 14px;display:flex;flex-direction:column;gap:8px;min-width:130px}
+.site-head nav{align-items:center}

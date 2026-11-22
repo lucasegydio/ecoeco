@@ -11,7 +11,6 @@
 <link rel="stylesheet" href="planeta.css">
 <link rel="stylesheet" href="vidro.css">
 <link rel="stylesheet" href="revisao.css">
-<script src="hud.js" defer></script>
 <script src="icons.js" defer></script>
 <script src="liquid.js" defer></script>
 <script src="leque.js" defer></script>
@@ -53,7 +52,7 @@
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <header class="site-head wrap">
   <a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a>
-  <nav aria-label="Navegação principal"><a href="#jogo">Jogo</a><a href="#leque">Ring</a><a href="#planeta">Planeta</a><a href="#hud">HUD</a><a href="#linguagem">Linguagem</a><a href="referencias.html">Referências</a></nav>
+  <nav aria-label="Navegação principal"><a href="#jogo">Jogo</a><a href="#leque">Ring</a><a href="#planeta">Planeta</a><a href="timeline.html">Timeline</a><a href="referencias.html">Referências</a><details class="nav-frentes"><summary>Frentes</summary><div><a href="frentes/menu/">Menu</a><a href="frentes/bestiario/">Bestiário</a><a href="frentes/tipografia/">Tipografia</a><a href="frentes/linguagem/">Linguagem</a><a href="frentes/onboarding/">Onboarding</a></div></details></nav>
 </header>
 <main id="conteudo" class="wrap">
   <section class="intro" aria-labelledby="title">
@@ -275,52 +274,6 @@
     </div>
   </section>
 
-  <section class="showcase" id="hud" data-review aria-labelledby="hud-title">
-    <div class="study">
-      <div>
-        <p class="eyebrow">Estudo anterior · rodadas 01–02</p>
-        <h2 id="hud-title">Anel completo</h2>
-        <p>Explore dois desenhos para o mesmo menu. Toque num ícone para ver a resposta do anel.</p>
-      </div>
-      <div>
-        <div class="switch" role="group" aria-label="Forma do menu">
-          <button type="button" data-form="petalas" aria-pressed="true">Pétalas</button>
-          <button type="button" data-form="orbita" aria-pressed="false">Órbita</button>
-        </div>
-        <p class="variant-note" id="variant-note">Superfícies macias agrupam as ações em torno de um centro livre.</p>
-        <div class="study-actions"><button type="button" class="quiet" id="replay"><span aria-hidden="true">↻</span> Rever abertura</button></div>
-      </div>
-    </div>
-    <div class="stage" id="stage" data-form="petalas" data-open="true">
-      <div class="stage-top"><span><i></i> Menu de ação</span><span>Estudo em movimento</span></div>
-      <div class="ring" aria-label="Demonstração do menu circular">
-        <div class="guide outer"></div><div class="guide middle"></div><div class="guide inner"></div>
-        <span class="axis axis-y"></span><span class="axis axis-x"></span>
-        <div class="ripple" data-ripple></div>
-        <div class="orbit-items" id="orbit-items"></div>
-        <button class="core" type="button" aria-controls="orbit-items" aria-expanded="true" aria-label="Fechar menu">
-          <span class="source-mark source-symbol" aria-hidden="true"><img src="assets/prancheta-1.png" alt=""></span>
-          <span class="core-label">Fechar</span>
-        </button>
-      </div>
-      <div class="stage-bottom"><span id="stage-state" role="status">Regar · selecionada</span><span class="stage-help">Toque para selecionar</span></div>
-    </div>
-    <div class="response" id="selection">
-      <span class="eyebrow">Ação em foco</span>
-      <p id="action-desc"><strong>Regar</strong> <span>O preenchimento e o pulso visual indicam a seleção.</span></p>
-      <span class="annotation">Ações ilustrativas</span>
-    </div>
-  </section>
-
-  <section class="language" id="linguagem" data-review aria-labelledby="visual-title">
-    <div class="section-head"><div><p class="eyebrow">Sistema visual</p><h2 id="visual-title">Forma, cor e gesto.</h2></div><p>Uma linguagem provisória para controles, ícones e respostas visuais de ecoeco.</p></div>
-    <div class="plates">
-      <article class="plate"><div class="plate-art contours" aria-hidden="true"><span class="source-mark source-symbol-plate"><img src="assets/prancheta-1.png" alt=""></span></div><h3>Contorno aberto</h3><p>Ovóides, cortes e repetições partem das pranchetas da marca. A abertura dá direção às formas.</p></article>
-      <article class="plate"><div class="plate-art swatches" aria-label="Marfim, tinta, lilás e lima"><i></i><i></i><i></i><i></i></div><h3>Cor como estado</h3><p>Marfim e tinta dão a base. Lilás dá corpo ao controle. Lima, preenchimento e texto marcam a seleção.</p></article>
-      <article class="plate"><div class="plate-art gestures" aria-hidden="true"><i></i><i></i><i></i></div><h3>Resposta ao toque</h3><p>O menu abre do centro. Ao selecionar, o foco muda e um pulso curto assenta o gesto. A leitura funciona sem áudio.</p></article>
-    </div>
-  </section>
-
   <section class="originals" id="pranchetas" data-review aria-labelledby="originals-title">
     <div class="section-head">
       <div><p class="eyebrow">Identidade ecoeco</p><h2 id="originals-title">Pranchetas originais.</h2></div>
@@ -350,7 +303,7 @@
     <div><a class="outline-link" href="variacoes-ui.html">Estudos de interface</a> <a class="outline-link" href="referencias.html">Abrir board</a></div>
   </section>
 </main>
-<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface · rodada 20</span></footer>
+<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface · rodada 21</span></footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('#entrada');
