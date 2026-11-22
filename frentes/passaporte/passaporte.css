@@ -44,7 +44,7 @@ dt{font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;align
 .slot.nao{background:#0000;border:2px dashed #3a2a2244;box-shadow:none}
 .slot.r-r.foto{box-shadow:0 0 0 2px #e8b84a,0 2px 0 #0002}.slot.r-l.foto{box-shadow:0 0 0 2px #b58cff,0 0 12px #b58cff88}
 /* ---------- carta ---------- */
-.cartaw{align-items:center}.cartaw .topo{width:100%}
+.cartaw{align-items:center;-webkit-user-select:none;user-select:none}.cartaw .topo{width:100%}
 .carta{--lx:50%;--ly:20%;position:relative;width:100%;max-width:340px;flex:1;max-height:600px;min-height:0;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:26px;overflow:hidden;box-shadow:0 22px 40px #0008}
 .carta header{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nome{font:400 22px var(--fm);padding:4px 14px;border-radius:99px}.nr{font:800 13px var(--fn);padding:5px 10px;border-radius:99px;background:var(--pg);color:var(--eco-tinta)}

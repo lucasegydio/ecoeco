@@ -2,13 +2,13 @@ import { mount } from './ficha3d.js';
 const PL = { terra: { n: 'Terra', g: 'radial-gradient(circle at 35% 30%,#d6f5b0,#5fae4c 60%,#2e6b35)' }, deserto: { n: 'Deserto', g: 'radial-gradient(circle at 35% 30%,#ffe2a8,#f2b46a 55%,#8a5524)' }, gelo: { n: 'Gelo', g: 'radial-gradient(circle at 35% 30%,#fff,#a9dcff 55%,#3b6f9c)' } };
 const RAR = { c: 'Comum', r: 'Rara', l: 'Lendária' };
 const BICHOS = [
-  { id: 1, n: 'Brotinho', img: 'brotinho-frente', p: 'terra', r: 'c', st: 'foto', d: '12 mar 2027', hab: 'Pradaria', tr: ['Tímido', 'Cheira flores', 'Dorme ao sol'] },
-  { id: 2, n: 'Rabanete', img: 'rabanete-antena', p: 'terra', r: 'r', st: 'foto', d: '14 mar 2027', hab: 'Solo úmido', tr: ['Curioso', 'Capta sons', 'Rola morro abaixo'] },
-  { id: 3, n: 'Flor-creme', img: 'flor-creme', p: 'terra', r: 'c', st: 'visto', d: '15 mar 2027', hab: 'Pradaria', tr: ['???', '???', '???'] },
+  { id: 1, n: 'Brotinho', img: 'brotinho-frente', p: 'terra', r: 'c', st: 'foto', d: '12 mar 2026', hab: 'Pradaria', tr: ['Tímido', 'Cheira flores', 'Dorme ao sol'] },
+  { id: 2, n: 'Rabanete', img: 'rabanete-antena', p: 'terra', r: 'r', st: 'foto', d: '14 mar 2026', hab: 'Solo úmido', tr: ['Curioso', 'Capta sons', 'Rola morro abaixo'] },
+  { id: 3, n: 'Flor-creme', img: 'flor-creme', p: 'terra', r: 'c', st: 'visto', d: '15 mar 2026', hab: 'Pradaria', tr: ['???', '???', '???'] },
   { id: 4, n: 'Pilar-musgo', img: 'pilar-musgo', p: 'terra', r: 'l', st: 'nao', d: '', hab: '', tr: [] },
-  { id: 5, n: 'Árvore-ninho', img: 'arvore', p: 'terra', r: 'r', st: 'foto', d: '20 mar 2027', hab: 'Floresta', tr: ['Gentil', 'Abriga outros', 'Cresce devagar'] },
-  { id: 6, n: 'Cinzinha', img: 'bichinho-cinza', p: 'terra', r: 'c', st: 'visto', d: '21 mar 2027', hab: 'Rochedo', tr: ['???', '???', '???'] },
-  { id: 7, n: 'Rocha-ocre', img: 'rocha-ocre', p: 'deserto', r: 'r', st: 'foto', d: '02 abr 2027', hab: 'Dunas', tr: ['Calado', 'Guarda calor', 'Brilha ao pôr do sol'] },
+  { id: 5, n: 'Árvore-ninho', img: 'arvore', p: 'terra', r: 'r', st: 'foto', d: '20 mar 2026', hab: 'Floresta', tr: ['Gentil', 'Abriga outros', 'Cresce devagar'] },
+  { id: 6, n: 'Cinzinha', img: 'bichinho-cinza', p: 'terra', r: 'c', st: 'visto', d: '21 mar 2026', hab: 'Rochedo', tr: ['???', '???', '???'] },
+  { id: 7, n: 'Rocha-ocre', img: 'rocha-ocre', p: 'deserto', r: 'r', st: 'foto', d: '02 abr 2026', hab: 'Dunas', tr: ['Calado', 'Guarda calor', 'Brilha ao pôr do sol'] },
 ];
 const S = { dir: 1, tela: 'capa', pag: 'id', cur: null, nome: 'Viajante', m: null };
 const $ = s => document.querySelector(s), app = $('#app');
@@ -38,8 +38,8 @@ function abas() {
 function pagId() {
   return `<div class="folha id"><h2>Identidade</h2>
   <div class="foto">${carimbo(S.nome.slice(0, 1) || 'V', 'RESIDENTE', 'var(--eco-coral)', -6, S.nome.slice(0, 1).toUpperCase() || 'V')}</div>
-  <dl><dt>Nome</dt><dd><input id="nome" value="${S.nome}" maxlength="14" aria-label="Seu nome"></dd><dt>Nº do passaporte</dt><dd>EC 0042 17</dd><dt>Emitido em</dt><dd>10 mar 2027</dd><dt>Mundos visitados</dt><dd>2 de 5</dd><dt>Bichinhos</dt><dd>${BICHOS.filter(b => b.st == 'foto').length} fotografados · ${BICHOS.filter(b => b.st == 'visto').length} vistos</dd></dl>
-  <p class="mrz">P&lt;ECO&lt;${S.nome.toUpperCase()}&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>EC004217&lt;4ECO2703&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</p></div>`;
+  <dl><dt>Nome</dt><dd><input id="nome" onfocus="this.select()" value="${S.nome}" maxlength="14" aria-label="Seu nome"></dd><dt>Nº do passaporte</dt><dd>EC 0042 17</dd><dt>Emitido em</dt><dd>10 mar 2026</dd><dt>Mundos visitados</dt><dd>2 de 5</dd><dt>Bichinhos</dt><dd>${BICHOS.filter(b => b.st == 'foto').length} fotografados · ${BICHOS.filter(b => b.st == 'visto').length} vistos</dd></dl>
+  <p class="mrz">${mrz()}</p></div>`;
 }
 function pagPlaneta(k) {
   const l = BICHOS.filter(b => b.p === k), visit = l.length > 0, fot = l.filter(b => b.st == 'foto').length;
@@ -73,7 +73,7 @@ function render() {
   document.body.dataset.dir = S.dir; document.body.dataset.tela = S.tela;
   const cv = $('#cv'); if (cv) { const b = BICHOS.find(b => b.id == S.cur); S.m = mount(cv, `assets/${b.img}.webp`, b.st == 'foto' ? 'foto' : 'sil'); $('#rec').onclick = () => S.m.reset(); }
   const c = $('#carta'); if (c) { const mv = e => { const r = c.getBoundingClientRect(); c.style.setProperty('--lx', ((e.clientX - r.left) / r.width * 100) + '%'); c.style.setProperty('--ly', ((e.clientY - r.top) / r.height * 100) + '%'); }; c.addEventListener('pointermove', mv); c.addEventListener('pointerdown', mv); }
-  const n = $('#nome'); if (n) n.oninput = e => { S.nome = e.target.value || 'Viajante'; $('.topo span').textContent = S.nome; };
+  const n = $('#nome'); if (n) n.oninput = e => { S.nome = e.target.value || 'Viajante'; $('.topo span').textContent = S.nome; const mz = $('.mrz'); if (mz) mz.innerHTML = mrz(); };
 }
 document.addEventListener('click', e => {
   const t = e.target.closest('[data-go],[data-pag],[data-bicho],[data-d]'); if (!t) return;
@@ -84,3 +84,4 @@ document.addEventListener('click', e => {
 });
 render();
 window.__S = S; window.__render = render; window.__BICHOS = BICHOS;
+function mrz() { const n = S.nome.toUpperCase().replace(/[^A-Z]/g, '<'); return `P&lt;ECO&lt;${n}&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;<br>EC004217&lt;4ECO2603&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;`; }
