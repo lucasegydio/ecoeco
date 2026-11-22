@@ -22,12 +22,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap">
 <style>
 /* One grid cell defines the device glass for both the world and its title screen. */
-#jogo .game-stage {width:min(370px,100%,38vh);isolation:isolate}
+#jogo .game-stage {width:min(370px,100%,37.9svh);isolation:isolate}
 #jogo .game,#jogo #entrada {grid-area:1/1;width:100%;border-radius:34px}
 #jogo #entrada {position:relative;align-self:stretch;overflow:hidden;z-index:12;container-type:inline-size;touch-action:none;color:#fff5e3;background:linear-gradient(180deg,#0d1121fa 0%,#171728e8 28%,#24203470 55%,#121425ee 88%);font-family:'DM Sans',sans-serif;transition:opacity .55s ease}
 #entrada[hidden]{display:none}
-#entrada.saindo{opacity:0;pointer-events:none}
-.game-stage:has(#entrada:not([hidden])) .game > :not(canvas):not(.globe-dots){visibility:hidden}
+#jogo #entrada.saindo{opacity:0;pointer-events:none}
+.game-stage:has(#entrada:not([hidden]):not(.saindo)) .game > :not(canvas):not(.globe-dots){visibility:hidden}
 #entrada .po-luz,#entrada .orbital{position:absolute;inset:0;pointer-events:none}
 .po-luz{background:radial-gradient(ellipse 70% 35% at var(--lx,25%) var(--ly,45%),#ffb36b50,transparent),radial-gradient(ellipse 80% 48% at var(--lx2,60%) var(--ly2,55%),#bd7bc747,transparent)}
 .po-luz i{position:absolute;width:3px;height:3px;background:#fff5ce;border-radius:50%;box-shadow:0 0 8px 2px #ffc89888;animation:deriva 5s ease-in-out infinite alternate}
@@ -45,7 +45,7 @@
 #jogo .game{font-family:'DM Sans',sans-serif}
 #jogo .game h3{font-family:'Zen Kaku Gothic New',sans-serif}
 @keyframes surgir{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){#entrada *,#jogo #entrada{animation:none;transition:none}.gota-iniciar{transform:none}}
+@media(prefers-reduced-motion:reduce){#entrada *,#jogo #entrada{animation:none!important;transition:none!important}#jogo #entrada .po-luz{background:radial-gradient(ellipse at 45% 45%,#ffc99644,transparent 55%)}.gota-iniciar{transform:none}}
 </style>
 </head>
 <body>
@@ -335,7 +335,7 @@
     <div><a class="outline-link" href="variacoes-ui.html">Estudos de interface</a> <a class="outline-link" href="referencias.html">Abrir board</a></div>
   </section>
 </main>
-<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface · rodada 11</span></footer>
+<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface</span></footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('#entrada');
@@ -350,16 +350,21 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(mote.style,{left:x+'%',top:y+'%',animationDelay:-x/12+'s'});
     menu.querySelector('.po-luz').append(mote);
   }
+  let transitionTimer;
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   function enterGame() {
+    clearTimeout(transitionTimer);
     menu.hidden = true;
     game.inert = false;
   }
   menu.querySelector('button').onclick = () => {
+    if (menu.classList.contains('saindo')) return;
     glass.accept('iniciar'); menu.classList.add('saindo');
-    setTimeout(() => {enterGame(); game.tabIndex=-1; game.focus({preventScroll:true});},550);
+    transitionTimer = setTimeout(() => {enterGame(); game.tabIndex=-1; game.focus({preventScroll:true});},reducedMotion.matches ? 0 : 550);
   };
   document.querySelectorAll('[data-pular]').forEach(button => button.addEventListener('click',enterGame));
   document.querySelector('#jogo-reset').addEventListener('click',() => {
+    clearTimeout(transitionTimer);
     game.inert=true; menu.classList.remove('saindo'); menu.hidden=false; glass.open(); menu.querySelector('button').focus({preventScroll:true});
   });
 });
