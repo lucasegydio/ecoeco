@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#202130">
+<title>ecoeco · mapa da região</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="mapa.css"><script src="mapa.js" defer></script>
+</head><body>
+<main class="pagina">
+  <aside class="lado">
+    <h1>Mapa da região</h1>
+    <p class="sub">Depois da decolagem: mapa, nave, viagem, chegada, volta e progresso.</p>
+    <nav class="demo" aria-label="Ir para cena">
+      <button data-go="mapa">1 · Mapa</button><button data-go="nave">2 · Nave</button><button data-go="ida">3 · Viagem</button><button data-go="chegada">4 · Chegada nova</button><button data-go="volta">5 · Volta à Terra</button>
+      <button data-go="reset" class="fraco">Recomeçar demo</button>
+    </nav>
+    <ul class="leg">
+      <li><i class="k visitado"></i>Visitado (anel = progresso)</li>
+      <li><i class="k alcance"></i>Ao alcance (toque para viajar)</li>
+      <li><i class="k longe"></i>Descoberto, além do alcance</li>
+      <li><i class="k sinal"></i>Sinal por descobrir (eco)</li>
+      <li><i class="k bloq"></i>Bloqueado (outra região)</li>
+    </ul>
+    <p class="nota">Arte substituta: só o Planeta 1A é do time; os outros planetas e a nave são formas simples para validar fluxo.</p>
+  </aside>
+  <div class="phone-bay"><div class="phone" id="phone" data-scene="mapa">
+    <div class="estrelas" aria-hidden="true"></div>
+    <section class="cena c-mapa" aria-label="Mapa da região Aurora">
+      <header><p class="kicker">Região Aurora</p><p class="cont" id="cont"></p></header>
+      <div class="campo" id="campo"><svg class="rotas" id="rotas" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+      <footer><button class="btn-nave" id="abrir-nave"><span class="mini-nave"></span>Minha nave<em id="alc"></em></button></footer>
+    </section>
+    <section class="cena c-nave" aria-label="Personalizar a nave" hidden>
+      <header><p class="kicker">Hangar</p></header>
+      <div class="palco-nave"><div class="halo"></div><div class="nave-grande" id="nave-grande"></div></div>
+      <div class="opcoes">
+        <div class="grupo"><b>Casco</b><div class="linha" id="o-cor"></div></div>
+        <div class="grupo"><b>Forma</b><div class="linha" id="o-forma"></div></div>
+        <div class="grupo"><b>Peças</b><div class="linha" id="o-peca"></div><p class="dica" id="peca-dica"></p></div>
+      </div>
+      <footer><button class="btn" id="nave-ok">Pronto</button></footer>
+    </section>
+    <section class="cena c-viagem" aria-label="Viagem" hidden>
+      <div class="origem" id="v-orig"></div><div class="destino" id="v-dest"></div>
+      <div class="nave-voo" id="v-nave"></div>
+      <p class="v-txt" id="v-txt"></p><div class="v-barra"><i id="v-prog"></i></div><p class="v-pular">toque para acelerar</p>
+    </section>
+    <section class="cena c-chegada" aria-label="Chegada" hidden>
+      <div class="ch-planeta" id="ch-planeta"></div>
+      <div class="ch-nave" id="ch-nave"></div>
+      <div class="ch-card" id="ch-card"></div>
+    </section>
+    <div class="folha" id="folha" hidden></div>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </div></div>
+</main>
+</body></html>
