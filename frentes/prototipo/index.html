@@ -71,6 +71,7 @@
 <h4>Integrado</h4>
 <ul><li><b>Início:</b> splash, título (1ª abertura e Continuar), Ajustes, viagem ao planeta</li><li><b>Onboarding:</b> luz-dedo, pistas sem texto, ponto de toque</li><li><b>Linguagem:</b> tokens e estado bloqueado (Som, até a trilha)</li><li><b>Tipografia A:</b> Nunito + Menda Medium</li><li><b>Menu:</b> folha nasce da gota, Ajustes com Dicas segmentadas</li><li><b>Bestiário:</b> Álbum, silhueta, Visto, Fotografar, inventário, esboço do lagarto</li></ul>
 <h4>Pendente</h4><ul id="novo-pend"><li>Fotografar só no Álbum (sem câmera no mundo)</li><li>Licença da Menda Medium</li><li>Arte final do lagarto-deserto</li></ul>
+<h4>HUD</h4><div class="switch hud-sel" role="group" aria-label="Variação do HUD"><button type="button" data-hud="gota" aria-pressed="false">A Gota</button><button type="button" data-hud="ilhas" aria-pressed="false">B Ilhas</button><button type="button" data-hud="calmo" aria-pressed="true">C Calmo</button></div>
 <h4>Pistas</h4>
 <div class="switch jogo-insist" role="group" aria-label="Insistência das pistas"><button type="button" data-insist="sutil" aria-pressed="false">Sutil</button><button type="button" data-insist="padrao" aria-pressed="true">Padrão</button><button type="button" data-insist="explicita" aria-pressed="false">Explícita</button></div>
 <p style="margin:6px 0 0"><span id="jogo-level" class="level-chip">buscar · pista 0</span></p>
@@ -79,4 +80,5 @@
 </div></aside>
 <script>document.getElementById("novo-btn").onclick=function(){var c=document.getElementById("novo-caixa");c.hidden=!c.hidden;this.setAttribute("aria-expanded",String(!c.hidden))}</script>
 </section>
-</body></html>
+<script>(function(){var st=document.querySelector(".game-stage"),bs=document.querySelectorAll(".hud-sel button");function set(k,u){st.dataset.hud=k;bs.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.hud===k))});if(u){var q=new URLSearchParams(location.search);q.set("hud",k);history.replaceState(null,"","?"+q)}}
+bs.forEach(function(b){b.onclick=function(){set(b.dataset.hud,1)}});window.addEventListener("load",function(){set(st.dataset.hud||"calmo")});})();</script></body></html>
