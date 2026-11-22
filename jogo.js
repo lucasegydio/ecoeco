@@ -258,10 +258,12 @@
   }
   function closeRing() { ringEngine.close(); ringOpen = false; stage.dataset.observing = "false"; }
   function chooseAction(id, b) {
+    if (!ringOpen || busy || ringLayer.querySelector('[data-state="aceito"]')) return;
     if (missing(id).length) { b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); say(`Falta ${missing(id).join(" + ")}`); return; }
     b.dataset.state = "aceito";
     ringEngine.accept(id);
-    setTimeout(() => { closeRing(); act(id); }, reduce.matches ? 0 : 600);
+    const journey = S;
+    setTimeout(() => { if (S !== journey) return; closeRing(); act(id); }, reduce.matches ? 0 : 600);
   }
   function say(t) { hintEl.textContent = t; hintEl.hidden = false; hintEl.classList.remove("in"); void hintEl.offsetWidth; hintEl.classList.add("in"); }
 
@@ -287,7 +289,10 @@
   async function act(id) {
     if (id === "carinho") { pet.el.classList.remove("hop"); void pet.el.offsetWidth; pet.el.classList.add("hop"); return; }
     if (id === "decolar") { launch(); return; }
+    const journey = S;
+    if (id === "polinizar") focus(byId.flower, .8, .58);
     await work(id);
+    if (S !== journey) return;
     if (id === "polinizar") { S.pollinated = true; show("fruit"); byId.flower.dim = true; }
     if (id === "minerar") { S.mined = true; show("stones"); }
     if (id === "plantar") { S.planted = true; byId.canteiro.el.dataset.state = "plantado"; }
@@ -322,7 +327,7 @@
   const tapped = () => moved <= 8 && !locked;
   pet.el.addEventListener("click", (e) => {
     e.stopPropagation(); if (!tapped()) return;
-    if (!S.calm) { pet.el.classList.remove("sob-shake"); void pet.el.offsetWidth; pet.el.classList.add("sob-shake"); stepAt = Math.min(stepAt, performance.now() - INSIST[insist][0] * 1000); return; }
+    if (!S.calm) { pet.el.classList.remove("sob-shake"); void pet.el.offsetWidth; pet.el.classList.add("sob-shake"); halo(byId.tree.sx, byId.tree.sy - byId.tree.px * .8, "#9fd6ff"); stepAt = Math.min(stepAt, performance.now() - INSIST[insist][0] * 1000); return; }
     if (busy) return;
     ringOpen ? closeRing() : openRing();
   });
@@ -353,9 +358,12 @@
   byId.nave.el.addEventListener("click", (e) => { e.stopPropagation(); if (tapped() && S.nave && !S.launched) launch(); });
 
   function dropWater() {
+    if (game.querySelector(".water-drop")) return;
+    const journey = S;
     const tree = byId.tree, d = document.createElement("i"); d.className = "water-drop"; game.append(d);
     const t0 = performance.now(), dur = reduce.matches ? 1 : 950;
     const stepFn = (now) => {
+      if (S !== journey) { d.remove(); return; }
       const k = Math.min(1, (now - t0) / dur);
       const x0 = tree.sx + tree.px * .15, y0 = tree.sy - tree.px * .9, x1 = pet.sx, y1 = pet.sy - pet.px * .85;
       const hang = Math.min(1, k / .25), fall = Math.max(0, (k - .25) / .75);
@@ -364,6 +372,7 @@
       if (k < 1) { requestAnimationFrame(stepFn); return; }
       d.remove(); halo(x1, y1, "#9fd6ff");
       S.calm = true; stage.dataset.crying = "false";
+      pet.el.classList.add("hop"); pet.el.addEventListener("animationend", () => pet.el.classList.remove("hop"), {once:true});
     };
     requestAnimationFrame(stepFn);
   }
