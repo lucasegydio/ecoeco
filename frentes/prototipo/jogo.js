@@ -289,14 +289,16 @@
     b.innerHTML = `<i class="drop" aria-hidden="true"><i class="caustic"></i><i class="rim"></i></i><span class="ico" aria-hidden="true"><svg viewBox="0 0 32 32">${ICONS[id]}</svg></span><span class="tip" aria-hidden="true">${a.label}${m.length ? " · falta " + m.join(" + ") : ""}</span>` +
       (m.length ? `<em class="short" aria-hidden="true">−${m.length}</em>` : "");
     b.addEventListener("click", (e) => { e.stopPropagation(); onTap(id, b); });
-    b.addEventListener("pointerdown", (e) => { e.stopPropagation(); b.classList.add("press"); });
+    b.addEventListener("pointerdown", (e) => { e.stopPropagation(); b.classList.add("press"); snd("toque"); });
     ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => b.addEventListener(ev, () => b.classList.remove("press")));
     slot.append(b); layer.append(slot);
     return slot;
   }
-  const ringEngine = Liquid.create({ stage, scene: game, center: () => ({ x: pet.sx || W / 2, y: pet.sy || H / 2 }) });
+  const ringEngine = Liquid.create({ stage, scene: game, tune: Liquid.PROP, center: () => ({ x: pet.sx || W / 2, y: pet.sy || H / 2 }) });
   let ringOpen = false;
+  const snd = (id) => window.ECO_SOM && window.ECO_SOM.play(id);
   function openRing() {
+    snd("abrir-anel");
     ringLayer.innerHTML = "";
     const ids = available(), n = ids.length, st = 360 / Math.max(n, 5), start = -90 - st * (n - 1) / 2;
     const items = ids.map((id, i) => {
@@ -310,8 +312,8 @@
   function closeRing() { ringEngine.close(); ringOpen = false; stage.dataset.observing = "false"; }
   function chooseAction(id, b) {
     if (!ringOpen || busy || ringLayer.querySelector('[data-state="aceito"]')) return;
-    if (missing(id).length) { b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); say(`Falta ${missing(id).join(" + ")}`); return; }
-    b.dataset.state = "aceito";
+    if (missing(id).length) { b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake"); snd("falta"); say(`Falta ${missing(id).join(" + ")}`); return; }
+    b.dataset.state = "aceito"; snd("aceitar");
     ringEngine.accept(id);
     const journey = S;
     setTimeout(() => { if (S !== journey) return; closeRing(); act(id); }, reduce.matches ? 0 : 600);
@@ -436,6 +438,7 @@
     }
   }
   function fly(x0, y0, text, done, delay) {
+    snd("coletar");
     const p = document.createElement("span"); p.className = "fly-pill"; p.textContent = text; game.append(p);
     const gb = game.getBoundingClientRect(), ib = invEl.getBoundingClientRect();
     const x1 = ib.left + ib.width / 2 - gb.left, y1 = ib.top + ib.height / 2 - gb.top;
@@ -459,6 +462,7 @@
   // Foco no Brotinho → a luz quente converge → faíscas de vidro giram em espiral até ele → ele brilha,
   // encolhe e estoura → a flor vira COPA (cresce com mola) → anéis → cartão "O Brotinho evoluiu".
   async function evolve() {
+    snd("evolucao");
     locked = true; closeRing(); stage.dataset.cine = "evolucao";
     focus(pet, .9, .58);
     await wait(900);
@@ -497,6 +501,7 @@
   // A nave treme e acende (como o eco) → dispara com rastro → a câmera se afasta além da atmosfera →
   // o planeta encolhe → abre o mapa da primeira região, com destinos ao alcance e sinais de criaturas.
   async function launch() {
+    snd("decolagem");
     locked = true; closeRing(); stage.dataset.cine = "decolagem";
     const nave = byId.nave;
     focus(nave, .78, .62);
@@ -518,6 +523,7 @@
     });
     hide("nave");
     await wait(300);
+    if (!mapa.querySelector("iframe")) { const f = document.createElement("iframe"); f.className = "mapa-frame"; f.title = "Mapa da região"; f.src = "mapa/index.html?embed"; mapa.prepend(f); } else mapa.querySelector("iframe").src = "mapa/index.html?embed";
     mapa.hidden = false; mapa.classList.remove("in"); void mapa.offsetWidth; mapa.classList.add("in");
     stage.dataset.cine = "mapa";
   }
@@ -528,7 +534,7 @@
   });
 
   // ---------- menu do planeta (escala planetária) ----------
-  const menuEngine = Liquid.create({ stage, scene: game, driveLight: false, center: () => { const v = view(); return { x: v.cx, y: v.cy }; } });
+  const menuEngine = Liquid.create({ stage, scene: game, tune: Liquid.PROP, driveLight: false, center: () => { const v = view(); return { x: v.cx, y: v.cy }; } });
   const MENU = { receitas: { label: "Receitas", c: ["#ffcf73", "#ff6a2c"] }, colecao: { label: "Coleção", c: ["#ffb3d6", "#ff4f86"] },
     som: { label: "Som", c: ["#bfe0ff", "#4f63f2"] }, ajustes: { label: "Ajustes", c: ["#d9ccff", "#7d5cf0"] } };
   let menuOpen = false, activeSheet = null;
@@ -545,7 +551,7 @@
     if (id === "colecao" && dexModel === "orbita") { closeSheet(); orbitOpen ? closeOrbit() : openOrbit(); return; }
     if (orbitOpen) closeOrbit();
     if (activeSheet === id) { closeSheet(); return; }
-    const swap = !sheet.hidden && activeSheet; activeSheet = id;
+    const swap = !sheet.hidden && activeSheet; activeSheet = id; snd("navegar");
     menuSlots.forEach((s) => { const b = s.querySelector(".fan-item"); if (b.dataset.id !== "som") b.dataset.state = b.dataset.id === id ? "aceito" : "ok"; });
     sheet.style.setProperty("--c1", MENU[id].c[0]); sheet.style.setProperty("--c2", MENU[id].c[1]);
     sheet.querySelector(".sheet-title").textContent = MENU[id].label;
@@ -593,7 +599,7 @@
       }).join("")}</ul>${dexPlanet === "vulcanico" ? '<p class="sheet-note">Espécies de outro planeta aparecem depois da decolagem.</p>' : ""}`;
     },
     som: () => `<div class="toggles">${["Música", "Efeitos", "Vibração no eco"].map((l, i) => `<label class="toggle"><span>${l}</span><input type="checkbox" id="g-snd-${i}" checked><i aria-hidden="true"></i></label>`).join("")}</div>`,
-    ajustes: () => `<div class="seg-group"><p>Dicas</p><div class="seg" role="radiogroup" aria-label="Dicas">${[["sutil", "Sutil"], ["padrao", "Padrão"], ["explicita", "Explícita"]].map(([k, l]) => `<button type="button" role="radio" data-insist="${k}" aria-checked="${insist === k}">${l}</button>`).join("")}</div></div><div class="toggles">${["Movimento reduzido", "Texto maior", "Dicas explícitas"].map((l, i) => `<label class="toggle"><span>${l}</span><input type="checkbox" id="g-adj-${i}"${i === 2 ? " checked" : ""}><i aria-hidden="true"></i></label>`).join("")}</div>`
+    ajustes: () => `<div class="seg-group"><p>Dicas</p><div class="seg" role="radiogroup" aria-label="Dicas">${[["sutil", "Sutil"], ["padrao", "Padrão"], ["explicita", "Explícita"]].map(([k, l]) => `<button type="button" role="radio" data-insist="${k}" aria-checked="${insist === k}">${l}</button>`).join("")}</div></div><div class="seg-group"><p>Vibração</p><div class="seg" role="radiogroup" aria-label="Vibração">${[["0", "Desligada"], ["0.6", "Suave"], ["1", "Normal"]].map(([k, l]) => `<button type="button" role="radio" data-vib="${k}" aria-checked="${String(window.ECO_SOM ? window.ECO_SOM.SOM.vib : 1) === k}">${l}</button>`).join("")}</div></div><div class="toggles">${["Movimento reduzido", "Texto maior", "Dicas explícitas"].map((l, i) => `<label class="toggle"><span>${l}</span><input type="checkbox" id="g-adj-${i}"${i === 2 ? " checked" : ""}><i aria-hidden="true"></i></label>`).join("")}</div>`
   };
 
   // ---------- toast de vidro ----------
@@ -619,6 +625,8 @@
   }
   function stopTrack() { tracking = null; foundAt = 0; delete stage.dataset.track; }
   sheet.addEventListener("click", (e) => {
+    const vb = e.target.closest(".seg [data-vib]");
+    if (vb && window.ECO_SOM) { ECO_SOM.setVib(+vb.dataset.vib); sheet.querySelectorAll(".seg [data-vib]").forEach((x) => x.setAttribute("aria-checked", String(x === vb))); snd("aceitar"); }
     const sg = e.target.closest(".seg [data-insist]");
     if (sg) setInsist(sg.dataset.insist);
     const tab = e.target.closest(".dex-tab"), tr = e.target.closest(".rastrear");
@@ -626,7 +634,7 @@
     if (tr) track(tr.dataset.track);
     const ft = e.target.closest("[data-foto]");
     if (ft) {
-      const sp = SPECIES.find((x) => x.id === ft.dataset.foto); photo[sp.id] = true;
+      const sp = SPECIES.find((x) => x.id === ft.dataset.foto); photo[sp.id] = true; snd("foto");
       sheet.querySelector(".sheet-body").innerHTML = SHEETS.colecao();
       toast(`<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>${sp.name} entrou na coleção</b><small>Fotografado agora</small></span>`);
     }
@@ -672,7 +680,7 @@
   // bichinho-cinza: tocar registra "visto" (ainda não é seu: posse pede outro passo do game design)
   byId.cinza.el.addEventListener("click", (e) => {
     e.stopPropagation(); if (moved > 8 || locked) return;
-    const sp = SPECIES[1], first = !seen.cinza;
+    const sp = SPECIES[1], first = !seen.cinza; if (first) snd("nova-especie");
     seen.cinza = true;
     halo(byId.cinza.sx, byId.cinza.sy - byId.cinza.px * .5, sp.c[1]);
     byId.cinza.el.classList.remove("hop"); void byId.cinza.el.offsetWidth; byId.cinza.el.classList.add("hop");

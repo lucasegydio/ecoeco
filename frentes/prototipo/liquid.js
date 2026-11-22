@@ -17,7 +17,11 @@ window.Liquid = (() => {
     return [p, v];
   }
 
-  function create({ stage, scene, center, driveLight = true }) {
+  // 22-movimento: tokens de mola ajustaveis (T). Padrao = valores do prototipo ("hoje").
+  const HOJE = { openK: 190, openC: 17, dripK: 120, dripC: 14, scaleK: 260, scaleC: 16, reach: 16, pull: 1.6, stretchMax: .22, stretchDiv: 140, float: .45, inertia: .022, closeK: 190, closeC: 17, absK: 190, absC: 17, chosenK: 190, chosenC: 17, chosenS: 1.3, hot: 1.17, press: .9, stagger: 1 };
+  const PROP = { openK: 110, openC: 17, closeK: 170, closeC: 26, scaleK: 200, scaleC: 18, absK: 140, absC: 24, chosenK: 150, chosenC: 16, stretchMax: .12, hot: 1.12, press: .92, stagger: 1 };   // contemplativo + sutil
+  function create({ stage, scene, center, driveLight = true, tune = {}, reduced = () => reduce.matches }) {
+    const T = { ...HOJE, ...tune };
     let items = [];
     let isOpen = false;
     let openedAt = 0;
@@ -61,28 +65,30 @@ window.Liquid = (() => {
 
       const u = W / 100;   // 1cqi em px
       for (const it of items) {
-        const started = isOpen && now >= openedAt + it.delay;
+        const RM = reduced();
+        const started = isOpen && now >= openedAt + it.delay * T.stagger;
         let gx = 0, gy = 0, gs = 0;
         if (it.mode === "drip") { gx = 0; gy = -u * 2; gs = .2; }
         else if (it.mode === "absorb" || !started) { gx = 0; gy = 0; gs = 0; }
         else {
           // posição de repouso + flutuação orgânica (duas senoides fora de fase)
-          gx = it.bx * u + Math.sin(t * .9 + it.phase) * u * .45;
-          gy = it.by * u + Math.cos(t * .73 + it.phase * 1.3) * u * .45;
+          gx = it.bx * u + Math.sin(t * .9 + it.phase) * u * (RM ? 0 : T.float);
+          gy = it.by * u + Math.cos(t * .73 + it.phase * 1.3) * u * (RM ? 0 : T.float);
           // ímã: perto do dedo, a bolha se inclina um pouco na direção dele
-          if (light.active) {
+          if (light.active && !RM) {
             const dx = light.px - (c.x + gx), dy = light.py - (c.y + gy);
-            const d = Math.hypot(dx, dy), reach = u * 16;
-            if (d < reach) { const f = (1 - d / reach) * u * 1.6 / (d || 1); gx += dx * f; gy += dy * f; }
+            const d = Math.hypot(dx, dy), reach = u * T.reach;
+            if (d < reach) { const f = (1 - d / reach) * u * T.pull / (d || 1); gx += dx * f; gy += dy * f; }
           }
-          gs = it.press ? .9 : it.hot ? 1.17 : 1;
-          if (it.mode === "chosen") gs = 1.3;
+          gs = it.press ? T.press : it.hot ? T.hot : 1;
+          if (it.mode === "chosen") gs = T.chosenS;
         }
-        const k = reduce.matches ? 900 : it.mode === "drip" ? 120 : 190;
-        const cd = reduce.matches ? 60 : it.mode === "drip" ? 14 : 17;
+        const closing = !isOpen && !it.mode;
+        const k = RM ? 900 : it.mode === "drip" ? T.dripK : it.mode === "chosen" ? T.chosenK : it.mode === "absorb" ? T.absK : closing ? T.closeK : T.openK;
+        const cd = RM ? 60 : it.mode === "drip" ? T.dripC : it.mode === "chosen" ? T.chosenC : it.mode === "absorb" ? T.absC : closing ? T.closeC : T.openC;
         [it.x, it.vx] = spring(it.x, it.vx, gx, k, cd, dt);
         [it.y, it.vy] = spring(it.y, it.vy, gy, k, cd, dt);
-        [it.s, it.vs] = spring(it.s, it.vs, gs, reduce.matches ? 900 : 260, reduce.matches ? 60 : 16, dt);
+        [it.s, it.vs] = spring(it.s, it.vs, gs, RM ? 900 : T.scaleK, RM ? 60 : T.scaleC, dt);
 
         const el = it.el;
         el.style.setProperty("--x", it.x.toFixed(2) + "px");
@@ -90,14 +96,14 @@ window.Liquid = (() => {
         el.style.setProperty("--s", Math.max(0, it.s).toFixed(3));
         // estica na direção do movimento (gota em voo) e o ícone atrasa pela inércia
         const sp = Math.hypot(it.vx, it.vy);
-        const stretch = clamp(sp / (u * 140), 0, .22);
+        const stretch = reduced() ? 0 : clamp(sp / (u * T.stretchDiv), 0, T.stretchMax);
         // o ângulo do estiramento só muda em movimento; parado, fica onde estava (sem girar o brilho)
         if (sp > u * 4) it.sa = Math.atan2(it.vy, it.vx);
         const sa = it.sa || 0;
         el.style.setProperty("--st", stretch.toFixed(3));
         el.style.setProperty("--sa", (sa * 180 / Math.PI).toFixed(1) + "deg");
-        el.style.setProperty("--ix", clamp(-it.vx * .022, -7, 7).toFixed(2) + "px");
-        el.style.setProperty("--iy", clamp(-it.vy * .022, -7, 7).toFixed(2) + "px");
+        el.style.setProperty("--ix", clamp(-it.vx * T.inertia, -7, 7).toFixed(2) + "px");
+        el.style.setProperty("--iy", clamp(-it.vy * T.inertia, -7, 7).toFixed(2) + "px");
         // luz em cada bolha: brilho do lado virado para a luz
         const ix = c.x + it.x, iy = c.y + it.y;
         const wx = light.x - ix, wy = light.y - iy, ld = Math.hypot(wx, wy) || 1;
@@ -147,11 +153,12 @@ window.Liquid = (() => {
       close() { isOpen = false; kick(); },
       accept(id) {
         items.forEach((it) => { it.mode = it.id === id ? "chosen" : "absorb"; });
-        setTimeout(() => { const it = items.find((x) => x.id === id); if (it) it.mode = "drip"; }, reduce.matches ? 0 : 220);
+        setTimeout(() => { const it = items.find((x) => x.id === id); if (it) it.mode = "drip"; }, reduced() ? 0 : 220);
         kick();
       },
+      tune(o) { Object.assign(T, o); kick(); },
       kick
     };
   }
-  return { create };
+  return { create, HOJE, PROP };
 })();
