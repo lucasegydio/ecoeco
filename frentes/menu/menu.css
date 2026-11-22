@@ -1,0 +1,40 @@
+/* Rodada 21 · menu do planeta (folha nasce da gota, abas reais) e anel por contexto */
+.planet-stage .sheet { transform: none; scale: .35; opacity: 0; transform-origin: var(--ox, 50%) var(--oy, 50%); transition: scale .24s ease-in, opacity .18s; }
+.planet-stage .sheet.in { scale: 1; opacity: 1; transition: scale .65s cubic-bezier(.22, 1.35, .4, 1), opacity .2s; }
+.planet-stage .sheet-body > *, .planet-stage .sheet-body li, .planet-stage .sheet-body .toggle { opacity: 1; translate: none; animation: rise .5s cubic-bezier(.25, 1.25, .4, 1) calc(.12s + var(--i, 0) * 50ms) both; }
+.planet-stage .sheet.swap .sheet-title { animation: rise .35s both; }
+.planet-stage .sheet.swap .sheet-body > * { animation-delay: calc(var(--i, 0) * 45ms); }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
+.sliders { display: grid; gap: 10px; margin-bottom: 10px; }
+.slider { display: grid; gap: 6px; font-size: .88rem; padding: 10px 12px; border-radius: 14px; background: #ffffff10; }
+.slider span { display: flex; justify-content: space-between; } .slider b { font-weight: 600; color: #d9ccff; }
+.slider input { -webkit-appearance: none; appearance: none; height: 8px; border-radius: 8px; width: 100%; margin: 0;
+  background: linear-gradient(90deg, var(--c2), var(--c1)) 0 / var(--v) 100% no-repeat, #ffffff22; }
+.slider input::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 0 50% 50% 50%; rotate: 45deg; background: #fff; box-shadow: 0 0 10px var(--c2); }
+.slider input::-moz-range-thumb { width: 22px; height: 22px; border: 0; border-radius: 50%; background: #fff; }
+.seg-group { margin-bottom: 10px; } .seg-group p { font-size: .78rem; color: #cfc9e2; margin-bottom: 5px; }
+.seg { display: flex; padding: 3px; border-radius: 100px; background: #ffffff14; box-shadow: inset 0 0 0 1px #ffffff26; }
+.seg button { flex: 1; border: 0; background: transparent; color: #f4f2fa; border-radius: 100px; padding: 9px 6px; min-height: 40px; font-size: .84rem; }
+.seg button[aria-checked=true] { background: radial-gradient(circle at 30% 40%, var(--c1), var(--c2)); color: #fff; font-weight: 650; }
+.dex-count { display: grid; gap: 6px; font-size: .82rem; margin-bottom: 10px; color: #e8e3f6; } .dex-count b { color: var(--c1); }
+.dex-count i { height: 6px; border-radius: 6px; background: linear-gradient(90deg, var(--c2), var(--c1)) 0 / var(--v) 100% no-repeat, #ffffff22; }
+
+/* anel por contexto */
+.anel-board { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; padding: 16px; background: radial-gradient(ellipse at 48% 40%, #38384d, #202130 80%); border-radius: 0 0 24px 24px; }
+.anel-card { position: relative; aspect-ratio: 1; border-radius: 22px; overflow: hidden; isolation: isolate; background: #ffffff08; box-shadow: inset 0 0 0 1px #ffffff1c; --lx: 50%; --ly: 30%; touch-action: manipulation; }
+.anel-card::before { content: ""; position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle 120px at var(--lx) var(--ly), #ffb36b55, #ff5f9e22 50%, transparent 75%); }
+.anel-card h3 { position: absolute; left: 14px; top: 12px; font-size: .78rem; font-weight: 600; color: #dfdbea; }
+.anel-core { position: absolute; left: 50%; top: 54%; width: 22%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffffff44, #ffffff0d); box-shadow: inset 0 0 0 1px #ffffff33; }
+.anel-core::after { content: attr(data-t); position: absolute; top: 112%; left: 50%; translate: -50% 0; font-size: .62rem; color: #cac4d9; white-space: nowrap; }
+.abub { position: absolute; left: calc(50% + var(--x) * 1%); top: calc(54% + var(--y) * 1%); width: 21%; aspect-ratio: 1; translate: -50% -50%; border: 0; padding: 0; color: #fff; display: grid; place-items: center;
+  background: radial-gradient(circle at calc(var(--bx, 30) * 1%) calc(var(--by, 25) * 1%), #ffffff66, #ffffff1a 45%, color-mix(in srgb, var(--c2) 35%, transparent));
+  -webkit-backdrop-filter: blur(10px) saturate(1.8); backdrop-filter: blur(10px) saturate(1.8);
+  box-shadow: inset 1px 1px 1px #ffffffaa, inset 0 0 0 1px #ffffff33, 0 8px 18px #0b0a1a66;
+  border-radius: 58% 42% 55% 45% / 48% 58% 42% 52%; animation: morph 7s ease-in-out infinite alternate; animation-delay: var(--d); transition: scale .35s cubic-bezier(.25, 1.4, .4, 1), background-color .3s; }
+@keyframes morph { 50% { border-radius: 44% 56% 42% 58% / 56% 44% 58% 42%; } to { border-radius: 52% 48% 60% 40% / 42% 56% 44% 58%; } }
+.abub svg { width: 54%; fill: none; stroke: #f4f2fa; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; filter: url(#pincel); } .abub svg .f { fill: #f4f2fa; }
+.abub:hover, .abub:focus-visible, .abub[aria-pressed=true] { scale: 1.2; background: radial-gradient(circle at 35% 30%, var(--c1), var(--c2)); outline: none; }
+.abub[data-void] { opacity: .45; background: transparent; } .abub[data-void] svg { stroke-dasharray: 3 3; }
+.abub .nm { position: absolute; top: 108%; left: 50%; translate: -50% 4px; opacity: 0; font-size: .64rem; white-space: nowrap; color: #fff; pointer-events: none; transition: opacity .2s, translate .3s; text-shadow: 0 1px 6px #000a; }
+.abub:hover .nm, .abub:focus-visible .nm, .abub[aria-pressed=true] .nm { opacity: 1; translate: -50% 0; }
+@media (prefers-reduced-motion: reduce) { .abub { animation: none; } .planet-stage .sheet-body > * { animation: none; } }
