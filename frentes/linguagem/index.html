@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ecoeco · guia de linguagem</title>
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="leque.css"><link rel="stylesheet" href="vidro.css"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="guia.css">
+</head>
+<body>
+<div class="g-wrap">
+  <header class="g-head">
+    <p class="eyebrow">ecoeco · frente linguagem · rodada 21</p>
+    <h1>Vidro, luz<br>e pincel.</h1>
+    <p>Mini guia de estilo vivo. Cada bolha abaixo é o componente real do jogo (<code>liquid.js</code> + <code>vidro.css</code>): passe o dedo, a luz quente segue.</p>
+    <nav class="g-nav" aria-label="Seções"><a href="#paleta">Paleta</a><a href="#estados">Estados</a><a href="#formas">Formas</a><a href="#icones">Ícones</a><a href="#movimento">Movimento</a></nav>
+  </header>
+
+  <section class="g-sec" id="paleta">
+    <p class="eyebrow">1 · Paleta</p><h2>Luz quente sobre noite.</h2>
+    <p>Três luzes seguem o dedo e atravessam o vidro. Cada ação tem um par de cor (claro + tinta) para ser reconhecida pela cor e pela forma.</p>
+    <div class="stage leque-stage liquid guia-stage" data-demo="paleta" style="--ar:16/5;--arm:1/.5"><div class="leque-scene"><i class="lumen"></i><i class="lumen two"></i><div class="bg-halos"><i></i><i></i><i></i><i></i></div><div class="fan"></div></div></div>
+    <div class="tokens" id="tokens"></div>
+  </section>
+
+  <section class="g-sec" id="estados">
+    <p class="eyebrow">2 · Estados</p><h2>Cinco jeitos de estar.</h2>
+    <p>O mesmo ícone, cinco leituras. Cor e luz dizem o estado; nada de selo ou contorno técnico.</p>
+    <div class="stage leque-stage liquid guia-stage" data-demo="estados" style="--ar:16/6;--arm:1/.5"><div class="leque-scene"><i class="lumen"></i><i class="lumen two"></i><div class="fan"></div></div></div>
+    <table class="g-table"><tr><th>Estado</th><th>Como se vê</th><th>Quando</th></tr>
+      <tr><td>Normal</td><td>vidro claro, ícone na cor da ação</td><td>disponível</td></tr>
+      <tr><td>Foco</td><td>tinta enche a bolha, forma acelera, ícone branco</td><td>dedo em cima / teclado</td></tr>
+      <tr><td>Selecionado</td><td>tinta cheia, ícone branco, brilho forte</td><td>ação escolhida</td></tr>
+      <tr><td>Vazado</td><td>vidro vazio, tracejado fino, <b>−n</b> do que falta</td><td>falta material</td></tr>
+      <tr><td>Bloqueado</td><td>vidro fosco cinza, sem luz, sem movimento, cadeado</td><td>ainda não descoberto</td></tr></table>
+  </section>
+
+  <section class="g-sec" id="formas">
+    <p class="eyebrow">3 · Formas de bolha</p><h2>Orgânica, nunca círculo.</h2>
+    <p>Cada bolha passeia entre três contornos próprios, sem linhas retas. O tamanho muda só o papel: pequena (apoio), média (ação), grande (escolha).</p>
+    <div class="stage leque-stage liquid guia-stage" data-demo="formas" style="--ar:16/6;--arm:1/.55"><div class="leque-scene"><i class="lumen"></i><i class="lumen two"></i><div class="fan"></div></div></div>
+  </section>
+
+  <section class="g-sec" id="icones">
+    <p class="eyebrow">4 · Ícones de pincel</p><h2>Traço único, ponto cheio.</h2>
+    <p>Grade 32, traço de 2,8 com pontas redondas, um ponto cheio recorrente (sol, semente, cabeça) e o filtro <code>#pincel</code> que dá a borda de tinta. Fonte: <code>icons.js</code>.</p>
+    <div class="stage leque-stage liquid guia-stage" data-demo="icones" style="--ar:100/82;--arm:1/1"><div class="leque-scene"><i class="lumen"></i><i class="lumen two"></i><div class="fan"></div></div></div>
+  </section>
+
+  <section class="g-sec" id="movimento">
+    <p class="eyebrow">5 · Movimento</p><h2>Mola, inércia, luz.</h2>
+    <p>Nada de curvas de CSS: tudo é mola física. Abra o anel, passe o dedo e escolha uma bolha: ela cresce, as outras são absorvidas e uma gota cai.</p>
+    <div class="g-btns"><button data-mov="toggle">Abrir / fechar</button><button data-mov="again">Soltar de novo</button></div>
+    <div class="stage leque-stage liquid guia-stage" data-demo="movimento" style="--ar:16/8;--arm:1/.8;--oy:84%"><div class="leque-scene"><i class="lumen"></i><i class="lumen two"></i><div class="bg-halos"><i></i><i></i><i></i><i></i></div><div class="fan"></div></div></div>
+    <table class="g-table"><tr><th>Gesto</th><th>Resposta</th><th>Valor</th></tr>
+      <tr><td>Abrir</td><td>bolhas saem em cascata, mola macia</td><td>k 190 · c 17 · 55 ms entre bolhas</td></tr>
+      <tr><td>Dedo perto</td><td>bolha cresce e se inclina até a luz</td><td>escala 1,17</td></tr>
+      <tr><td>Toque</td><td>afunda como gota</td><td>escala 0,9</td></tr>
+      <tr><td>Escolher</td><td>cresce, as outras somem, gota cai</td><td>escala 1,3</td></tr>
+      <tr><td>Voo</td><td>estica na direção do movimento; ícone atrasa pela inércia</td><td>até 22%</td></tr>
+      <tr><td>Parado</td><td>flutua em duas senoides fora de fase</td><td>0,45% da largura</td></tr>
+      <tr><td>Sem movimento</td><td><code>prefers-reduced-motion</code>: mola rígida, sem morfar</td><td>k 900</td></tr></table>
+  </section>
+  <footer class="g-foot">Tokens em <code>tokens.css</code>. Eco continua sendo ícone que vibra, nunca seta.</footer>
+</div>
+<script src="icons.js"></script><script src="liquid.js"></script><script src="guia.js"></script>
+</body></html>
