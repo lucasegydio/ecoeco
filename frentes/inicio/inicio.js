@@ -44,6 +44,6 @@ sec('ajustes').addEventListener('click',e=>{if(e.target===sec('ajustes'))show('t
 $('#vibra').onclick=e=>{const b=e.currentTarget;b.classList.toggle('on');b.setAttribute('aria-pressed',b.classList.contains('on'));navigator.vibrate&&navigator.vibrate(30)};
 $('#pistas').onclick=e=>{const b=e.target.closest('button');if(!b)return;$$('#pistas button').forEach(x=>x.setAttribute('aria-checked',x===b))};
 tela.addEventListener('pointermove',e=>{const r=tela.getBoundingClientRect(),k=r.width/375;$$('.luz').forEach(l=>{l.style.setProperty('--lx',(e.clientX-r.left)/k+'px');l.style.setProperty('--ly',(e.clientY-r.top)/k+'px')})});
-function fit(){const m=innerWidth<=520,w=innerWidth-(m?0:32),h=innerHeight-(m?50:96),k=Math.min(1,w/375,h/812);document.documentElement.style.setProperty('--k',k.toFixed(3))}
-addEventListener('resize',fit);fit();setModo(modo);show(new URLSearchParams(location.search).get('t')||'splash');
+function fit(){const m=innerWidth<=520,b=document.querySelector('.barra').offsetHeight,w=innerWidth-(m?0:32),h=innerHeight-b-(m?8:36),k=Math.max(.3,Math.min(1,w/375,h/812));document.documentElement.style.setProperty('--k',k.toFixed(3))}
+addEventListener('resize',fit);new ResizeObserver(fit).observe(document.body);fit();setModo(modo);show(new URLSearchParams(location.search).get('t')||'splash');
 })();
