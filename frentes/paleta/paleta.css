@@ -1,0 +1,46 @@
+:root{color-scheme:dark}
+body{background:var(--eco-fundo);color:var(--eco-texto);font-family:Nunito,"Helvetica Neue",Arial,sans-serif;margin:0;padding:0 0 80px}
+.wrap{width:min(1100px,calc(100% - 32px));margin:0 auto}
+header.wrap{padding:36px 0 8px}h1{font-family:Menda,Nunito,sans-serif;font-weight:500;font-size:clamp(2rem,6vw,3.4rem);margin:0 0 6px;letter-spacing:-.03em}
+h2{font-size:1.25rem;font-weight:800;margin:44px 0 10px}p,li{line-height:1.5;color:var(--eco-texto-2)}small,.mudo{color:var(--eco-texto-3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sw{border-radius:16px;padding:12px;min-height:88px;display:flex;flex-direction:column;justify-content:flex-end;font-size:.78rem;font-weight:700;box-shadow:inset 0 0 0 1px #ffffff22}
+.sw b{font-size:.85rem}.sw code{font-size:.72rem;opacity:.85}
+table{border-collapse:collapse;width:100%;font-size:.8rem;font-variant-numeric:tabular-nums}th,td{padding:6px 8px;text-align:left;border-bottom:1px solid #ffffff1f}th{color:var(--eco-texto-3);font-weight:700}
+.r{font-weight:800}.AAA{color:#b6f09a}.AA{color:#e5f195}.AAg{color:#ffd37a}.F{color:#ff8a80}
+.scroll{overflow-x:auto}
+.demo{position:relative;border-radius:28px;overflow:hidden;background:var(--eco-noite);width:min(375px,100%);aspect-ratio:9/13;margin:10px 0;container-type:inline-size;box-shadow:0 20px 50px -20px #000}
+.demo .pl{position:absolute;left:50%;top:50%;width:92%;translate:-50% -45%;aspect-ratio:1;border-radius:50%;background:center/cover url(assets/planeta-1A.webp)}
+.demo .term{position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 30%,#05060d00 40%,#05060dcc 75%);transition:opacity .5s;opacity:0}
+[data-lado=noite] .demo .term{opacity:1}
+.demo .luz{position:absolute;left:var(--lx,60%);top:var(--ly,40%);width:62%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;pointer-events:none;opacity:var(--eco-luz-forca);background:radial-gradient(circle,color-mix(in srgb,var(--eco-ambar) 60%,transparent),color-mix(in srgb,var(--eco-coral) 28%,transparent) 40%,transparent 68%)}
+.demo .luz.l2{width:40%;background:radial-gradient(circle,color-mix(in srgb,var(--eco-lilas) 55%,transparent),transparent 66%);margin:-10% 0 0 14%}
+.hudtop{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:6px;justify-content:space-between}
+.hudtop .dot{width:9px;height:9px;border-radius:50%;background:var(--eco-acento);box-shadow:0 0 8px var(--eco-acento)}
+.fanrow{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:8px;padding:0 8px}
+.fanrow .fan-slot{position:relative;width:15%;aspect-ratio:1}
+.fanrow .tip{display:none}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.btns button{font:inherit;font-weight:700;border:0;border-radius:99px;padding:.6rem 1rem;color:var(--eco-texto);background:#ffffff1f;cursor:pointer}.btns button[aria-pressed=true]{background:var(--eco-texto);color:var(--eco-tinta)}
+.sim{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.sim figure{margin:0}.sim .st{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chipc{display:inline-flex;gap:6px;align-items:center;border-radius:12px;padding:5px 9px;font-weight:800;font-size:.8rem;color:var(--eco-tinta)}
+.bio{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}.bio .card{border-radius:20px;padding:12px;background:var(--eco-noite-2);display:grid;gap:8px;justify-items:start}
+.mini{width:70px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--eco-acento) 80%,#fff),var(--eco-acento) 30%,var(--eco-acento-2) 72%,#10111a);position:relative}
+.mini:after{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(#0003 1.2px,transparent 1.6px) 0 0/8px 8px}
+.mini.noite{filter:brightness(.55) saturate(.9)}
+.nota{border-left:3px solid var(--eco-ambar);padding:6px 12px;background:#ffffff0d;border-radius:0 10px 10px 0}
+/* slots do protótipo são absolutos/escondidos no leque: aqui ficam estáticos */
+.demo .fan-slot,.leque-stage.liquid .demo .fan-slot,#estados .fan-slot{position:relative!important;left:auto!important;top:auto!important;translate:none!important;transform:none!important;opacity:1!important;pointer-events:auto!important;width:15%;aspect-ratio:1;margin:0}
+#estados .fan-slot{width:64px!important}
+.demo .fan-item,.leque-stage.liquid .demo .fan-item,#estados .fan-item{opacity:1!important;transform:none!important;pointer-events:auto!important;position:relative}
+.demo .fan-slot .drop,#estados .fan-slot .drop{opacity:1!important}
+#estados.leque-stage{background:none!important;height:auto!important;min-height:0;aspect-ratio:auto!important;border:0;box-shadow:none;overflow:visible;padding:0}
+#estados.leque-stage:before,#estados.leque-stage:after{display:none}
+.demo.leque-stage .fanrow{z-index:5}
+.demo,#estados{--b1:54% 46% 52% 48% / 50% 54% 46% 50%;--b2:46% 54% 48% 52% / 54% 48% 52% 46%;--b3:52% 48% 54% 46% / 46% 52% 48% 54%;--hl:.6;--hx:35%;--hy:30%}
+.demo .fanrow{bottom:24%}
+#estados.leque-stage{background:center/cover url(assets/planeta-1A.webp)!important;border-radius:20px;padding:14px!important;max-width:460px}
+.demo .fan-slot{height:var(--sz,56px)!important;width:var(--sz,56px)!important}
+#estados .fan-slot{height:64px!important;width:64px!important}
+.demo .fan-slot .fan-item,#estados .fan-slot .fan-item{height:100%!important;width:100%!important}
+.demo .fan-item,#estados .fan-item{scale:1!important}

@@ -1,0 +1,432 @@
+/* Rodada 03 · ring em leque. Usa os tokens de style.css. */
+.leque { border-top: 1px solid var(--line); }
+.leque .study { padding-bottom: 28px; }
+.leque .switch + .switch { margin-top: 10px; }
+.leque .switch { flex-wrap: wrap; border-radius: 24px; }
+.scenes button { min-width: 0; }
+
+.leque-stage {
+  height: auto; min-height: 0;
+  padding: 58px 12px 50px;
+  --spring: cubic-bezier(.34, 1.5, .55, 1);
+  --paperTile: #ece6d6;
+  cursor: default;
+}
+.leque-scene {
+  position: relative; width: 100%; max-width: 680px;
+  aspect-ratio: 16 / 9; container-type: inline-size;
+  --r: 21; --tile: 12cqi;
+}
+.leque-scene .ground {
+  position: absolute; left: 6%; right: 6%; top: 80%; height: 1px;
+  background: linear-gradient(90deg, transparent, #c7bff055 18%, #c7bff055 82%, transparent);
+  pointer-events: none;
+}
+
+/* ---------- Inventário (topo, como no jogo) ---------- */
+.inventory { display: flex; gap: 6px; }
+.inventory span {
+  display: inline-flex; align-items: center; gap: .35em;
+  border: 1px solid #c7bff04d; border-radius: 100px; padding: .22rem .6rem .22rem .5rem;
+  font-size: .74rem; color: #dfdbea;
+}
+.inventory i { width: 9px; height: 9px; display: inline-block; background: #dfdbea; }
+.inventory [data-res=fibra] i { border-radius: 70% 0 70% 0; }
+.inventory [data-res=pedra] i { border-radius: 42% 58% 50% 50%/55% 45% 55% 45%; }
+.inventory [data-res=semente] i { border-radius: 50% 50% 50% 50%/62% 62% 38% 38%; width: 7px; }
+.inventory b { font-variant-numeric: tabular-nums; color: #fff; }
+.inventory .bump { animation: bump .5s var(--spring); border-color: var(--lime); }
+@keyframes bump { 0% { transform: scale(1) } 40% { transform: scale(1.16) } 100% { transform: scale(1) } }
+
+/* ---------- Bichinho (marcador abstrato) ---------- */
+.critter {
+  position: absolute; left: 36%; top: 74%; translate: -50% -50%;
+  width: 11cqi; aspect-ratio: 1; min-width: 54px;
+  border: 0; background: transparent; padding: 0; z-index: 3;
+  display: grid; place-items: center; touch-action: manipulation;
+}
+.critter .body {
+  width: 74%; height: 62%; margin-top: 18%;
+  border-radius: 54% 46% 44% 56% / 60% 58% 42% 40%;
+  background: linear-gradient(160deg, #a49cc4, #6f6890);
+  box-shadow: inset 0 2px 3px #fff5, 0 8px 14px #0b0a1855;
+  position: relative; transition: transform .3s var(--spring);
+}
+.critter .body:before { /* broto */
+  content: ""; position: absolute; left: 46%; top: -26%; width: 18%; height: 34%;
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; background: var(--lime); rotate: 18deg;
+}
+.critter .aura {
+  position: absolute; inset: -16%; pointer-events: none;
+}
+.critter .aura {
+  border-radius: 50%; opacity: 0; scale: .8;
+  background: radial-gradient(circle, #e5f19533 0%, #e5f19511 52%, transparent 70%);
+  border: 1px dashed #e5f19566;
+  transition: opacity .35s, scale .5s var(--spring);
+}
+.leque-stage[data-observing=true] .critter .aura { opacity: 1; scale: 1; }
+.critter.hop .body { animation: hop .7s var(--spring); }
+@keyframes hop { 0%, 100% { transform: none } 35% { transform: translateY(-14%) scale(.96, 1.06) } 60% { transform: scale(1.06, .94) } }
+.critter-name { position: absolute; top: 104%; font-size: .7rem; color: #cac4d9; white-space: nowrap; }
+.critter:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; border-radius: 50%; }
+
+.task-chip {
+  position: absolute; left: 36%; top: calc(74% - 8cqi); translate: -50% -100%;
+  background: #f3f2ed; color: var(--ink); border-radius: 100px;
+  padding: .28rem .7rem; font-size: .74rem; font-weight: 650; white-space: nowrap;
+  opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 4;
+  font-variant-numeric: tabular-nums;
+}
+.leque-stage[data-busy=true] .task-chip { opacity: 1; }
+
+/* ---------- Leque ---------- */
+.fan { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+.fan-slot {
+  position: absolute; width: var(--tile); min-width: 58px; aspect-ratio: 1;
+  left: 36%; top: 74%; translate: -50% -50%;
+  transform: translate(0, 0) scale(.3); opacity: 0;
+  transition: transform .22s ease-in, opacity .16s;
+  pointer-events: none;
+}
+.leque-stage[data-fan=open] .fan-slot {
+  transform: translate(calc(var(--dx) * 1cqi), calc(var(--dy) * 1cqi)) scale(1);
+  opacity: 1; pointer-events: auto;
+  transition: transform .52s var(--spring), opacity .2s;
+  transition-delay: var(--delay);
+}
+.fan-item {
+  position: relative; isolation: isolate; width: 100%; height: 100%;
+  border: 0; background: transparent; padding: 2px; color: var(--ink);
+  display: grid; place-content: center; justify-items: center; gap: 2px;
+  touch-action: manipulation; line-height: 1.05;
+}
+.fan-item:before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: var(--paperTile);
+  border-radius: 54% 46% 52% 48% / 50% 54% 46% 50%;
+  box-shadow: inset 0 1px 2px #fff9, 0 8px 18px #0d0c1a66;
+  transition: background .2s, transform .3s var(--spring);
+}
+.fan-item:hover:before { transform: scale(1.05); }
+.fan-item:focus-visible { outline: 2px solid var(--lime); outline-offset: 5px; border-radius: 40%; }
+.fan-item svg { width: clamp(22px, 5.2cqi, 34px); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.fan-item .tip {
+  position: absolute; bottom: calc(100% + 8px); left: 50%; translate: -50% 4px;
+  font-size: .74rem; font-weight: 650; white-space: nowrap; color: var(--ink);
+  background: #f3f2ed; border-radius: 100px; padding: .2rem .6rem;
+  opacity: 0; pointer-events: none; transition: opacity .18s, translate .25s var(--spring);
+}
+.fan-item:hover .tip, .fan-item:focus-visible .tip { opacity: 1; translate: -50% 0; }
+.fan-item em {
+  position: absolute; top: 100%; margin-top: 6px; left: 50%; translate: -50% 0;
+  font-style: normal; font-size: clamp(.6rem, 1.9cqi, .74rem); white-space: nowrap;
+  color: #f4f2fa; background: #2b2a3f; border: 1px solid #c7bff066;
+  border-radius: 100px; padding: .12rem .5rem;
+}
+.fan-item em.short {
+  display: block; top: -4px; left: auto; right: -4px; translate: none; margin: 0;
+  min-width: 22px; text-align: center; padding: .1rem .35rem; font-weight: 700;
+}
+/* Falta material: superfície vazada + traço tracejado + texto. Não depende só de cor. */
+.fan-item[data-state=falta] { color: #d9d3ea; }
+.fan-item[data-state=falta]:before {
+  background: #ffffff0d; border: 1.5px dashed #d9d3ea99; box-shadow: none;
+}
+.fan-item[data-state=aceito]:before { background: var(--lime); transform: scale(1.1); box-shadow: 0 0 22px #e5f19566; }
+.fan-item.shake { animation: shake .42s ease; }
+@keyframes shake { 20% { translate: -4px 0 } 45% { translate: 4px 0 } 70% { translate: -2px 0 } }
+.fan-item .echo {
+  position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--lime);
+  animation: fanEcho .6s var(--ease) forwards; pointer-events: none;
+}
+
+/* Órbita: discos regulares, tinta escura. Mesmas posições e estados. */
+.leque-stage[data-form=orbita] .fan-item:not([data-state=aceito]):not([data-state=falta]) { color: #f1edfb; }
+.leque-stage[data-form=orbita] .fan-item:before { border-radius: 50%; }
+.leque-stage[data-form=orbita] .fan-item[data-state=ok]:before { background: #3a394f; border: 1px solid #aaa1ca; box-shadow: 0 6px 14px #0d0c1a55; }
+
+/* ---------- Alvo (formas abstratas) ---------- */
+.target {
+  position: absolute; left: 74%; top: 72%; translate: -50% -50%;
+  width: 20cqi; aspect-ratio: 4 / 3; border: 0; background: transparent; padding: 0;
+  color: #d9d3ea; z-index: 2; touch-action: manipulation;
+}
+.target svg { width: 100%; height: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.target svg g { display: none; }
+.target[data-state=flor] g[data-s=flor], .target[data-state=fruto] g[data-s=fruto],
+.target[data-state=rocha] g[data-s=rocha], .target[data-state=pedras] g[data-s=pedras],
+.target[data-state=vao] g[data-s=vao], .target[data-state=passarela] g[data-s=passarela],
+.target[data-state=seco] g[data-s=seco], .target[data-state=plantado] g[data-s=plantado],
+.target[data-state=irrigado] g[data-s=irrigado], .target[data-state=muda] g[data-s=muda] { display: inline; }
+.target .fill { fill: currentColor; stroke: none; }
+.target .lime { stroke: var(--lime); }
+.target .lime.fill { fill: var(--lime); }
+.target .water { stroke: #9fd6e8; }
+.target-label { position: absolute; top: 100%; left: 50%; translate: -50% 4px; font-size: .7rem; color: #cac4d9; white-space: nowrap; }
+.target.collectible svg { animation: breathe 1.3s ease-in-out infinite; }
+.target.collectible .target-label { color: var(--lime); }
+.target.collectible .target-label:before { content: "◌ "; }
+@keyframes breathe { 50% { transform: scale(1.07); filter: drop-shadow(0 0 8px #e5f19588); } }
+.target svg { transform-origin: 50% 70%; }
+.target.changed svg { animation: settle .6s var(--spring); }
+@keyframes settle { 0% { transform: scale(.82); opacity: .3 } 100% { transform: none; opacity: 1 } }
+.target:focus-visible { outline: 2px solid var(--lime); outline-offset: 6px; border-radius: 12px; }
+
+/* ---------- Receita no ponto de uso ---------- */
+.recipe {
+  position: absolute; left: 74%; top: calc(72% - 9cqi); translate: -50% -100%;
+  background: #f3f2ed; color: var(--ink); border-radius: 14px 14px 14px 4px;
+  padding: .45rem .7rem; font-size: .74rem; display: grid; gap: 2px; z-index: 4;
+  box-shadow: 0 8px 18px #0d0c1a66; white-space: nowrap;
+}
+.recipe[hidden] { display: none; }
+.recipe strong { font-size: .78rem; }
+.recipe span { display: flex; gap: .45em; align-items: center; font-variant-numeric: tabular-nums; }
+.recipe i { font-style: normal; width: 1em; text-align: center; }
+.recipe .ok i { color: #55702a; }
+.recipe .short { font-weight: 650; }
+.recipe.flash { animation: bump .5s var(--spring); }
+
+.float-gain {
+  position: absolute; left: 74%; top: 58%; translate: -50% 0; z-index: 6;
+  color: var(--lime); font-weight: 700; font-size: clamp(.8rem, 2.6cqi, 1rem); white-space: nowrap;
+  animation: rise 1.4s var(--ease) forwards; pointer-events: none;
+}
+@keyframes rise { 0% { opacity: 0; transform: translateY(8px) } 20% { opacity: 1 } 100% { opacity: 0; transform: translateY(-48px) } }
+
+/* ---------- Legenda de estados ---------- */
+.states { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.states figure { margin: 0; display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; }
+.states .spec { width: 52px; aspect-ratio: 1; border-radius: 54% 46% 52% 48% / 50% 54% 46% 50%; background: #ece6d6; border: 1px solid #cfc8b4; display: grid; place-items: center; position: relative; }
+.states .spec svg { width: 22px; fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.states .spec.falta { background: transparent; border: 1.5px dashed #8d8a7c; }
+.states .spec.falta svg { stroke: #6d6a5e; }
+.states .spec.aceito { background: var(--lime); border-color: #a5ae63; outline: 1px solid #a5ae63; outline-offset: 4px; }
+.states .spec.andamento { background: transparent; border: 0; }
+.states .spec.andamento:before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: conic-gradient(#65762d 0 40%, #d4d3ca 40% 100%); mask: radial-gradient(circle, transparent 60%, #000 61%); }
+.states .spec.andamento i { width: 46%; height: 38%; border-radius: 54% 46% 44% 56% / 60% 58% 42% 40%; background: #8d86a8; margin-top: 10%; }
+.states figcaption { font-size: .84rem; color: var(--muted); line-height: 1.35; }
+.states figcaption strong { display: block; color: var(--ink); font-size: .92rem; }
+
+.hypotheses { grid-column: 1 / -1; padding: 18px 0 4px; display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; font-size: .88rem; color: var(--muted); }
+.hypotheses ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+
+@media (max-width: 760px) {
+  .leque-stage { padding: 52px 4px 44px; }
+  .leque-scene { aspect-ratio: 1 / 1; --r: 31; --tile: 18cqi; --cx: 30%; --cy: 76%; }
+  .leque-scene .ground { top: 82%; }
+  .critter, .task-chip, .fan-slot { left: 30%; }
+  .critter { top: 76%; } .fan-slot { top: 76%; } .task-chip { top: calc(76% - 18cqi); }
+  .critter { width: 17cqi; }
+  .target { left: 76%; top: 74%; width: 34cqi; }
+  .recipe { left: 76%; top: calc(74% - 20cqi); }
+  .float-gain { left: 76%; }
+  .inventory span { font-size: .68rem; padding: .18rem .45rem; }
+  .states { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fan-item em.long { display: none; }
+  .fan-item em.short { display: block; }
+  .leque-stage .stage-top > span { display: none; }
+  .hypotheses { grid-template-columns: 1fr; }
+}
+@keyframes fanEcho { 0% { opacity: .8; transform: scale(.9) } 100% { opacity: 0; transform: scale(1.7) } }
+
+@media (max-width: 460px) { .states { grid-template-columns: 1fr; } }
+
+
+/* ---------- Gotas · rodada 03c ----------
+   Lucas: "bem uma gota", separadas, unidas como uma árvore com copas diferentes; manter
+   também o anel em volta do bicho. Duas formas (Árvore, Anel) × duas matérias (Cor, Vidro).
+   Estrutura de cada casa: .fan-slot (posição) > .grow (nasce/recolhe pela ponta)
+   > .sway (balanço pela ponta) > button > .drop (girada) + .ico (em pé, segue o balanço). */
+.leque-scene { --cx: 36%; --cy: 74%; --S: 10; --lift: 7; --pr: 9; --R: 17; }
+.leque-stage .fan-slot, .leque-stage[data-fan=open] .fan-slot {
+  position: absolute; left: var(--cx); top: var(--cy);
+  width: calc(var(--S) * 1cqi); min-width: 50px; aspect-ratio: 1; translate: -50% -50%;
+  transform: translate(calc(var(--dx) * 1cqi), calc(var(--dy) * 1cqi)); opacity: 1;
+  transition: none; animation: none; pointer-events: none;
+}
+.leque-stage[data-fan=open] .fan-slot { pointer-events: auto; }
+.grow, .sway { position: absolute; inset: 0; transform-origin: var(--tox) var(--toy); }
+.grow { transform: scale(0); transition: transform .26s cubic-bezier(.6, 0, .85, .4) var(--back); }
+.leque-stage[data-fan=open] .grow { transform: scale(1); transition: none; animation: dropForm .72s cubic-bezier(.3, .8, .3, 1) var(--delay) both; }
+@keyframes dropForm {
+  0% { transform: scale(0) }
+  45% { transform: scale(.78, 1.18) }    /* estica como gota se formando */
+  70% { transform: scale(1.08, .94) }
+  100% { transform: scale(1) }
+}
+.leque-stage[data-fan=open] .sway { animation: sway 4.8s ease-in-out calc(1.2s + var(--phase)) infinite alternate; }
+@keyframes sway { 0% { rotate: -3.5deg } 100% { rotate: 3.5deg } }
+
+.leque-stage .fan-item { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; color: #1d1b26; }
+.leque-stage .fan-item:before { display: none; }
+.drop {
+  position: absolute; inset: 0; border-radius: 0 50% 50% 50%; rotate: var(--rot);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 55%, color-mix(in srgb, var(--c2) 55%, transparent) 100%),
+    radial-gradient(circle at 62% 62%, var(--c1) 0%, color-mix(in srgb, var(--c1) 50%, var(--c2)) 55%, var(--c2) 100%);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--c2) 45%, transparent), inset 0 0 0 1px #ffffff2e;
+  transition: background .3s, scale .35s var(--spring), box-shadow .3s;
+}
+.shine { /* reflexo: mancha clara oposta à ponta, como numa gota real */
+  position: absolute; width: 28%; height: 17%; left: 54%; top: 60%; rotate: -45deg;
+  border-radius: 50%; background: radial-gradient(#fffd, #fff0 72%); filter: blur(.5px); opacity: .85;
+}
+.ico { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.ico svg { width: 44%; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
+/* o ícone entra depois da gota e segue o balanço com atraso (inércia) */
+.ico { opacity: 0; scale: .4; transition: opacity .1s, scale .1s; }
+.leque-stage[data-fan=open] .ico {
+  opacity: 1; scale: 1;
+  transition: opacity .25s calc(var(--delay) + .32s), scale .55s var(--spring) calc(var(--delay) + .32s);
+  animation: icoLag 4.8s ease-in-out calc(1.45s + var(--phase)) infinite alternate;
+}
+@keyframes icoLag { 0% { translate: calc(var(--uy) * -1.5px) calc(var(--ux) * 1.5px) } 100% { translate: calc(var(--uy) * 1.5px) calc(var(--ux) * -1.5px) } }
+
+/* hover/foco: gota aprofunda para a cor escura e o ícone fica branco */
+/* hover / dedo em cima: a gota cresce com mola e passa a ondular, orgânica, sem perder a ponta */
+.leque-stage .fan-item:is(:hover, .press, :focus-visible):not([data-state=falta]) .drop {
+  background: radial-gradient(circle at 62% 62%, color-mix(in srgb, var(--c1) 40%, var(--c2)), var(--c2) 70%);
+  animation: swell .5s cubic-bezier(.3, 1.6, .5, 1) both, ooze 2.4s ease-in-out .3s infinite;
+}
+.leque-stage .fan-item:is(:hover, .press, :focus-visible) .ico { color: #fff; scale: 1.14; transition: scale .45s var(--spring), color .2s; }
+@keyframes swell { 0% { scale: 1 } 55% { scale: 1.24 1.16 } 100% { scale: 1.18 } }
+@keyframes ooze {
+  0%, 100% { border-radius: 0 50% 50% 50% / 0 50% 50% 50%; }
+  25% { border-radius: 0 57% 46% 53% / 0 47% 56% 50%; }
+  50% { border-radius: 0 48% 55% 47% / 0 55% 46% 54%; }
+  75% { border-radius: 0 53% 49% 56% / 0 50% 53% 46%; }
+}
+.leque-stage .fan-item.press .drop { filter: brightness(1.08); }
+.leque-stage .fan-item:focus-visible { outline: none; }
+.leque-stage .fan-item:focus-visible .drop { box-shadow: 0 0 0 2px #fff, 0 0 22px var(--c2); }
+.leque-stage .fan-item .tip { bottom: calc(100% + 10px); }
+
+/* falta material: só o contorno tracejado, ícone apagado */
+.leque-stage .fan-item[data-state=falta] { color: #e9e4f7; }
+.leque-stage .fan-item[data-state=falta] .drop { background: #ffffff0d; box-shadow: none; outline: 1.5px dashed #e9e4f7a0; outline-offset: -2px; }
+.leque-stage .fan-item[data-state=falta] .shine { display: none; }
+.leque-stage .fan-item[data-state=falta] .ico { opacity: .75; }
+.leque-stage .fan-item[data-state=falta]:hover .drop { background: #ffffff1c; }
+.leque-stage .fan-item .short { z-index: 2; }
+
+/* aceito: incha, solta e cai no bicho; as outras recolhem pela ponta */
+.leque-stage .fan-item[data-state=aceito] .drop { scale: 1.14; background: radial-gradient(circle at 62% 62%, color-mix(in srgb, var(--c1) 40%, var(--c2)), var(--c2) 70%); }
+.leque-stage .fan-item[data-state=aceito] .ico { color: #fff; }
+.fan-slot.absorb .grow { transform: scale(0) !important; animation: none !important; transition: transform .28s cubic-bezier(.6, 0, .85, .4); }
+.leque-stage .fan-slot.drip { animation: drip .62s cubic-bezier(.55, 0, .9, .5) .14s both; }
+.leque-stage .fan-slot.drip .sway { animation: none; rotate: 0deg; }
+@keyframes drip {
+  0% { transform: translate(calc(var(--dx) * 1cqi), calc(var(--dy) * 1cqi)) scale(1); opacity: 1 }
+  85% { opacity: 1 }
+  100% { transform: translate(0, -2cqi) scale(.35); opacity: 0 }
+}
+
+/* Anel: as gotas saem do bicho voando até o círculo */
+.leque-stage[data-layout=anel][data-fan=open] .fan-slot:not(.drip) { animation: flyOut .7s cubic-bezier(.25, .9, .3, 1.15) var(--delay) both; }
+@keyframes flyOut { from { transform: translate(0, 0) } to { transform: translate(calc(var(--dx) * 1cqi), calc(var(--dy) * 1cqi)) } }
+.leque-stage[data-layout=anel] .fan-slot { transition: transform .3s cubic-bezier(.6, 0, .85, .4) var(--back); }
+.leque-stage[data-layout=anel][data-fan=closed] .fan-slot:not(.drip) { transform: translate(0, 0); }
+.leque-stage[data-layout=anel][data-fan=open] .grow { animation-name: dropFormRing; }
+@keyframes dropFormRing { 0% { transform: scale(.25) } 60% { transform: scale(1.1, .92) } 100% { transform: scale(1) } }
+
+/* ---------- Vidro líquido ---------- */
+.leque-stage[data-mat=vidro] .fan-item { color: color-mix(in srgb, var(--c1) 70%, white); }
+.leque-stage[data-mat=vidro] .drop {
+  background:
+    linear-gradient(135deg, #ffffff40, #ffffff08 55%, color-mix(in srgb, var(--c2) 22%, transparent)),
+    radial-gradient(circle at 62% 62%, color-mix(in srgb, var(--c1) 18%, transparent), transparent 70%);
+  -webkit-backdrop-filter: blur(9px) saturate(1.8) brightness(1.15);
+  backdrop-filter: blur(9px) saturate(1.8) brightness(1.15);
+  box-shadow:
+    inset 1.5px 1.5px 1px #ffffffb0, inset -2px -3px 6px color-mix(in srgb, var(--c2) 35%, transparent),
+    inset 0 0 0 1px #ffffff40, 0 10px 24px #0b0a1a55;
+}
+.leque-stage[data-mat=vidro] .shine { opacity: 1; background: radial-gradient(#ffff, #fff0 70%); }
+.leque-stage[data-mat=vidro] .ico svg { filter: drop-shadow(0 1px 3px color-mix(in srgb, var(--c2) 60%, transparent)); }
+.leque-stage[data-mat=vidro] .fan-item:hover .drop, .leque-stage[data-mat=vidro] .fan-item:focus-visible .drop,
+.leque-stage[data-mat=vidro] .fan-item[data-state=aceito] .drop {
+  background: linear-gradient(135deg, #ffffff55, color-mix(in srgb, var(--c2) 55%, transparent));
+}
+.leque-stage[data-mat=vidro] .fan-item:hover .ico, .leque-stage[data-mat=vidro] .fan-item[data-state=aceito] .ico { color: #fff; }
+.leque-stage[data-mat=vidro] .fan-item[data-state=falta] .drop { background: #ffffff08; box-shadow: none; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+
+/* bicho se encolhe ao soltar e ao receber a gota */
+.critter.gulp .body { animation: gulp .5s var(--spring); }
+@keyframes gulp { 0% { transform: none } 25% { transform: scale(1.1, .84) translateY(6%) } 55% { transform: scale(.94, 1.08) translateY(-4%) } 100% { transform: none } }
+
+.halo {
+  position: absolute; width: calc(var(--S) * 1cqi); aspect-ratio: 1; translate: -50% -50%; border-radius: 50%;
+  border: 1.5px solid var(--hc); box-shadow: 0 0 16px var(--hc);
+  pointer-events: none; z-index: 6; animation: haloOut .9s cubic-bezier(.2, .7, .3, 1) both;
+}
+@keyframes haloOut { from { opacity: .9; transform: scale(.6) } to { opacity: 0; transform: scale(2.4) } }
+
+/* atmosfera: halos desfocados de fundo, quase parados (ref. mapa de cheiros) */
+.bg-halos { position: absolute; inset: -8%; pointer-events: none; z-index: 0; }
+.bg-halos i { position: absolute; border-radius: 50%; filter: blur(26px); opacity: .22; animation: drift 18s ease-in-out infinite alternate; }
+.bg-halos i:nth-child(1) { left: 8%; top: 14%; width: 22cqi; aspect-ratio: 1; background: #ff9ccf; }
+.bg-halos i:nth-child(2) { left: 58%; top: 6%; width: 16cqi; aspect-ratio: 1; background: #b3d3ff; animation-delay: -6s; }
+.bg-halos i:nth-child(3) { left: 70%; top: 48%; width: 20cqi; aspect-ratio: 1; background: #e2ff7a; opacity: .14; animation-delay: -11s; }
+.bg-halos i:nth-child(4) { left: 26%; top: 52%; width: 14cqi; aspect-ratio: 1; background: #b79bff; animation-delay: -3s; }
+@keyframes drift { to { transform: translate(4cqi, -3cqi) scale(1.15) } }
+
+/* legenda no visual de gota */
+.states .spec { border: 0; border-radius: 0 50% 50% 50%; rotate: 45deg; background: radial-gradient(circle at 62% 62%, #f6ff9a, #a98bff 100%); box-shadow: 0 0 14px #a98bff66; }
+.states .spec svg { rotate: -45deg; stroke: #1d1b26; stroke-width: 2; }
+.states .spec.falta { background: transparent; box-shadow: none; border: 1.5px dashed #8d8a7c; }
+.states .spec.aceito { background: radial-gradient(circle at 62% 62%, #78e08f, #1fbf5b); outline: 0; box-shadow: 0 0 0 6px #1fbf5b1c, 0 0 14px #1fbf5b88; }
+.states .spec.aceito svg { stroke: #fff; }
+.states .spec.andamento { background: transparent; box-shadow: none; border-radius: 50%; rotate: 0deg; }
+
+@media (max-width: 760px) {
+  .leque-scene { --cx: 30%; --cy: 76%; --S: 15; --lift: 10; --pr: 12; --R: 22; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sway, .ico, .bg-halos i { animation: none !important; }
+}
+
+/* ---------- Progresso premium: anel líquido (rodada 03c) ----------
+   Água sobe por dentro da aura, um arco em gradiente da cor da ação com brilho na ponta,
+   marcações finas de relógio e, no fim, o anel floresce para fora e respinga. */
+.critter .prog { position: absolute; inset: -24%; pointer-events: none; opacity: 0; transition: opacity .25s; z-index: -1; --p: 0; }
+.critter .prog { --p: inherit; }
+.leque-stage[data-busy=true] .critter .prog, .critter .prog.done { opacity: 1; }
+.prog > i { position: absolute; inset: 0; border-radius: 50%; }
+.prog .track {
+  background: repeating-conic-gradient(from 0deg, #e9e4f766 0 .6deg, transparent .6deg 7.5deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+}
+.prog .arc {
+  background: conic-gradient(from 0deg, transparent 0turn, var(--pc1) calc(var(--p) * .35turn), var(--pc2) calc(var(--p) * 1turn), transparent calc(var(--p) * 1turn + .001turn));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
+  filter: drop-shadow(0 0 5px var(--pc2));
+}
+.prog .head { rotate: calc(var(--p) * 1turn); }
+.prog .head b {
+  position: absolute; left: 50%; top: 0; width: 9px; height: 9px; translate: -50% -15%; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 6px 2px var(--pc1), 0 0 16px 4px var(--pc2);
+  animation: headPulse .9s ease-in-out infinite alternate;
+}
+@keyframes headPulse { to { scale: 1.35; } }
+/* água subindo: um "mar" girando cujo nível acompanha o progresso */
+.prog .fill { inset: 8%; overflow: hidden; background: radial-gradient(circle, transparent 55%, color-mix(in srgb, var(--pc2) 10%, transparent)); }
+.prog .fill::before, .prog .fill::after {
+  content: ""; position: absolute; left: -50%; width: 200%; aspect-ratio: 1;
+  top: calc(100% - var(--p) * 92%); border-radius: 42%;
+  background: color-mix(in srgb, var(--pc1) 32%, transparent);
+  animation: tide 5s linear infinite;
+}
+.prog .fill::after { border-radius: 46%; background: color-mix(in srgb, var(--pc2) 26%, transparent); animation-duration: 7s; animation-direction: reverse; top: calc(100% - var(--p) * 92% + 3px); }
+@keyframes tide { to { rotate: 1turn } }
+.prog.done .arc, .prog.done .track { animation: ringBloom .7s cubic-bezier(.2, .7, .3, 1) both; }
+.prog.done .head b { animation: none; opacity: 0; transition: opacity .2s; }
+.prog.done .fill { animation: fillFlash .7s ease-out both; }
+@keyframes ringBloom { 0% { scale: 1; opacity: 1 } 35% { scale: 1.08; opacity: 1 } 100% { scale: 1.45; opacity: 0 } }
+@keyframes fillFlash { 0% { opacity: 1 } 30% { opacity: 1; filter: brightness(1.6) } 100% { opacity: 0 } }
+.task-chip { display: inline-flex; align-items: center; gap: .45em; box-shadow: 0 6px 16px #0b0a1a44; }
+.task-chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, var(--pc1, #e5f195), var(--pc2, #65762d)); box-shadow: 0 0 8px var(--pc2, #e5f195); }
+@media (prefers-reduced-motion: reduce) { .prog .fill::before, .prog .fill::after, .prog .head b { animation: none !important; } }

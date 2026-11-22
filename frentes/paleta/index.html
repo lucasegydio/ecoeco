@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14151f">
+<title>ecoeco · paleta</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="leque.css"><link rel="stylesheet" href="vidro.css"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="paleta.css">
+<script src="icons.js" defer></script><script src="paleta.js" defer></script>
+</head><body data-bioma="terra">
+<header class="wrap"><p class="mudo">ecoeco · frente paleta · rodada 1</p><h1>Paleta oficial</h1>
+<p>Base única para todos os planetas; só o <b>acento do bioma</b> muda. Luz âmbar, coral e lilás; a lima da marca só aparece em ok/aceito e em Plantar. Tudo abaixo lê <code>tokens.css</code> e mede o contraste ao vivo.</p></header>
+<main class="wrap">
+<h2>1 · Paleta</h2><div id="sw" class="grid"></div>
+
+<h2>2 · Em componentes reais do protótipo</h2>
+<p class="mudo">Chips, bolhas de vidro e planeta pontilhado do protótipo. Alterne bioma e dia/noite; arraste sobre o planeta para mover a luz.</p>
+<div class="btns row" id="ctl"><span class="row" id="bio-btns"></span><span class="row" id="lado-btns"></span></div>
+<div class="row"><div class="demo leque-stage liquid" data-fan="open" id="demo" data-lado="dia"><div class="pl"></div><div class="luz"></div><div class="luz l2"></div><div class="term"></div>
+<div class="hudtop"><span class="hud-chip"><i class="dot"></i>Planeta Terra</span><span class="hud-chip"><span class="inv-item" data-res="fibra"><i></i>3</span><span class="inv-item" data-res="semente"><i></i>1</span></span></div>
+<div class="fanrow" id="fan"></div></div>
+<div style="flex:1;min-width:260px"><h3 style="margin:0 0 6px">Estados (bolhas reais)</h3><div class="leque-stage liquid fanrow" data-fan="open" id="estados" style="position:static;justify-content:flex-start;flex-wrap:wrap"></div>
+<p class="mudo" style="margin-top:14px">ok · foco (hover/toque) · aceito · falta (−n) · bloqueado (cadeado). Estado nunca só por cor: forma, ícone ou contador acompanham.</p></div></div>
+
+<h2>3 · Contraste WCAG</h2>
+<p>Fundos medidos: pontos e tons do planeta (amostrados de <code>planeta-1A.webp</code>: 5%, 25%, 50%, 75% mais claros), o vidro (branco 14% sobre cada um) e vidro sob luz âmbar (38%). Coral e lilás são luz (decorativas, sem texto sobre elas), por isso não entram na tabela. O vidro dos chips leva um véu noite de 50% por baixo. Texto normal pede 4,5 (AA) e 7 (AAA); ícone/glifo pede 3.</p>
+<div class="scroll"><table id="ct"></table></div>
+<p class="nota" id="ct-res"></p>
+
+<h2>4 · Bioma (acento por planeta)</h2><div class="bio" id="bio"></div>
+<p class="mudo">O acento colore o ponto do chip, o brilho da borda do planeta e o item "novo". Nada na interface troca de base.</p>
+
+<h2>5 · Modo noite</h2>
+<p>O planeta tem lado noturno (terminador). Quando o bichinho/câmera está no lado escuro, <code>data-lado="noite"</code>: fundo mais fundo, luz-dedo a 72% e mais lilás, vidro um pouco mais denso. Use o botão da demo.</p><div id="noite-ct"></div>
+
+<h2>6 · Daltonismo</h2>
+<p>Simulação (Machado 2009, severidade total) nas 6 ações e nos 5 estados, e distância de cor ΔE (Lab). Abaixo de 15 conta como "confundível só por cor".</p>
+<div class="sim" id="sim"></div><div class="scroll"><table id="de"></table></div><p class="nota" id="de-res"></p>
+
+<h2>7 · Como usar</h2><ul><li>Importe <code>tokens.css</code> no lugar do da linguagem (mesmos nomes; novos: <code>--eco-fundo/texto/lima/ok/falta/acento</code>).</li><li>Planeta novo: <code>data-bioma="…"</code> no palco. Noite: <code>data-lado="noite"</code>.</li><li>Pronto para integrar: ver FRENTES.md.</li></ul>
+</main></body></html>
