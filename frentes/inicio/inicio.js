@@ -6,6 +6,7 @@ const NOTAS={
  splash:['Splash','Sem texto e sem áudio. A espiral da marca nasce e gira; três arcos de eco piscam em vez de barra de progresso. ~1,5 s no máximo.'],
  titulo:['Título','Só <b>ecoeco</b>. Planeta vivo respirando; a luz quente segue o dedo. Um único gesto: tocar a bolha.<br><br><em>1ª abertura:</em> bolha com o eco, pulsando. <em>Continuar:</em> bolha com o traço de continuar + o planeta e a vida dele.'],
  ajustes:['Ajustes','Um toque na bolha do canto. <b>Som</b> fica bloqueado até a trilha do Joaquim/SKU. <b>Vibração</b> liga/desliga. <b>Pistas</b>: 1, 2 ou 3 pontos (calma, média, sempre). <b>Conta</b> é opcional: o jogo abre sem login.'],
+ registro:['Registro do 1º eco','Ao achar o primeiro eco: o eco ressoa, a criatura surge, o <b>nome</b> aparece letra a letra e uma ficha se preenche (código decimal, planeta, código do planeta, data e hora). Depois a criatura vira bolha e entra na coleção (nome da coleção ainda a definir).<br><br><em>Recado:</em> disparado pela onboarding/bestiário quando o jogador toca o 1º eco.'],
  entrada:['Entrada','O planeta se aproxima do fundo do céu. <em>1ª vez:</em> viagem lenta (2,4 s). <em>Continuar:</em> 0,9 s, já na posição salva. Termina com o chip do planeta.<br><br><b>Passa para a frente onboarding:</b> planeta parado, zoom 1, luz-dedo ativa.']};
 const sec=n=>$(`[data-s=${n}]`);
 function clr(){tm.forEach(clearTimeout);tm=[]}
@@ -15,6 +16,7 @@ function show(n){clr();cur=n;$$('.s').forEach(s=>s.classList.toggle('on',s.datas
  $('#notas').innerHTML=`<h3>${NOTAS[n][0]}</h3><p>${NOTAS[n][1]}</p>`;
  if(n==='splash'){const e=$('.espiral');e.style.animation='none';e.offsetWidth;e.style.animation='';tm.push(setTimeout(()=>show('titulo'),3000))}
  if(n==='entrada')entrar();
+ if(n==='registro')registrar();
  if(n==='titulo')sec('ajustes').setAttribute('aria-hidden','true')
  if(n==='ajustes')sec('ajustes').setAttribute('aria-hidden','false')}
 function setModo(m){modo=m;localStorage.setItem('eco-inicio-modo',m);const c=m==='continuar';
@@ -23,6 +25,17 @@ function setModo(m){modo=m;localStorage.setItem('eco-inicio-modo',m);const c=m==
  $('#comecar').setAttribute('aria-label',c?'Continuar':'Tocar para começar');
  $('#notas2').innerHTML=c?'<h3>Continuar</h3><p>Mesma tela, mesmo gesto. A bolha vira o traço de continuar e três pontos mostram a vida do planeta (bichinhos achados). Sem menu de “novo jogo” aqui: recomeçar fica em Ajustes.</p>':'<h3>1ª abertura</h3><p>Sem escolha nenhuma: <b>um toque</b> e o planeta se aproxima. Sem login, sem permissão pedida, sem texto. Conta e Ajustes ficam no canto, discretos.</p>'}
 function entrar(){const s=sec('entrada');s.classList.remove('dentro','rapido');s.classList.toggle('rapido',modo==='continuar');void s.offsetWidth;tm.push(setTimeout(()=>s.classList.add('dentro'),60))}
+const pad=n=>String(n).padStart(2,'0');
+function registrar(){const s=sec('registro');s.classList.remove('f1','f2','f3','f4');$('#nome').textContent='';$('#ficha').innerHTML='';$('#cont').textContent='0';$('#colecao').classList.remove('ganha');
+ const d=new Date(),cod=(Math.floor(Math.random()*9000)+1000)+'.'+(Math.floor(Math.random()*900)+100);
+ const L=[['Código',cod],['Planeta','Terra'],['Cód. planeta','T-1A'],['Data',pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()],['Hora',pad(d.getHours())+':'+pad(d.getMinutes())]];
+ const N='Rabanete-antena';void s.offsetWidth;
+ tm.push(setTimeout(()=>s.classList.add('f1'),100));
+ tm.push(setTimeout(()=>{s.classList.add('f2');let i=0;const t=setInterval(()=>{$('#nome').textContent=N.slice(0,++i);if(i>=N.length)clearInterval(t)},70);tm.push(t)},1300));
+ tm.push(setTimeout(()=>{L.forEach((l,i)=>tm.push(setTimeout(()=>{$('#ficha').insertAdjacentHTML('beforeend','<div><dt>'+l[0]+'</dt><dd>'+l[1]+'</dd></div>')},i*260)))},2500));
+ tm.push(setTimeout(()=>s.classList.add('f3'),4400));
+ tm.push(setTimeout(()=>{$('#cont').textContent='1';$('#colecao').classList.add('ganha');s.classList.add('f4');navigator.vibrate&&navigator.vibrate([20,40,20])},5300))}
+$('#repete').onclick=registrar;
 function comecar(){veu.classList.add('on');tm.push(setTimeout(()=>{show('entrada');veu.classList.remove('on')},modo==='continuar'?220:450))}
 $('#passos').onclick=e=>{const t=e.target.dataset.t;if(t)show(t)};
 $('.modo').onclick=e=>{if(e.target.dataset.m)setModo(e.target.dataset.m)};

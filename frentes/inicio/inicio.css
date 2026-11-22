@@ -83,3 +83,24 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 @media(max-width:1000px){.notas{display:none}}
 @media(max-width:520px){.palco{padding:6px 0}.phone{border-radius:0;border:0}.barra{padding:6px 8px}.barra b{display:none}.barra button{padding:5px 9px;font-size:12px}}
 .estado[hidden]{display:none}
+/* registro do 1º eco */
+[data-s=registro]{background:radial-gradient(120% 80% at 50% 40%,#33263f,#16171f)}
+.cena{position:absolute;left:67px;top:110px;width:240px;height:240px;display:grid;place-items:center}
+.rastro{position:absolute;inset:0;border-radius:50%;border:2px solid #ffb36baa;opacity:0}
+.f1 .rastro{animation:onda 2.4s ease-out 2}.f1 .r2{animation-delay:.4s}.f1 .r3{animation-delay:.8s}
+.cria{width:200px;height:200px;border-radius:58% 42% 55% 45%/47% 56% 44% 53%;background:radial-gradient(circle at 30% 22%,#ffffff55,#ffffff1a 60%),linear-gradient(135deg,#ffb36b44,#b58cff44);border:1px solid var(--vid-b);backdrop-filter:blur(14px);box-shadow:inset 0 1px 8px #fff6,0 0 50px #ffb36b55;display:grid;place-items:center;transform:scale(0);opacity:0;transition:transform .9s cubic-bezier(.3,1.5,.5,1),opacity .5s,left 1s,top 1s}
+.cria img{height:82%;width:auto;filter:drop-shadow(0 8px 14px #0007)}
+.f2 .cria{transform:scale(1);opacity:1;transition-delay:.1s}
+.f3 .cria{transform:translate(110px,360px) scale(.2);opacity:.9;transition:transform 1s cubic-bezier(.6,0,.4,1),opacity 1s}
+.f4 .cria{opacity:0}
+.nome{position:absolute;left:0;right:0;top:376px;text-align:center;font-size:26px;font-weight:500;letter-spacing:.03em;color:#fff;text-shadow:0 0 18px #ffb36b88;min-height:34px}
+.ficha{position:absolute;left:44px;right:44px;top:430px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#ffe1c2}
+.ficha div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #ffffff2a;animation:linha .5s both}
+.ficha dt{opacity:.6;text-transform:uppercase;letter-spacing:.08em;font-size:11px}.ficha dd{margin:0}
+@keyframes linha{from{opacity:0;transform:translateX(-10px);filter:blur(4px)}}
+.f3 .nome,.f3 .ficha{opacity:0;transition:opacity .8s}
+.colecao{position:absolute;right:28px;bottom:36px;width:62px;height:58px}
+.colecao b{position:absolute;right:-4px;top:-6px;min-width:22px;height:22px;border-radius:99px;background:linear-gradient(135deg,var(--eco-ambar),var(--eco-coral));color:#202130;font-size:12px;display:grid;place-items:center}
+.colecao.ganha{animation:ganha .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes ganha{40%{transform:scale(1.35);box-shadow:0 0 50px #ff5f9e}}
+.repete{position:absolute;left:28px;bottom:42px}

@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ecoeco · início</title>
-<link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="inicio.css"></head>
+<link rel="stylesheet" href="tokens.css?v=6449ad4f"><link rel="stylesheet" href="inicio.css?v=61648560"></head>
 <body>
 <header class="barra">
   <b>ecoeco · início</b>
-  <nav id="passos" aria-label="Passos"><button data-t="icone">Ícone</button><button data-t="splash">Splash</button><button data-t="titulo">Título</button><button data-t="ajustes">Ajustes</button><button data-t="entrada">Entrada</button></nav>
+  <nav id="passos" aria-label="Passos"><button data-t="icone">Ícone</button><button data-t="splash">Splash</button><button data-t="titulo">Título</button><button data-t="ajustes">Ajustes</button><button data-t="entrada">Entrada</button><button data-t="registro">Registro</button></nav>
   <div class="modo" role="group" aria-label="Quando abre"><button data-m="primeira" aria-pressed="true">1ª abertura</button><button data-m="continuar" aria-pressed="false">Continuar</button></div>
 </header>
 <main class="palco">
@@ -59,8 +59,18 @@
       <div class="passa" id="passa"><i></i></div>
     </section>
 
+    <!-- 5 REGISTRO: primeiro eco encontrado -->
+    <section class="s" data-s="registro"><div class="luz"></div>
+      <div class="cena"><i class="rastro r1"></i><i class="rastro r2"></i><i class="rastro r3"></i>
+        <div class="cria"><img src="assets/rabanete-antena.webp" alt=""></div></div>
+      <h2 class="nome" id="nome" aria-live="polite"></h2>
+      <dl class="ficha" id="ficha"></dl>
+      <button class="bolha mini colecao" id="colecao" aria-label="Coleção (nome a definir)"><svg viewBox="0 0 32 32"><circle cx="9" cy="10" r="3"/><circle cx="21" cy="9" r="2"/><circle cx="15" cy="21" r="4"/><circle cx="26" cy="22" r="2.2"/></svg><b id="cont">0</b></button>
+      <button class="bolha mini repete" id="repete" aria-label="Ver de novo"><svg viewBox="0 0 32 32"><path d="M8 16a8 8 0 1 0 3-6.2M8 6v5h5"/></svg></button>
+    </section>
+
   </div></div></div>
   <aside class="notas dir" id="notas2"></aside>
 </main>
-<script src="inicio.js"></script>
+<script src="inicio.js?v=5665a690"></script>
 </body></html>
