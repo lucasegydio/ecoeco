@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movimento · ecoeco</title>
+<link rel="stylesheet" href="mov.css"><link rel="stylesheet" href="tokens-movimento.css"></head>
+<body>
+<header>
+ <h1>Movimento</h1>
+ <p>Ritmo <b>contemplativo</b>, ímã e esticar <b>sutis</b>. Molas físicas: <code>a = −k·(x−alvo) − c·v</code>, massa 1, ζ = c / 2√k. Cada cartão roda em loop; toque para repetir.</p>
+ <label class="rm"><input type="checkbox" id="rm"> Movimento reduzido (liga sozinho se o sistema pedir)</label>
+ <nav><a href="#corrige">O que corrigir no protótipo</a> <a href="#tabela">Tokens</a> <a href="tokens-movimento.gd">.gd</a> <a href="tokens-movimento.css">.css</a> <a href="tokens.json">.json</a></nav>
+</header>
+<main id="cards"></main>
+<section id="corrige"><h2>O que corrigiria no protótipo</h2><div id="corrigeLista"></div></section>
+<section id="tabela"><h2>Tabela de tokens</h2><div class="scroll"><table id="tb"></table></div></section>
+<script src="liquid.js"></script><script src="mov-tokens.js"></script><script src="mov.js"></script>
+</body></html>
