@@ -1,0 +1,552 @@
+/* ---------- Rodada 05 · vidro líquido ----------
+   O time escolheu o Anel de vidro. Agora são bolhas orgânicas (não gotas), com luz quente e colorida
+   que segue o dedo, e o movimento passa para molas físicas (liquid.js).
+   Camadas de uma bolha, de trás para frente:
+     backdrop (desfoca e satura o que está atrás, inclusive a luz)
+     corpo (tinta da ação, sombra interna colorida, brilho no lado da luz)
+     .caustic (cáustica quente girando por dentro)
+     .rim (borda iridescente que acende do lado da luz)
+     ícone (fica em pé, atrasa pela inércia) */
+.liquid { --warm1: #ffb36b; --warm2: #ff5f9e; --warm3: #b58cff; }
+.leque-stage.liquid .leque-scene { --S: 11; --R: 18; }
+@media (max-width: 760px) { .leque-stage.liquid .leque-scene { --S: 16; --R: 25; } }
+
+/* luz ambiente: duas manchas quentes que seguem o dedo (a segunda atrasada); o vidro as refrata */
+.liquid .lumen {
+  position: absolute; left: var(--lx, 40%); top: var(--ly, 30%); translate: -50% -50%;
+  width: 44cqi; aspect-ratio: 1; border-radius: 50%; pointer-events: none; z-index: 1;
+  background: radial-gradient(circle, color-mix(in srgb, var(--warm1) 70%, transparent) 0%, color-mix(in srgb, var(--warm2) 38%, transparent) 34%, transparent 68%);
+  mix-blend-mode: screen; filter: blur(14px); opacity: .55;
+}
+.liquid .lumen.two {
+  left: var(--lx2, 40%); top: var(--ly2, 30%); width: 30cqi; opacity: .45;
+  background: radial-gradient(circle, color-mix(in srgb, var(--warm3) 70%, transparent), transparent 66%);
+}
+.liquid .bg-halos i { opacity: .16; }
+
+/* posição e escala vêm do motor (--x --y --s); nada de animação CSS de entrada aqui */
+.leque-stage.liquid .fan-slot {
+  transform: translate(var(--x, 0px), var(--y, 0px)) !important;
+  animation: none !important; transition: none !important;
+  opacity: 1 !important; pointer-events: auto;
+  width: calc(var(--S) * 1cqi); min-width: 52px;
+}
+.leque-stage.liquid .fan-slot[data-gone] { pointer-events: none; }
+.leque-stage.liquid .grow, .leque-stage.liquid .sway { transform: none !important; animation: none !important; rotate: none !important; }
+.leque-stage.liquid .fan-item {
+  position: absolute; inset: 0; color: #fff;
+  scale: var(--s, 0); opacity: clamp(0, calc(var(--s, 0) * 2.2), 1);
+}
+
+/* corpo da bolha: forma orgânica que passeia entre três contornos próprios (--b1/--b2/--b3) */
+.leque-stage.liquid .drop {
+  rotate: var(--sa, 0deg); scale: calc(1 + var(--st, 0)) calc(1 - var(--st, 0) * .6);   /* estica na direção do voo */
+  border-radius: var(--b1, 50%);
+  animation: blobMorph 9s ease-in-out var(--md, 0s) infinite alternate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at var(--hx, 35%) var(--hy, 30%), rgb(255 255 255 / calc(var(--hl, .5) * .55)) 0%, transparent 34%),
+    radial-gradient(circle at var(--hx, 35%) var(--hy, 30%), color-mix(in srgb, var(--warm1) calc(var(--hl, .5) * 40%), transparent) 0%, transparent 70%),
+    radial-gradient(120% 90% at 50% 118%, color-mix(in srgb, var(--c2) 55%, transparent), transparent 62%),
+    linear-gradient(160deg, #ffffff30, #ffffff08 48%, color-mix(in srgb, var(--c1) 26%, transparent));
+  -webkit-backdrop-filter: blur(12px) saturate(2) brightness(1.12);
+          backdrop-filter: blur(12px) saturate(2) brightness(1.12);
+  box-shadow:
+    inset 0 1.5px 1px #ffffffb0,
+    inset 0 -12px 20px -10px color-mix(in srgb, var(--c2) 70%, transparent),
+    inset 0 0 18px -6px color-mix(in srgb, var(--c1) 60%, transparent),
+    0 16px 30px -12px color-mix(in srgb, var(--c2) 60%, transparent),
+    0 3px 8px #0b0a1a55;
+  transition: background .3s;
+}
+@keyframes blobMorph {
+  0% { border-radius: var(--b1); }
+  50% { border-radius: var(--b2); }
+  100% { border-radius: var(--b3); }
+}
+.leque-stage.liquid .drop .shine { display: none; }
+.leque-stage.liquid .caustic {
+  position: absolute; inset: -30%; border-radius: inherit; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0 12%, color-mix(in srgb, var(--warm1) 55%, transparent) 20%, transparent 32%, color-mix(in srgb, var(--warm2) 45%, transparent) 52%, transparent 64%, color-mix(in srgb, var(--c1) 55%, transparent) 80%, transparent 90%);
+  filter: blur(8px); mix-blend-mode: screen; opacity: calc(.25 + var(--hl, .5) * .35);
+  animation: causticSpin 11s linear var(--md, 0s) infinite;
+}
+@keyframes causticSpin { to { rotate: 1turn; } }
+.leque-stage.liquid .rim {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1.5px;
+  background: conic-gradient(from var(--ha, 0deg), #ffffff 0deg, #ffe0b0 30deg, transparent 80deg, transparent 200deg, color-mix(in srgb, var(--c1) 80%, white) 260deg, #ffd0f0 320deg, #ffffff 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: calc(.45 + var(--hl, .5) * .55);
+}
+
+/* ícone: em pé, com sombra quente; atrasa pela inércia (--ix/--iy vêm do motor) */
+.leque-stage.liquid .ico {
+  opacity: 1 !important; scale: 1 !important; animation: none !important;
+  translate: var(--ix, 0px) var(--iy, 0px); transition: none !important;
+}
+.leque-stage.liquid .ico svg {
+  width: 42%; stroke: color-mix(in srgb, var(--c1) 55%, white); stroke-width: 2.1;
+  filter: drop-shadow(0 1px 2px color-mix(in srgb, var(--c2) 80%, transparent)) drop-shadow(0 0 6px color-mix(in srgb, var(--c2) 45%, transparent));
+  transition: stroke .2s, scale .45s var(--spring);
+}
+
+/* toque/hover: a tinta da ação enche a bolha, a forma acelera e o ícone fica branco */
+.leque-stage.liquid .fan-item:is(:hover, .press, :focus-visible):not([data-state=falta]) .drop {
+  background:
+    radial-gradient(circle at var(--hx, 35%) var(--hy, 30%), #ffffffa0 0%, transparent 30%),
+    radial-gradient(130% 100% at 50% 110%, var(--c2), color-mix(in srgb, var(--c2) 40%, transparent) 70%),
+    linear-gradient(160deg, #ffffff40, color-mix(in srgb, var(--c1) 45%, transparent));
+  animation: blobMorph 2.6s ease-in-out var(--md, 0s) infinite alternate;
+}
+.leque-stage.liquid .fan-item:is(:hover, .press, :focus-visible) .ico svg { stroke: #fff; scale: 1.12; }
+.leque-stage.liquid .fan-item:focus-visible { outline: none; }
+.leque-stage.liquid .fan-item:focus-visible .rim { padding: 2.5px; opacity: 1; }
+.leque-stage.liquid .fan-item[data-state=aceito] .drop {
+  background: radial-gradient(circle at var(--hx, 35%) var(--hy, 30%), #fff 0%, transparent 34%), radial-gradient(circle at 50% 70%, var(--c2), color-mix(in srgb, var(--c2) 50%, var(--c1)));
+}
+.leque-stage.liquid .fan-item[data-state=aceito] .ico svg { stroke: #fff; }
+
+/* falta material: vidro vazio, sem tinta, contorno tracejado por cima */
+.leque-stage.liquid .fan-item[data-state=falta] .drop {
+  background: linear-gradient(160deg, #ffffff14, #ffffff05);
+  box-shadow: inset 0 1px 1px #ffffff55, 0 8px 18px -10px #0008;
+  outline: 1.5px dashed #ffffff80; outline-offset: -5px;
+}
+.leque-stage.liquid .fan-item[data-state=falta] .caustic { opacity: .12; }
+.leque-stage.liquid .fan-item[data-state=falta] .ico svg { stroke: #ffffffb0; filter: none; }
+.leque-stage.liquid .fan-item .tip { bottom: calc(100% + 12px); }
+.leque-stage.liquid .fan-item .short { background: #2b2a3fcc; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+
+/* anel de progresso e bicho: luz quente também */
+.liquid .prog .arc { filter: drop-shadow(0 0 6px var(--pc2)) drop-shadow(0 0 14px color-mix(in srgb, var(--warm1) 60%, transparent)); }
+.liquid .critter .aura { background: radial-gradient(circle, color-mix(in srgb, var(--warm1) 22%, transparent) 0%, color-mix(in srgb, var(--warm2) 10%, transparent) 52%, transparent 70%); border-color: color-mix(in srgb, var(--warm1) 45%, transparent); }
+.liquid .halo { box-shadow: 0 0 18px var(--hc), 0 0 30px color-mix(in srgb, var(--warm1) 50%, transparent); }
+
+/* folha de vidro do planeta: mesma luz quente refratada */
+.liquid .sheet {
+  background:
+    radial-gradient(60% 50% at var(--lx, 70%) var(--ly, 20%), color-mix(in srgb, var(--warm1) 14%, transparent), transparent 70%),
+    linear-gradient(160deg, #ffffff24, #ffffff0a 60%, color-mix(in srgb, var(--c2, #ff5f9e) 16%, transparent));
+}
+.liquid .sheet::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(160deg, #ffffffb0, #ffd3a855 30%, transparent 55%, #ff9fd055);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leque-stage.liquid .drop, .leque-stage.liquid .caustic { animation: none !important; }
+}
+
+/* legenda no visual de vidro */
+.states .spec { rotate: 0deg !important; border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%; background: radial-gradient(circle at 34% 28%, #fff9, transparent 34%), radial-gradient(120% 90% at 50% 115%, #ff9f43, #ffe1b0 70%); box-shadow: inset 0 1px 1px #fff, inset 0 -8px 12px -6px #ff7a2a, 0 8px 16px -8px #ff7a2a; }
+.states .spec svg { rotate: 0deg !important; }
+.states .spec.falta { background: transparent; box-shadow: none; border: 1.5px dashed #8d8a7c; }
+.states .spec.aceito { border-radius: 46% 54% 44% 56% / 54% 44% 56% 46%; background: radial-gradient(circle at 34% 28%, #fffc, transparent 30%), radial-gradient(circle at 50% 70%, #ff5f7e, #ffb36b); box-shadow: 0 0 0 6px #ff5f7e1c, 0 0 18px #ff8a5a; }
+.states .spec.andamento { border-radius: 50%; background: transparent; box-shadow: none; }
+
+/* folha do planeta: as formas de gota viram bolhas orgânicas */
+.liquid .dex .slot { rotate: 0deg; border-radius: 58% 42% 55% 45% / 47% 56% 44% 53%; }
+.liquid .dex .owned .slot { background: radial-gradient(circle at 34% 28%, #fffb, transparent 32%), radial-gradient(120% 90% at 50% 115%, var(--c2), var(--c1) 75%); box-shadow: inset 0 -6px 10px -5px var(--c2), 0 0 18px color-mix(in srgb, var(--c2) 60%, transparent); }
+.liquid .dex .unknown .slot { background: radial-gradient(circle at 34% 28%, #ffffff22, transparent 40%), #0b0a1a70; box-shadow: inset 0 1px 1px #ffffff40, inset 0 0 0 1px #ffffff1c; }
+.liquid .res i { rotate: 0deg; border-radius: 58% 42% 52% 48% / 46% 54% 46% 54%; background: radial-gradient(circle at 34% 30%, #fffc, transparent 40%), radial-gradient(circle at 50% 70%, var(--c2), var(--c1)); }
+.liquid .toggle i::after { rotate: 0deg; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; transition: left .45s var(--spring), border-radius .45s; }
+.liquid .toggle input:checked + i::after { border-radius: 44% 56% 48% 52% / 54% 46% 54% 46%; }
+.liquid .toggle input:checked + i { background: linear-gradient(90deg, var(--warm1), var(--warm2)); box-shadow: inset 0 1px 1px #fff8, 0 0 14px color-mix(in srgb, var(--warm2) 50%, transparent); }
+.liquid .sheet-title::before { rotate: 0deg; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; }
+
+/* ---------- Orientação e coleta (rodada 05) ---------- */
+.orientacao { border-top: 1px solid var(--line); margin-top: clamp(40px, 6vw, 80px); }
+.ori-stage { padding: 58px 12px 50px; }
+.ori-scene {
+  position: relative; width: 100%; max-width: 760px; aspect-ratio: 16 / 9; container-type: inline-size;
+  overflow: hidden; border-radius: 18px; touch-action: none; cursor: grab;
+}
+.ori-scene:active { cursor: grabbing; }
+.ori-world {
+  position: absolute; left: 0; top: 0; width: 300%; height: 100%; z-index: 2; will-change: transform;
+  background:
+    radial-gradient(60% 40% at 18% 108%, #2f4a5a, transparent 70%),
+    radial-gradient(50% 36% at 52% 112%, #3b5a55, transparent 70%),
+    radial-gradient(55% 42% at 84% 110%, #34505e, transparent 70%);
+}
+.ori-world::before { /* colinas suaves, abstratas, que se repetem a cada tela */
+  content: ""; position: absolute; inset: 62% 0 0;
+  background:
+    radial-gradient(40% 60% at 20% 100%, #4d6f6a99, transparent 70%) 0 0 / 33.333% 100% repeat-x,
+    radial-gradient(30% 50% at 70% 100%, #5f857a77, transparent 70%) 0 0 / 33.333% 100% repeat-x;
+  -webkit-mask: linear-gradient(transparent, #000 40%); mask: linear-gradient(transparent, #000 40%);
+}
+.ori-tree { position: absolute; top: 46%; width: 5cqi; height: 26%; translate: -50% 0; border-radius: 40% 40% 10% 10%; background: linear-gradient(#6fb39a, #2f4a5a); opacity: .7; }
+.ori-tree::before { content: ""; position: absolute; left: 50%; top: -32%; width: 260%; aspect-ratio: 1.2; translate: -50% 0; border-radius: 58% 42% 55% 45% / 47% 56% 44% 53%; background: radial-gradient(circle at 40% 35%, #b8e6c2, #4f8f7a 70%); }
+.ori-pet, .ori-fruit { position: absolute; translate: -50% -50%; border: 0; padding: 0; background: transparent; cursor: pointer; z-index: 3; }
+.ori-pet { width: 6.4cqi; min-width: 44px; aspect-ratio: 1; }
+.ori-pet .body { position: absolute; inset: 18% 8% 0; border-radius: 54% 46% 44% 56% / 60% 58% 42% 40%; background: linear-gradient(160deg, #a49cc4, #6f6890); box-shadow: inset 0 2px 3px #fff5, 0 8px 14px #0b0a1a55; }
+.ori-pet .body::before { content: ""; position: absolute; left: 46%; top: -26%; width: 18%; height: 34%; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; background: var(--lime); rotate: 18deg; }
+/* choro visual: lágrimas caindo e anéis curtos; somem quando ele se acalma */
+.ori-pet .tear { position: absolute; top: 42%; width: 10%; aspect-ratio: .7; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #bfe0ff; opacity: 0; animation: tear 1.3s ease-in infinite; }
+.ori-pet .tear:nth-child(2) { left: 26%; } .ori-pet .tear:nth-child(3) { right: 26%; animation-delay: .6s; }
+@keyframes tear { 0% { opacity: 0; transform: translateY(0) } 20% { opacity: .9 } 100% { opacity: 0; transform: translateY(160%) } }
+.ori-pet .sob { position: absolute; inset: -30%; border-radius: 50%; border: 1.5px solid #bfe0ff; opacity: 0; animation: sob 1.8s ease-out infinite; pointer-events: none; }
+.ori-pet .sob + .sob { animation-delay: .9s; }
+@keyframes sob { 0% { opacity: .7; scale: .5 } 100% { opacity: 0; scale: 1.4 } }
+.ori-stage[data-calm=true] .ori-pet .tear, .ori-stage[data-calm=true] .ori-pet .sob { display: none; }
+.ori-stage[data-calm=true] .ori-pet .body { animation: content 2.8s ease-in-out infinite; }
+@keyframes content { 50% { transform: translateY(-4%) scale(1.03, .97); } }
+.ori-fruit { width: 4cqi; min-width: 34px; aspect-ratio: 1; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%;
+  background: radial-gradient(circle at 34% 28%, #fffc, transparent 30%), radial-gradient(circle at 50% 70%, #ff9f43, #ffd08a);
+  box-shadow: 0 0 0 0 #ffb36b88, 0 0 16px #ffb36b; animation: ripe 1.4s ease-in-out infinite; }
+@keyframes ripe { 50% { box-shadow: 0 0 0 10px #ffb36b00, 0 0 26px #ffb36b; scale: 1.08; } }
+.ori-fruit.taken { animation: taken .4s ease-in forwards; }
+@keyframes taken { to { scale: .2; opacity: 0; } }
+
+/* indicador na borda: bolha de vidro com o bicho dentro, seta para fora e choro em anéis quentes */
+.ori-pointer {
+  position: absolute; left: var(--px, 90%); top: var(--py, 50%); translate: -50% -50%; z-index: 5;
+  width: calc(9cqi + var(--near, 0) * 3cqi); min-width: 54px; aspect-ratio: 1; border: 0; padding: 0; cursor: pointer;
+  border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; animation: blobMorph 6s ease-in-out infinite alternate;
+  --b1: 56% 44% 52% 48% / 48% 54% 46% 52%; --b2: 46% 54% 44% 56% / 55% 45% 55% 45%; --b3: 52% 48% 58% 42% / 44% 56% 44% 56%;
+  background: radial-gradient(circle at 34% 28%, #ffffff70, transparent 32%), radial-gradient(120% 90% at 50% 115%, color-mix(in srgb, var(--warm2) 50%, transparent), transparent 60%), linear-gradient(160deg, #ffffff30, #ffffff08);
+  -webkit-backdrop-filter: blur(12px) saturate(2); backdrop-filter: blur(12px) saturate(2);
+  box-shadow: inset 0 1.5px 1px #ffffffb0, inset 0 -10px 16px -8px color-mix(in srgb, var(--warm2) 70%, transparent), 0 14px 28px -10px color-mix(in srgb, var(--warm2) 60%, transparent);
+  transition: opacity .3s, scale .45s var(--spring);
+}
+.ori-stage[data-off=false] .ori-pointer { opacity: 0; scale: .5; pointer-events: none; }
+.ori-pointer .mini { position: absolute; inset: 30% 26% 24%; border-radius: 54% 46% 44% 56% / 60% 58% 42% 40%; background: linear-gradient(160deg, #c3bce0, #8a82ae); }
+.ori-pointer .mini::before { content: ""; position: absolute; left: 46%; top: -30%; width: 20%; height: 38%; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; background: var(--lime); }
+.ori-pointer .arrow { position: absolute; inset: 0; rotate: var(--ang, 0deg); pointer-events: none; }
+.ori-pointer .arrow::after { content: ""; position: absolute; right: -14%; top: 50%; width: 22%; aspect-ratio: 1; translate: 0 -50%; clip-path: polygon(0 0, 100% 50%, 0 100%, 25% 50%); background: #fff; filter: drop-shadow(0 0 6px var(--warm1)); animation: nudge 1.2s ease-in-out infinite; }
+@keyframes nudge { 50% { translate: 25% -50%; } }
+.ori-pointer .ring { position: absolute; inset: 0; border-radius: inherit; border: 2px solid var(--warm1); opacity: 0; animation: sob 1.8s ease-out infinite; pointer-events: none; }
+.ori-pointer .ring + .ring { animation-delay: .9s; border-color: var(--warm2); }
+.ori-stage[data-calm=true] .ori-pointer .ring { display: none; }
+.ori-pointer:hover, .ori-pointer:focus-visible { scale: 1.12; }
+.ori-pointer:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.ori-hint { position: absolute; left: 50%; top: 6%; translate: -50% 0; z-index: 4; font-size: .76rem; color: #dfdbea; border: 1px solid #c7bff04d; border-radius: 100px; padding: .3rem .8rem; pointer-events: none; opacity: calc(1 - var(--pan, 0) * 4); white-space: nowrap; }
+
+.fly-pill {
+  position: absolute; left: 0; top: 0; z-index: 8; pointer-events: none; white-space: nowrap;
+  font-size: .8rem; font-weight: 700; color: #fff; padding: .25rem .7rem; border-radius: 100px;
+  background: linear-gradient(160deg, #ffffff38, color-mix(in srgb, var(--warm1) 40%, transparent));
+  -webkit-backdrop-filter: blur(8px) saturate(1.8); backdrop-filter: blur(8px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #fffb, 0 8px 18px -6px color-mix(in srgb, var(--warm2) 70%, transparent);
+}
+.ori-inv .bump { animation: bump .5s var(--spring); border-color: var(--warm1) !important; box-shadow: 0 0 14px color-mix(in srgb, var(--warm1) 60%, transparent); }
+
+@media (max-width: 760px) {
+  .ori-stage { padding: 52px 4px 44px; }
+  .ori-scene { aspect-ratio: 4 / 5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ori-pet .tear, .ori-pet .sob, .ori-fruit, .ori-pointer, .ori-pointer .arrow::after, .ori-pointer .ring { animation: none !important; }
+}
+
+/* ---------- Rodada 06 · arte do time (Drive "Mundos e Bichinhos - Mídia") ----------
+   Brotinho: folha canônica de 2 pés (recorte da vista de frente e de 3/4).
+   Planeta 1A: conceito com água (Midjourney v6), recortado em círculo. */
+.critter .body:has(.pet-img) {
+  width: 118%; height: auto; margin: -22% 0 0; background: none; box-shadow: none; border-radius: 0;
+  filter: drop-shadow(0 10px 12px #0b0a1a80);
+}
+.critter .body:has(.pet-img)::before { display: none; }
+.pet-img { display: block; width: 100%; height: auto; pointer-events: none; }
+.leque-stage .critter { width: 12cqi; }
+@media (max-width: 760px) { .leque-stage .critter { width: 18cqi; } }
+/* acalmar/choro continua: lágrimas por cima da arte */
+.ori-pet .body:has(img) { inset: -6% -10% 0; background: none; box-shadow: none; border-radius: 0; filter: drop-shadow(0 8px 10px #0b0a1a80); }
+.ori-pet .body:has(img)::before { display: none; }
+.ori-pet .body img { width: 100%; height: auto; display: block; }
+.ori-pet { width: 8cqi; }
+.ori-pet .tear { top: 52%; }
+.ori-pet .tear:nth-child(2) { left: 30%; } .ori-pet .tear:nth-child(3) { right: 32%; }
+.ori-pointer .mini { inset: 18% 18% 16%; background: none; border-radius: 0; }
+.ori-pointer .mini::before { display: none; }
+.ori-pointer .mini img { width: 100%; height: auto; display: block; filter: drop-shadow(0 2px 3px #0006); }
+/* planeta do time no menu do planeta */
+.planet {
+  background: url(assets/planeta-1A.webp) center / cover no-repeat;
+  box-shadow: 0 0 0 calc(.5cqi + var(--t) * .5cqi) #9fe0a022, 0 0 calc(4cqi + var(--t) * 8cqi) color-mix(in srgb, var(--warm1) 30%, #7fd3a8 30%);
+}
+.planet::before { display: none; }
+.planet::after { /* luz quente do lado do dedo, por cima da arte */
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; mix-blend-mode: soft-light;
+  background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--warm1) 70%, transparent), transparent 55%);
+}
+img.planet-critter { background: none; border-radius: 0; width: 9cqi; height: auto; aspect-ratio: auto; filter: drop-shadow(0 6px 8px #0008); }
+img.planet-critter::before { display: none; }
+
+/* ---------- Rodada 07 · abertura: eco e pistas ---------- */
+.eco-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; mix-blend-mode: screen; }
+.ori-pet .sob { display: none; }
+.ori-pet.ping .body { animation: echoSquash .5s var(--spring); }
+@keyframes echoSquash { 30% { transform: scale(1.05, .94); } }
+.ori-pet.sob-shake { animation: sobShake .45s ease; }
+@keyframes sobShake { 20% { translate: -50% -50%; rotate: -4deg; } 50% { rotate: 4deg; } 80% { rotate: -2deg; } }
+/* bolha da borda: sem seta. Aparece no nível 1 da busca e pulsa a cada onda */
+.ori-pointer .arrow, .ori-pointer .ring { display: none; }
+.ori-stage[data-step=buscar][data-level="0"] .ori-pointer { opacity: 0; scale: .5; pointer-events: none; }
+.ori-stage:not([data-step=buscar]) .ori-pointer { opacity: 0; scale: .5; pointer-events: none; }
+.ori-pointer.ping { animation: echoPing .55s var(--spring), blobMorph 6s ease-in-out infinite alternate; }
+@keyframes echoPing { 25% { scale: 1.14; box-shadow: 0 0 0 6px color-mix(in srgb, var(--warm1) 40%, transparent), 0 14px 28px -10px var(--warm2); } }
+.ori-stage[data-level="2"][data-step=buscar] .ori-pointer { scale: 1.1; }
+/* árvore principal: toque solta a gota; brilho no nível 1, anel no nível 2 */
+.ori-tree-main { position: absolute; translate: -50% -50%; width: 9cqi; height: 30%; border: 0; padding: 0; background: none; cursor: pointer; z-index: 3; }
+.ori-tree-main .trunk { position: absolute; left: 50%; bottom: 0; width: 34%; height: 58%; translate: -50% 0; border-radius: 40% 40% 10% 10%; background: linear-gradient(#6fb39a, #2f4a5a); }
+.ori-tree-main .canopy { position: absolute; left: 50%; top: 0; width: 210%; aspect-ratio: 1.2; translate: -50% 0; border-radius: 58% 42% 55% 45% / 47% 56% 44% 53%; background: radial-gradient(circle at 40% 35%, #c8f0cf, #4f8f7a 70%); animation: blobMorph 8s ease-in-out infinite alternate; --b1: 58% 42% 55% 45% / 47% 56% 44% 53%; --b2: 50% 50% 44% 56% / 55% 48% 52% 45%; --b3: 54% 46% 58% 42% / 44% 54% 46% 56%; }
+.ori-tree-main .glint { position: absolute; left: 66%; top: 18%; width: 12%; aspect-ratio: .75; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 35% 30%, #fff, #9fd6ff 70%); box-shadow: 0 0 8px #9fd6ff; opacity: .7; }
+.ori-stage[data-step=arvore][data-level="1"] .ori-tree-main .glint, .ori-stage[data-step=arvore][data-level="2"] .ori-tree-main .glint { animation: glint 1.2s ease-in-out infinite; opacity: 1; }
+@keyframes glint { 50% { scale: 1.35; box-shadow: 0 0 16px #bfe6ff; } }
+.ori-stage[data-step=arvore][data-level="2"] .ori-tree-main::after { content: ""; position: absolute; inset: -18% -60%; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--warm1) 80%, white); animation: sob 1.6s ease-out infinite; pointer-events: none; }
+.ori-tree-main.shake .canopy { animation: treeShake .5s ease; }
+@keyframes treeShake { 25% { rotate: -3deg; } 60% { rotate: 2deg; } }
+.ori-tree-main:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 12px; }
+/* fruto: anel no nível 1 */
+.ori-stage[data-step=colher][data-level="1"] .ori-fruit, .ori-stage[data-step=colher][data-level="2"] .ori-fruit { outline: 1.5px solid color-mix(in srgb, var(--warm1) 80%, white); outline-offset: 6px; }
+/* gota de água: vidro azulado */
+.water-drop { position: absolute; left: 0; top: 0; z-index: 6; width: 14px; height: 18px; pointer-events: none; border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(circle at 35% 30%, #fff, #bfe6ff 40%, #6fb3ff 100%); box-shadow: 0 0 10px #9fd6ff, inset 0 -2px 3px #4f8fe0; }
+/* pista explícita (nível 2): pílula de vidro no topo do palco */
+.ori-hint {
+  top: 8% !important; bottom: auto !important; opacity: 1 !important; color: #fff; font-weight: 600; font-size: .82rem;
+  background: linear-gradient(160deg, #ffffff30, color-mix(in srgb, var(--warm2) 25%, transparent));
+  -webkit-backdrop-filter: blur(10px) saturate(1.8); backdrop-filter: blur(10px) saturate(1.8);
+  border: 0 !important; box-shadow: inset 0 1px 1px #fffb, 0 8px 18px -8px color-mix(in srgb, var(--warm2) 70%, transparent);
+  animation: hintIn .5s var(--spring);
+}
+@keyframes hintIn { from { opacity: 0; translate: -50% -8px; } }
+.level-chip { display: inline-block; margin-left: .3em; padding: .1rem .55rem; border-radius: 100px; background: #e6e4db; color: var(--ink); font-size: .78rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.insist { margin-bottom: 4px; }
+@media (prefers-reduced-motion: reduce) { .ori-tree-main .canopy, .ori-tree-main .glint, .ori-pointer.ping { animation: none !important; } }
+
+/* ---------- Rodada 07b · eco como ícone que vibra ----------
+   Lucas: "o eco precisa ser mais como um ícone, algo mais reduzido, que vibre enquanto o boneco chora". */
+.eco-icon {
+  --amp: 1px; --vib: .14s; --pulse: 1.2s; --near: 0;
+  border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%;
+  background: radial-gradient(circle at 34% 28%, #ffffff70, transparent 34%), radial-gradient(120% 90% at 50% 115%, color-mix(in srgb, var(--warm2) 55%, transparent), transparent 62%), linear-gradient(160deg, #ffffff30, #ffffff08);
+  -webkit-backdrop-filter: blur(10px) saturate(2); backdrop-filter: blur(10px) saturate(2);
+  box-shadow: inset 0 1.5px 1px #ffffffb0, inset 0 -8px 12px -6px color-mix(in srgb, var(--warm2) 70%, transparent), 0 10px 22px -8px color-mix(in srgb, var(--warm2) 60%, transparent);
+}
+.eco-rot { position: absolute; inset: 0; display: grid; place-items: center; rotate: var(--ang, 0deg); }
+.eco-ico { width: 62%; fill: none; stroke: #fff; stroke-width: 2.3; stroke-linecap: round; overflow: visible; }
+.eco-ico .src { fill: #fff; stroke: none; filter: drop-shadow(0 0 3px var(--warm1)); }
+.eco-ico path { opacity: .35; transition: opacity .2s; }
+/* pulso: os arcos acendem em sequência, de dentro para fora */
+.eco-icon.ping .eco-ico .a1 { animation: arcOn calc(var(--pulse) * .8) ease-out both; }
+.eco-icon.ping .eco-ico .a2 { animation: arcOn calc(var(--pulse) * .8) ease-out calc(var(--pulse) * .12) both; }
+.eco-icon.ping .eco-ico .a3 { animation: arcOn calc(var(--pulse) * .8) ease-out calc(var(--pulse) * .24) both; }
+@keyframes arcOn { 0% { opacity: .35 } 25% { opacity: 1; stroke: #ffe0b0; filter: drop-shadow(0 0 4px var(--warm1)); } 100% { opacity: .35 } }
+/* tremor: só enquanto chora; amplitude e ritmo vêm da proximidade */
+.ori-stage[data-crying=true] .eco-icon .eco-rot { animation: ecoBuzz var(--vib) linear infinite; }
+@keyframes ecoBuzz {
+  0% { translate: 0 0 } 20% { translate: calc(var(--amp) * -1) calc(var(--amp) * .5) }
+  40% { translate: var(--amp) calc(var(--amp) * -.4) } 60% { translate: calc(var(--amp) * -.6) calc(var(--amp) * -.6) }
+  80% { translate: calc(var(--amp) * .7) calc(var(--amp) * .4) } 100% { translate: 0 0 }
+}
+/* borda: ícone reduzido (44–58 px conforme a proximidade) */
+.ori-pointer.eco-icon { width: calc(44px + var(--near) * 14px); min-width: 0; animation: none; }
+.ori-pointer.eco-icon.ping { animation: echoPing .45s var(--spring); }
+.ori-stage[data-step=buscar][data-level="0"] .ori-pointer { opacity: 1; scale: 1; pointer-events: auto; }   /* o ícone é a pista base */
+.ori-stage[data-step=buscar][data-level="1"] .ori-pointer { scale: 1.12; }
+.ori-stage[data-step=buscar][data-level="2"] .ori-pointer { scale: 1.22; }
+.ori-stage[data-crying=false] .ori-pointer { opacity: 0; scale: .5; pointer-events: none; }
+/* na tela: o mesmo ícone flutua sobre a cabeça do Brotinho */
+.eco-tag { position: absolute; left: 50%; bottom: 100%; width: 30px; aspect-ratio: 1; translate: -50% -4px; pointer-events: none; opacity: 0; transition: opacity .3s, scale .4s var(--spring); scale: .6; }
+.ori-stage[data-off=false][data-crying=true] .eco-tag { opacity: 1; scale: 1; }
+.eco-tag .eco-ico { width: 66%; stroke-width: 2.6; }
+.ori-pet .tear { display: none; }
+@media (prefers-reduced-motion: reduce) { .eco-icon .eco-rot, .eco-icon.ping .eco-ico path { animation: none !important; } }
+
+/* ---------- Rodada 08 · ícones de pincel ---------- */
+.ico svg, .eco-ico, .gicon svg { filter: url(#pincel); }
+.ico svg .f, .gicon svg .f { fill: currentColor; stroke: none; }
+.leque-stage.liquid .ico svg { width: 46%; stroke-width: 2.8; color: color-mix(in srgb, var(--c1) 55%, white); stroke: currentColor; filter: url(#pincel) drop-shadow(0 1px 2px color-mix(in srgb, var(--c2) 80%, transparent)); }
+.leque-stage.liquid .fan-item:is(:hover, .press, :focus-visible) .ico svg, .leque-stage.liquid .fan-item[data-state=aceito] .ico svg { color: #fff; stroke: #fff; }
+.leque-stage.liquid .fan-item[data-state=falta] .ico svg { color: #ffffffb0; }
+
+/* ---------- Rodada 08 · o jogo no celular ---------- */
+.jogo { border-top: 1px solid var(--line); }
+.jogo .zoom-controls { margin-top: 12px; }
+.zlabel { font-size: .85rem; font-weight: 600; }
+.phone-bay {
+  display: grid; place-items: center; padding: 28px 12px; border-radius: 0 0 24px 24px;
+  background: radial-gradient(ellipse at 50% 40%, #38384d 0%, #262738 60%, #1d1e2c 100%);
+}
+.game-stage { width: 100%; padding: 0; background: none; min-height: 0; height: auto; display: grid; place-items: center; border-radius: 0; overflow: visible; }
+.game-stage::before { display: none; }
+.game {
+  position: relative; width: min(370px, 100%); aspect-ratio: 9 / 18.5; max-height: 78vh;
+  container-type: inline-size; overflow: hidden; border-radius: 34px; touch-action: none; cursor: grab;
+  --S: 17; --cx: 50%; --cy: 50%;
+  background:
+    radial-gradient(1.2px 1.2px at 12% 18%, #fff9, transparent), radial-gradient(1px 1px at 78% 12%, #fffa, transparent),
+    radial-gradient(1.4px 1.4px at 62% 30%, #fff8, transparent), radial-gradient(1px 1px at 30% 44%, #fff7, transparent),
+    radial-gradient(1.2px 1.2px at 88% 52%, #fff9, transparent), radial-gradient(1px 1px at 8% 66%, #fff7, transparent),
+    radial-gradient(60% 40% at 30% 20%, #3b2d6a88, transparent), radial-gradient(50% 40% at 80% 60%, #213a6a77, transparent),
+    linear-gradient(#151632, #1b1840 60%, #241a3e);
+  box-shadow: 0 0 0 10px #0d0d18, 0 0 0 11px #3a3a52, 0 30px 60px -20px #000c;
+  user-select: none; -webkit-user-select: none;
+}
+.game:active { cursor: grabbing; }
+.globe { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+/* pontilhado do graybox, em tela, só dentro do planeta */
+.globe-dots {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: .5; mix-blend-mode: soft-light;
+  background: radial-gradient(circle, #fff 0 .9px, transparent 1.2px) 0 0 / 5px 5px;
+  -webkit-mask: radial-gradient(circle at var(--gx) var(--gy), #000 calc(var(--gr) - 1px), transparent var(--gr));
+          mask: radial-gradient(circle at var(--gx) var(--gy), #000 calc(var(--gr) - 1px), transparent var(--gr));
+}
+.game .lumen { z-index: 4; opacity: .4; }
+.objs { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.gobj { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: block; border: 0; padding: 0; background: none; pointer-events: none; }
+.gobj img { display: block; width: 100%; height: auto; pointer-events: none; filter: drop-shadow(0 4px 4px #0b0a1a66); }
+button.gobj { pointer-events: auto; cursor: pointer; }
+.gobj-pet .tear { position: absolute; top: 58%; width: 9%; aspect-ratio: .7; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: #bfe0ff; opacity: 0; animation: tear 1.3s ease-in infinite; }
+.gobj-pet .tear:nth-of-type(1) { left: 30%; } .gobj-pet .tear:nth-of-type(2) { right: 30%; animation-delay: .6s; }
+.game-stage[data-crying=false] .gobj-pet .tear { display: none; }
+.gobj-pet.sob-shake img { animation: sobShake .45s ease; }
+.gobj-pet.hop img { animation: hop .7s var(--spring); }
+.gobj-tree.shake img { animation: treeShake .5s ease; transform-origin: 50% 100%; }
+.gobj-fruit { width: 18px; aspect-ratio: 1; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52% !important; background: radial-gradient(circle at 34% 28%, #fffc, transparent 30%), radial-gradient(circle at 50% 70%, #ff9f43, #ffd08a) !important; box-shadow: 0 0 14px #ffb36b; animation: ripe 1.4s ease-in-out infinite; }
+/* aura de observação quando o anel está aberto */
+.game-stage[data-observing=true] .gobj-pet::after { content: ""; position: absolute; left: 50%; bottom: -8%; width: 130%; aspect-ratio: 2.4; translate: -50% 0; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--warm1) 80%, white); box-shadow: 0 0 18px var(--warm1), inset 0 0 12px var(--warm1); pointer-events: none; }
+.ring-layer, .menu-layer { position: absolute; inset: 0; z-index: 8; pointer-events: none; }
+.ring-layer .fan-slot, .menu-layer .fan-slot { left: var(--cx); top: var(--cy); }
+.game-stage[data-menu=true] .objs { opacity: 0; }
+/* HUD do graybox, em vidro */
+.hud-top { position: absolute; left: 12px; right: 12px; top: 14px; z-index: 12; display: flex; justify-content: space-between; gap: 8px; pointer-events: none; }
+.hud-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: .3rem .8rem; border-radius: 14px;
+  font-size: .82rem; font-weight: 650; color: #fff; white-space: nowrap;
+  background: linear-gradient(160deg, #ffffff2e, #ffffff0c); -webkit-backdrop-filter: blur(12px) saturate(1.8); backdrop-filter: blur(12px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #ffffffa0, inset 0 0 0 1px #ffffff26, 0 8px 18px -8px #0008;
+}
+.hud-inv.bump { animation: bump .5s var(--spring); box-shadow: inset 0 1px 1px #fff, 0 0 16px var(--warm1); }
+.inv-empty { opacity: .85; font-weight: 600; }
+.inv-item { display: inline-flex; align-items: center; gap: 4px; font-variant-numeric: tabular-nums; }
+.inv-item i { width: 10px; height: 10px; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; }
+.inv-item[data-res=fibra] i { background: radial-gradient(circle at 40% 35%, #e6ff86, #1fbf5b); }
+.inv-item[data-res=semente] i { background: radial-gradient(circle at 40% 35%, #ffe39a, #d08a2a); }
+.inv-item[data-res=pedra] i { background: radial-gradient(circle at 40% 35%, #e4e0f2, #8a83a8); }
+.hud-hint {
+  position: absolute; left: 50%; bottom: 18px; translate: -50% 0; z-index: 12; width: max-content; max-width: calc(100% - 28px);
+  text-align: center; font-size: .82rem; font-weight: 600; color: #fff; line-height: 1.35; padding: .55rem 1rem; border-radius: 16px;
+  background: linear-gradient(160deg, #ffffff30, color-mix(in srgb, var(--warm2) 22%, transparent));
+  -webkit-backdrop-filter: blur(12px) saturate(1.8); backdrop-filter: blur(12px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #fffb, 0 10px 20px -8px color-mix(in srgb, var(--warm2) 60%, transparent);
+  pointer-events: none;
+}
+.hud-hint.in { animation: hintIn .5s var(--spring); }
+/* eco */
+.game-stage[data-crying=true] .eco-icon .eco-rot { animation: ecoBuzz var(--vib) linear infinite; }
+.eco-edge { position: absolute; left: var(--px, 90%); top: var(--py, 50%); translate: -50% -50%; z-index: 11; width: calc(44px + var(--near) * 14px); aspect-ratio: 1; border: 0; padding: 0; cursor: pointer; transition: opacity .3s, scale .4s var(--spring); }
+.eco-edge.ping { animation: echoPing .45s var(--spring); }
+.game-stage[data-off=false] .eco-edge, .game-stage[data-crying=false] .eco-edge, .game-stage[data-menu=true] .eco-edge { opacity: 0; scale: .5; pointer-events: none; }
+.game-stage[data-level="2"][data-step=buscar] .eco-edge { scale: 1.15; }
+.eco-float { position: absolute; left: 0; top: 0; z-index: 9; width: 30px; aspect-ratio: 1; margin: -15px 0 0 -15px; pointer-events: none; opacity: 0; transition: opacity .3s; }
+.game-stage[data-off=false][data-crying=true] .eco-float { opacity: 1; }
+.eco-float .eco-ico { width: 66%; stroke-width: 2.6; }
+/* progresso sobre o Brotinho */
+.mini-prog { position: absolute; left: 0; top: 0; z-index: 9; display: grid; justify-items: center; gap: 4px; translate: -50% -100%; pointer-events: none; --p: 0; }
+.mini-prog .ring { width: 34px; aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 0deg, #fff0a0, #ff9f43 calc(var(--p) * 1turn), #ffffff22 0); -webkit-mask: radial-gradient(circle, transparent 54%, #000 56%); mask: radial-gradient(circle, transparent 54%, #000 56%); filter: drop-shadow(0 0 6px var(--warm1)); }
+.mini-prog b { font-size: .72rem; color: var(--ink); background: #f3f2ed; border-radius: 100px; padding: .15rem .55rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* folha do menu dentro do celular: sempre no pé */
+.game .game-sheet { left: 50%; right: auto; top: auto; bottom: 14px; translate: -50% 0; width: calc(100% - 24px); max-height: 52%; transform: translateY(115%); z-index: 13; }
+.game .game-sheet.in { transform: none; }
+.game-stage[data-menu=true] .hud-hint { display: none; }
+.dex-art li img { width: 54px; height: 54px; object-fit: contain; margin-bottom: 4px; }
+.dex-art .unknown img { filter: brightness(0) drop-shadow(0 0 1px #fff6); opacity: .65; }
+@media (max-width: 760px) { .phone-bay { padding: 16px 8px; } .game { border-radius: 26px; } }
+@media (prefers-reduced-motion: reduce) { .gobj-pet .tear, .gobj-fruit { animation: none !important; } }
+.mini-prog[hidden] { display: none; }
+
+/* ---------- Rodada 09 · vale, evolução e decolagem ---------- */
+.study-actions.jump { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.outline-link.small { padding: .45rem .85rem; font-size: .8rem; background: transparent; cursor: pointer; color: var(--ink); }
+/* canteiro: seco (rachado) → plantado (broto) → irrigado (úmido, florido) */
+.k-canteiro { aspect-ratio: 2.2; }
+.k-canteiro .soil { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #b89a6a, #7d6345 70%); box-shadow: inset 0 -3px 6px #0005, 0 2px 4px #0004; }
+.k-canteiro .soil::after { content: ""; position: absolute; inset: 18% 14%; background: repeating-linear-gradient(120deg, transparent 0 9px, #5a4532aa 9px 10px), repeating-linear-gradient(40deg, transparent 0 11px, #5a4532aa 11px 12px); border-radius: 50%; opacity: .8; transition: opacity .6s; }
+.k-canteiro .sprout { position: absolute; left: 50%; bottom: 46%; width: 22%; aspect-ratio: .8; translate: -50% 0; transform-origin: 50% 100%; scale: 0; transition: scale .6s var(--spring); background: radial-gradient(ellipse at 30% 40%, #b8f07a 0 30%, transparent 32%), radial-gradient(ellipse at 70% 30%, #9be05f 0 30%, transparent 32%), linear-gradient(#5fbf4a, #5fbf4a) 50% 100% / 12% 60% no-repeat; }
+.k-canteiro .bloom { position: absolute; left: 50%; bottom: 70%; width: 26%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; scale: 0; transition: scale .7s var(--spring) .3s; background: radial-gradient(circle, #fff6d0 0 25%, #ffd29a 26% 45%, transparent 47%); filter: drop-shadow(0 0 6px #ffd29a); }
+.k-canteiro[data-state=plantado] .sprout, .k-canteiro[data-state=irrigado] .sprout { scale: 1; }
+.k-canteiro[data-state=irrigado] .soil { background: radial-gradient(ellipse at 50% 40%, #6f5a44, #3f3226 70%); box-shadow: inset 0 -3px 6px #0006, 0 0 12px #9fd6ff66; }
+.k-canteiro[data-state=irrigado] .soil::after { opacity: 0; }
+.k-canteiro[data-state=irrigado] .bloom { scale: 1; }
+/* fonte de água em vidro */
+.k-fonte { aspect-ratio: 1.6; }
+.k-fonte .pool { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(ellipse at 40% 35%, #fff 0 8%, #bfe6ff 20%, #6fb3ff 70%, #3f6fc0); box-shadow: inset 0 -3px 6px #2a4f9a88, 0 0 14px #9fd6ff99; animation: blobMorph 5s ease-in-out infinite alternate; --b1: 50%; --b2: 46% 54% 52% 48% / 52% 46% 54% 48%; --b3: 54% 46% 48% 52% / 48% 54% 46% 52%; }
+.water-drop.small { width: 9px; height: 12px; }
+/* pedras soltas */
+.k-stones { aspect-ratio: 1.6; animation: ripe 1.4s ease-in-out infinite; border-radius: 50%; }
+.k-stones i { position: absolute; bottom: 0; width: 38%; aspect-ratio: 1.3; border-radius: 52% 48% 46% 54% / 56% 50% 50% 44%; background: radial-gradient(circle at 35% 30%, #f3eee0, #b8ab92 60%, #7d7262); box-shadow: 0 2px 3px #0005; }
+.k-stones i:nth-child(1) { left: 0; } .k-stones i:nth-child(2) { left: 34%; bottom: 20%; width: 32%; } .k-stones i:nth-child(3) { right: 0; width: 34%; }
+/* frutos e núcleo */
+.k-fruit { aspect-ratio: 1; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; background: radial-gradient(circle at 34% 28%, #fffc, transparent 30%), radial-gradient(circle at 50% 70%, #ff9f43, #ffd08a); box-shadow: 0 0 14px #ffb36b; animation: ripe 1.4s ease-in-out infinite; }
+.k-orb { aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #ffb3d6 35%, #ff4f86 75%); box-shadow: 0 0 10px #ff4f86, 0 0 22px #ffb36b88; }
+.k-orb.beckon { animation: ripe 1.1s ease-in-out infinite; }
+/* nave em gota de vidro, com núcleo */
+.k-nave { aspect-ratio: .7; }
+.k-nave .hull { position: absolute; inset: 0 12% 14%; border-radius: 50% 50% 46% 46% / 64% 64% 36% 36%; background: radial-gradient(circle at 35% 25%, #ffffffc0, transparent 28%), linear-gradient(160deg, #e9f2ff, #9fb6e6 60%, #6a7bff); box-shadow: inset 0 -6px 10px #3f4fb066, 0 4px 8px #0006; }
+.k-nave .core { position: absolute; left: 50%; top: 34%; width: 24%; aspect-ratio: 1; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #ffb3d6 40%, #ff4f86); box-shadow: 0 0 8px #ff4f86; }
+.k-nave .fin { position: absolute; bottom: 10%; width: 22%; height: 26%; background: #6a7bff; border-radius: 0 0 50% 50%; }
+.k-nave .fin.l { left: 6%; rotate: 20deg; } .k-nave .fin.r { right: 6%; rotate: -20deg; }
+.k-nave .flame { position: absolute; left: 50%; top: 84%; width: 30%; height: 0; translate: -50% 0; border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%; background: linear-gradient(#fff6d0, #ffb36b 40%, #ff5f9e 80%, transparent); filter: blur(1px); transition: height .4s; }
+.k-nave.assemble { animation: assemble .9s var(--spring); }
+@keyframes assemble { 0% { scale: .2; opacity: 0; } 60% { scale: 1.12; } 100% { scale: 1; opacity: 1; } }
+.k-nave.ignite .hull { animation: ecoBuzz .08s linear infinite; --amp: 1.6px; }
+.k-nave.ignite .core { box-shadow: 0 0 16px #ff4f86, 0 0 30px #ffb36b; }
+.k-nave.ignite .flame { height: 40%; }
+.k-nave.liftoff .flame { height: 130%; }
+.k-nave.liftoff::after { content: ""; position: absolute; left: 50%; top: 95%; width: 18%; height: 400%; translate: -50% 0; background: linear-gradient(#ffd29a, #ff9fc0aa 40%, transparent); filter: blur(3px); border-radius: 50%; }
+/* Brotinho: evolução */
+.gobj-pet .canopy { position: absolute; left: 50%; bottom: 50%; width: 104%; translate: -50% 0; transform-origin: 50% 100%; scale: 0; transition: scale .9s cubic-bezier(.3, 1.6, .5, 1); pointer-events: none; filter: drop-shadow(0 4px 4px #0006); }
+.gobj-pet.evolved .canopy { scale: 1; }
+.gobj-pet.charging > img:first-child { animation: charge 1.7s ease-in forwards; }
+@keyframes charge { 0% { filter: none; } 70% { filter: brightness(1.6) drop-shadow(0 0 10px #ffd29a); scale: .94 1.05; } 100% { filter: brightness(2.4) drop-shadow(0 0 18px #fff); scale: .86 .9; } }
+.gobj-pet.pop > img:first-child { animation: pop .5s var(--spring); }
+@keyframes pop { 0% { filter: brightness(2.4); scale: .86; } 60% { scale: 1.14 .94; } 100% { filter: none; scale: 1; } }
+.spark { position: absolute; z-index: 9; width: 7px; aspect-ratio: 1; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, #fff, var(--c)); box-shadow: 0 0 8px var(--c); translate: -50% -50%; animation: spiral 1.7s cubic-bezier(.5, 0, .9, .6) var(--d) both; }
+@keyframes spiral { 0% { transform: rotate(var(--a)) translateX(var(--r)) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(calc(var(--a) + 300deg)) translateX(0) scale(1.2); opacity: .9; } }
+/* vinheta e cartão das cenas */
+.cine { position: absolute; inset: 0; z-index: 7; pointer-events: none; opacity: 0; transition: opacity .6s; background: radial-gradient(ellipse at 50% 55%, transparent 35%, #0b0a1acc 100%); }
+.cine.on { opacity: 1; }
+.cine-card {
+  position: absolute; left: 50%; top: 14%; translate: -50% 0; z-index: 13; width: calc(100% - 40px); display: grid; justify-items: center; gap: 4px; text-align: center;
+  padding: 14px 16px; border-radius: 22px; color: #fff;
+  background: linear-gradient(160deg, #ffffff30, color-mix(in srgb, #5fcf4a 22%, transparent)); -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #fffc, 0 14px 30px -10px #0009; opacity: 0; transform: translateY(-10px) scale(.96); transition: opacity .4s, transform .6s var(--spring);
+}
+.cine-card.in { opacity: 1; transform: none; }
+.cine-card strong { font-size: 1.05rem; letter-spacing: -.02em; }
+.cine-card > span:not(.gicon) { font-size: .8rem; color: #eef; line-height: 1.35; }
+.gicon { width: 34px; height: 34px; display: grid; place-items: center; color: #e6ff86; }
+.gicon svg { width: 100%; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.game-stage[data-cine=evolucao] .hud-hint, .game-stage[data-cine=decolagem] .hud-hint, .game-stage[data-cine=mapa] .hud-hint { display: none; }
+/* mapa da primeira região */
+.mapa {
+  position: absolute; inset: 0; z-index: 14; display: grid; grid-template-rows: auto 1fr auto auto; gap: 8px; padding: 70px 18px 22px; color: #fff;
+  background: radial-gradient(ellipse at 50% 45%, #2a2350cc, #0d0c20f2 75%); opacity: 0; transition: opacity .6s;
+}
+.mapa.in { opacity: 1; }
+.mapa-kicker { text-align: center; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; font-size: .7rem; color: #ffd29a; }
+.mapa-campo { position: relative; container-type: size; }
+.orbita { position: absolute; left: 50%; top: 50%; translate: -50% -50%; border-radius: 50%; border: 1px dashed #ffffff40; }
+.orbita.o1 { width: 62cqw; aspect-ratio: 1; } .orbita.o2 { width: 96cqw; aspect-ratio: 1; border-color: #ffffff22; }
+.dest { position: absolute; translate: -50% -50%; display: grid; justify-items: center; gap: 2px; text-align: center; opacity: 0; animation: destIn .7s var(--spring) both; }
+.dest b { font-size: .78rem; } .dest em { font-style: normal; font-size: .64rem; color: #cfc9e2; }
+.dest.casa { left: 50%; top: 50%; animation-delay: .2s; } .dest.casa img { width: 30cqw; filter: drop-shadow(0 0 14px #7fd38a88); }
+.dest.vulcanico { left: 76%; top: 26%; animation-delay: .7s; }
+.dest.l1 { left: 14%; top: 18%; animation-delay: 1s; } .dest.l2 { left: 22%; top: 84%; animation-delay: 1.2s; }
+.dest .bola { width: 14cqw; aspect-ratio: 1; border-radius: 50%; }
+.dest.vulcanico .bola { background: radial-gradient(circle at 35% 30%, #ffd29a, #ff6a2c 50%, #6a1f1f); box-shadow: 0 0 0 4px #ffb36b55, 0 0 20px #ff6a2c; }
+.dest.longe .bola { background: #ffffff10; border: 1.5px dashed #ffffff66; }
+@keyframes destIn { from { opacity: 0; scale: .5; } to { opacity: 1; scale: 1; } }
+.eco-sinal { position: absolute; right: -16px; top: -10px; width: 26px; aspect-ratio: 1; }
+.mapa .eco-icon .eco-rot { animation: ecoBuzz .12s linear infinite; --amp: 1.4px; }
+.mapa-nota { text-align: center; font-size: .72rem; color: #cfc9e2; }
+.mapa-voltar { justify-self: center; border: 0; color: #fff; font-weight: 650; font-size: .84rem; padding: .6rem 1.1rem; border-radius: 16px; cursor: pointer;
+  background: linear-gradient(160deg, #ffffff34, color-mix(in srgb, var(--warm2) 30%, transparent)); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: inset 0 1px 1px #fffb; }
+@media (prefers-reduced-motion: reduce) { .spark, .k-nave.ignite .hull, .mapa .eco-icon .eco-rot, .dest { animation: none !important; opacity: 1; } }
