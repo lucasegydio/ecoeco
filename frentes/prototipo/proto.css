@@ -1,0 +1,53 @@
+/* Protótipo final · só o que une as frentes. Tipografia A (Nunito + Menda Medium), menu (21-menu), bestiário (21-bestiario). */
+@font-face { font-family: Menda; src: url(fonts/Menda-Medium-subset.woff) format("woff"); font-weight: 500; font-display: swap; }
+:root { --ui: Nunito, "DM Sans", system-ui, sans-serif; --num: Menda, Nunito, sans-serif; }
+html, body { height: 100%; margin: 0; overflow: hidden; background: #14151f; color: #fff5e3; font: 700 14px/1.4 var(--ui); }
+#jogo { height: 100svh; display: grid; place-items: center; background: radial-gradient(ellipse at 50% 40%, #38384d 0%, #262738 60%, #1d1e2c 100%); border: 0; }
+#jogo .phone-bay { padding: 0; background: none; border-radius: 0; width: 100%; height: 100%; display: grid; place-items: center; }
+#jogo .game-stage { width: min(400px, 100%, calc(100svh * .486)); isolation: isolate; }
+#jogo .game, #jogo #entrada { grid-area: 1/1; width: 100%; border-radius: 34px; max-height: 100svh; }
+.game { font-family: var(--ui); }
+.game h3, .sheet-title, .game .hud-planet { font-family: var(--ui); font-weight: 800; }
+.hud-inv b, .inv-item, .dex-count b, .res b, .caixa-num, .mat .blob { font-family: var(--num); font-weight: 500; }
+@media (max-width: 520px) { #jogo .game-stage { width: 100%; } #jogo .game, #jogo #entrada { border-radius: 0; max-height: none; height: 100svh; aspect-ratio: auto; box-shadow: none; } }
+/* menu do planeta (21-menu): a folha nasce da gota, troca de aba sem fechar */
+.game .game-sheet { transform: none; scale: .35; opacity: 0; transform-origin: var(--ox, 50%) var(--oy, 100%); transition: scale .24s ease-in, opacity .18s; }
+.game .game-sheet.in { scale: 1; opacity: 1; transition: scale .65s cubic-bezier(.22, 1.35, .4, 1), opacity .2s; }
+.game-sheet.swap .sheet-title { animation: rise .35s both; } .game-sheet.swap .sheet-body > * { animation: rise .45s both; }
+@keyframes rise { from { opacity: 0; translate: 0 10px; } }
+.seg-group { margin-bottom: 10px; } .seg-group p { font-size: .78rem; color: #cfc9e2; margin-bottom: 5px; }
+.seg { display: flex; padding: 3px; border-radius: 100px; background: #ffffff14; box-shadow: inset 0 0 0 1px #ffffff26; }
+.seg button { flex: 1; border: 0; background: transparent; color: #f4f2fa; border-radius: 100px; padding: 9px 6px; min-height: 40px; font: 700 .84rem var(--ui); }
+.seg button[aria-checked=true] { background: radial-gradient(circle at 30% 40%, var(--c1), var(--c2)); color: #fff; }
+/* bestiário (21-bestiario): inventário, ficha, esboço do lagarto */
+.mats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mat { display: grid; justify-items: center; gap: 2px; padding: 10px 4px; border-radius: 18px; background: #ffffff10; box-shadow: inset 0 0 0 1px #ffffff1c; text-align: center; }
+.mat .blob { width: 46px; aspect-ratio: 1; border-radius: 56% 44% 52% 48%/48% 54% 46% 52%; display: grid; place-items: center; font-size: 1.15rem; background: radial-gradient(circle at 34% 28%, #ffffff70, transparent 34%), radial-gradient(120% 90% at 50% 115%, var(--c2), var(--c1)); color: #1c1a2e; }
+.mat small { font-size: .62rem; color: #cfc9e2; } .mat[data-z="0"] { opacity: .7; } .mat[data-z="0"] .blob { background: #0b0a1a55; outline: 1.5px dashed #ffffff40; outline-offset: -5px; color: #ffffff80; }
+.hud-inv { cursor: pointer; }
+.lag { display: grid; place-items: center; width: 100%; height: 100%; } .lag svg { width: 78%; filter: drop-shadow(0 3px 3px #0006); } .lag.sil svg { filter: brightness(0) drop-shadow(0 0 1px #fff8); opacity: .7; }
+.rastrear.foto { background: linear-gradient(160deg, #ffffff34, color-mix(in srgb, var(--c2) 45%, transparent)); }
+/* onboarding: o ponto de toque e o dedo fantasma já vêm do vidro.css */
+/* painel "o que entrou" */
+.novo { position: fixed; right: 14px; bottom: 14px; z-index: 30; font: 700 13px var(--ui); }
+.novo > button { border: 0; color: #fff; padding: .55rem 1rem; border-radius: 100px; background: #ffffff1f; backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px #ffffff3d; font: 800 13px var(--ui); }
+.novo .caixa { position: absolute; right: 0; bottom: 46px; width: min(320px, calc(100vw - 28px)); max-height: 70svh; overflow: auto; padding: 14px 16px; border-radius: 22px; background: #202130f2; box-shadow: inset 0 0 0 1px #ffffff2a, 0 20px 50px #000a; }
+.novo .caixa[hidden] { display: none; }
+.novo h2 { font: 800 15px var(--ui); margin: 0 0 8px; } .novo h4 { font: 800 11px var(--ui); letter-spacing: .08em; text-transform: uppercase; color: #ffb36b; margin: 12px 0 4px; }
+.novo ul { margin: 0; padding-left: 16px; color: #d8d3e8; font-weight: 600; } .novo li { margin: 2px 0; } .novo .ctl { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.novo .ctl button, .novo .switch button { border: 0; color: #fff; background: #ffffff1c; border-radius: 100px; padding: .4rem .8rem; font: 700 12px var(--ui); min-height: 36px; }
+.novo .switch { border: 0; padding: 0; display: flex; gap: 4px; } .novo .switch button[aria-pressed=true] { background: linear-gradient(135deg, #ffb36b, #ff5f9e); color: #202130; }
+.novo .zoom-controls { display: none; }
+@media (max-width: 520px) { .novo { right: 8px; bottom: 8px; } .novo > button { opacity: .75; } }
+/* estado novo: bloqueado. Vidro fosco e cinza, sem luz, sem forma viva; cadeado de pincel no canto */
+.leque-stage.liquid .fan-item[data-state=bloqueado] .drop {
+  background: linear-gradient(160deg, #ffffff18, #ffffff06 60%, #00000022);
+  box-shadow: inset 0 1px 1px #ffffff40, 0 8px 18px -10px #0009; animation: none;
+  -webkit-backdrop-filter: blur(16px) saturate(.2) brightness(.8); backdrop-filter: blur(16px) saturate(.2) brightness(.8);
+}
+.leque-stage.liquid .fan-item[data-state=bloqueado] .caustic, .leque-stage.liquid .fan-item[data-state=bloqueado] .rim { opacity: .08; }
+.leque-stage.liquid .fan-item[data-state=bloqueado] .ico svg { stroke: #ffffff55; color: #ffffff55; filter: none; }
+.leque-stage.liquid .fan-item[data-state=bloqueado] { cursor: not-allowed; }
+.lock { position: absolute; right: 6%; bottom: 8%; width: 28%; aspect-ratio: 1 / .85; border-radius: 30%; background: #2b2a3fe0; border: 1.5px solid #ffffff70; z-index: 3; }
+.lock::before { content: ""; position: absolute; left: 24%; right: 24%; bottom: 80%; height: 70%; border: 1.5px solid #ffffffa0; border-bottom: 0; border-radius: 99px 99px 0 0; }
+.lock::after { content: ""; position: absolute; left: 44%; top: 34%; width: 12%; aspect-ratio: 1; border-radius: 50%; background: #fff; }

@@ -1,0 +1,131 @@
+/* Rodada 04 · menu do planeta. Reusa as gotas de leque.css (.fan-slot > .grow > .sway > .fan-item). */
+.planeta { border-top: 1px solid var(--line); margin-top: clamp(40px, 6vw, 80px); }
+.planet-stage { padding: 58px 12px 50px; cursor: grab; touch-action: none; }
+.planet-scene {
+  position: relative; width: 100%; max-width: 680px; aspect-ratio: 16 / 9; container-type: inline-size;
+  --S: 9; --R: 23; --cx: 50%; --cy: 52%; --ps: 175; --pcy: 128; --t: 0;
+  overflow: hidden; border-radius: 18px;
+}
+.planet-stage .fan-slot { --dx: calc(var(--ux) * var(--R)); --dy: calc(var(--uy) * var(--R)); z-index: 4; }
+
+/* planeta abstrato: esfera com terminador e atmosfera; a arte real é da equipe */
+.planet {
+  position: absolute; left: 50%; top: calc(var(--pcy) * 1%); translate: -50% -50%;
+  width: calc(var(--ps) * 1cqi); aspect-ratio: 1; border-radius: 50%; z-index: 1;
+  background:
+    radial-gradient(circle at 36% 30%, #ffffff30, transparent 38%),
+    radial-gradient(circle at 70% 72%, #10102466, transparent 62%),
+    radial-gradient(circle at 42% 40%, #b8e6c2, #6fb39a 45%, #3e5f86 80%, #2b3157);
+  box-shadow: 0 0 0 calc(.6cqi + var(--t) * .6cqi) #b8e6c22a, 0 0 calc(4cqi + var(--t) * 6cqi) #8fd3c255, inset -2cqi -3cqi 6cqi #0b0a1a66;
+}
+.planet::before { /* manchas de terreno, abstratas */
+  content: ""; position: absolute; inset: 0; border-radius: 50%; opacity: .55;
+  background:
+    radial-gradient(ellipse 22% 14% at 30% 58%, #e6ff86aa, transparent 70%),
+    radial-gradient(ellipse 18% 10% at 62% 34%, #e6ff8688, transparent 70%),
+    radial-gradient(ellipse 14% 20% at 70% 62%, #bfe0ff99, transparent 70%);
+  animation: spinPlanet 60s linear infinite;
+}
+@keyframes spinPlanet { to { rotate: 1turn } }
+.planet-critter { /* marcador do bicho no topo do planeta, some ao afastar */
+  position: absolute; left: 50%; top: calc(var(--pcy) * 1% - var(--ps) * .5cqi); translate: -50% -88%;
+  width: 7cqi; aspect-ratio: 1.15; border-radius: 54% 46% 44% 56% / 60% 58% 42% 40%;
+  background: linear-gradient(160deg, #a49cc4, #6f6890); z-index: 2;
+  opacity: calc(1 - var(--t) * 2.4); scale: calc(1 - var(--t) * .8);
+}
+.planet-critter::before { content: ""; position: absolute; left: 46%; top: -26%; width: 18%; height: 34%; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; background: var(--lime); rotate: 18deg; }
+.planet-stage .stage-top { z-index: 6; }
+.scale-label { font-weight: 600; }
+.zoom-hint {
+  position: absolute; left: 50%; bottom: 7%; translate: -50% 0; z-index: 5; font-size: .76rem; color: #dfdbea;
+  border: 1px solid #c7bff04d; border-radius: 100px; padding: .3rem .8rem; white-space: nowrap;
+  opacity: calc(1 - var(--t) * 2); pointer-events: none;
+}
+.zoom-hint i { display: inline-block; width: 1.4em; height: .6em; margin-right: .4em; border: 1px solid #dfdbea; border-radius: 100px; position: relative; vertical-align: -.05em; }
+.zoom-hint i::before, .zoom-hint i::after { content: ""; position: absolute; top: 50%; width: 4px; height: 4px; border-radius: 50%; background: #dfdbea; translate: 0 -50%; animation: pinch 1.6s ease-in-out infinite; }
+.zoom-hint i::before { left: 40%; } .zoom-hint i::after { right: 40%; }
+@keyframes pinch { 50% { left: 4%; right: 4%; } }
+.zoom-hint i::after { animation-name: pinchR; } @keyframes pinchR { 50% { right: 4%; } }
+.zoom-hint i::before { animation-name: pinchL; } @keyframes pinchL { 50% { left: 4%; } }
+
+/* quando a folha abre, o planeta e as gotas sobem um pouco para dar lugar */
+.planet-scene > .planet, .planet-scene > .planet-fan { transition: translate .45s var(--spring); }
+/* palco largo: a folha entra pela lateral e o planeta anda para a esquerda; no celular (retrato) ela fica no pé */
+.planet-stage[data-sheet=open] .planet-fan { translate: -26cqi 0; }
+.planet-stage[data-sheet=open] .planet { translate: calc(-50% - 26cqi) -50%; }
+.planet-fan { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+
+.zoom-controls { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.zoom-controls input[type=range] { flex: 1; accent-color: #65762d; min-width: 0; }
+.zoom-controls button { border: 1px solid #cfcec4; background: transparent; border-radius: 100px; padding: .45rem .8rem; font-size: .85rem; font-weight: 600; min-height: 40px; color: var(--ink); }
+.zoom-controls button:hover { background: #e6e4db; }
+
+/* ---------- Folha de vidro ---------- */
+.sheet {
+  position: absolute; right: 3%; top: 6%; bottom: 6%; z-index: 7;
+  width: min(360px, 50%); overflow: auto;
+  border-radius: 22px; padding: 14px 16px 16px; color: #f4f2fa;
+  background: linear-gradient(160deg, #ffffff26, #ffffff0c 60%, color-mix(in srgb, var(--c2, #7d5cf0) 18%, transparent));
+  -webkit-backdrop-filter: blur(18px) saturate(1.6); backdrop-filter: blur(18px) saturate(1.6);
+  box-shadow: inset 1px 1px 1px #ffffff80, inset 0 0 0 1px #ffffff2a, 0 18px 40px #0b0a1a88;
+  transform: translateX(110%); opacity: 0; transition: transform .26s ease-in, opacity .2s;
+  cursor: default; scrollbar-width: thin;
+}
+.sheet.in { transform: none; opacity: 1; transition: transform .55s cubic-bezier(.25, 1.25, .4, 1), opacity .2s; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.sheet-head::before { content: ""; position: absolute; left: 50%; top: 6px; width: 36px; height: 4px; border-radius: 4px; background: #ffffff55; translate: -50% 0; }
+.sheet-title { font-size: 1.05rem; font-weight: 650; letter-spacing: -.02em; display: flex; align-items: center; gap: .5em; }
+.sheet-title::before { content: ""; width: 12px; height: 12px; border-radius: 0 50% 50% 50%; rotate: 45deg; background: radial-gradient(circle at 62% 62%, var(--c1), var(--c2)); box-shadow: 0 0 10px var(--c2); }
+.sheet-close { border: 0; background: #ffffff1f; color: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; line-height: 1; }
+.sheet-close:hover { background: #ffffff33; }
+.sheet-body li, .sheet-body .toggle { opacity: 0; translate: 0 8px; }
+.sheet.in .sheet-body li, .sheet.in .sheet-body .toggle { opacity: 1; translate: 0 0; transition: opacity .3s calc(.12s + var(--i) * 50ms), translate .45s var(--spring) calc(.12s + var(--i) * 50ms); }
+.sheet-note { font-size: .74rem; color: #cfc9e2; margin-top: 10px; line-height: 1.4; }
+
+.recipes { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.recipes li { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 10px 12px; border-radius: 14px; background: #ffffff10; box-shadow: inset 0 0 0 1px #ffffff1a; }
+.recipes li strong { display: block; font-size: .9rem; }
+.recipes li span { font-size: .74rem; color: #cfc9e2; }
+.recipes li em { grid-column: 1 / -1; font-style: normal; font-size: .7rem; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: #cfc9e2; }
+.recipes li[data-state=pronta] { box-shadow: inset 0 0 0 1.5px #e6ff86aa; }
+.recipes li[data-state=pronta] em { color: #e6ff86; }
+.recipes li[data-state=pronta] em::before { content: "● "; }
+.recipes li[data-state=feita] { opacity: .6; }
+.recipes li[data-state=feita] em::before { content: "✓ "; }
+.recipes li[data-state=falta] em::before { content: "○ "; }
+.recipes li[data-state=espera] { background: transparent; box-shadow: inset 0 0 0 1px #ffffff2a; outline: 1px dashed #ffffff33; outline-offset: -4px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.res { display: inline-flex; align-items: center; gap: .35em; font-size: .74rem; padding: .2rem .55rem .2rem .4rem; border-radius: 100px; background: #ffffff14; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.res i { width: 11px; height: 11px; border-radius: 0 50% 50% 50%; rotate: 45deg; background: radial-gradient(circle at 62% 62%, var(--c1), var(--c2)); }
+.res.short { background: transparent; box-shadow: inset 0 0 0 1px #ffffff40; }
+.res.short i { background: transparent; outline: 1px dashed #ffffffaa; outline-offset: -1px; }
+.res.short b { color: #ffd0a8; }
+
+.dex { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.dex li { display: grid; justify-items: center; text-align: center; gap: 2px; padding: 10px 6px; border-radius: 14px; background: #ffffff10; }
+.dex .slot { width: 40px; aspect-ratio: 1; border-radius: 0 50% 50% 50%; rotate: 45deg; margin: 4px 0 6px; }
+.dex .owned .slot { background: radial-gradient(circle at 62% 62%, var(--c1), var(--c2)); box-shadow: 0 0 16px color-mix(in srgb, var(--c2) 60%, transparent); }
+.dex .unknown .slot { background: #0b0a1a66; box-shadow: inset 0 0 0 1px #ffffff26; }
+.dex strong { font-size: .84rem; }
+.dex span { font-size: .68rem; color: #cfc9e2; line-height: 1.3; }
+
+.toggles { display: grid; gap: 6px; }
+.toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 14px; background: #ffffff10; font-size: .88rem; cursor: pointer; }
+.toggle input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.toggle i { position: relative; width: 46px; height: 26px; border-radius: 100px; background: #ffffff22; box-shadow: inset 0 0 0 1px #ffffff33; transition: background .25s; flex: none; }
+.toggle i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 0 50% 50% 50%; rotate: 45deg; background: #fff; transition: left .35s var(--spring), border-radius .35s; box-shadow: 0 2px 6px #0004; }
+.toggle input:checked + i { background: radial-gradient(circle at 30% 50%, var(--c1), var(--c2)); }
+.toggle input:checked + i::after { left: 23px; border-radius: 50%; }
+.toggle input:focus-visible + i { outline: 2px solid #fff; outline-offset: 2px; }
+
+@media (max-width: 760px) {
+  .planet-stage { padding: 52px 4px 44px; }
+  .planet-scene { aspect-ratio: 3 / 4; --S: 15; --R: 33; --cy: 40%; }
+  .planet-fan { transform-origin: var(--cx) var(--cy); transition: translate .45s var(--spring), scale .45s var(--spring); }
+  .planet { transition: translate .45s var(--spring), scale .45s var(--spring); }
+  .planet-stage[data-sheet=open] .planet-fan { translate: 0 -20cqi; scale: .72; }
+  .planet-stage[data-sheet=open] .planet { translate: -50% calc(-50% - 20cqi); scale: .72; }
+  .sheet { left: 50%; right: auto; top: auto; bottom: 3%; translate: -50% 0; width: min(520px, calc(100% - 20px)); max-height: 52%; transform: translateY(110%); }
+  .dex { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .planet::before, .zoom-hint i::before, .zoom-hint i::after { animation: none; } }

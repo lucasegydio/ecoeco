@@ -1,0 +1,14 @@
+/* ecoeco · tokens da linguagem (frente linguagem, 21). Importe depois de vidro.css.
+   Luz: o trio quente que segue o dedo. Ação: par [c1 claro, c2 tinta] de cada bolha. */
+:root {
+  --eco-ambar: #ffb36b; --eco-coral: #ff5f9e; --eco-lilas: #b58cff;      /* luz (já são --warm1/2/3 em .liquid) */
+  --eco-noite: #202130; --eco-noite-2: #282939; --eco-vidro: #ffffff24;   /* base */
+  --eco-carinho-1: #ffc2a8; --eco-carinho-2: #ff5f7e;
+  --eco-polinizar-1: #fff0a0; --eco-polinizar-2: #ff9f43;
+  --eco-minerar-1: #ffcf8a; --eco-minerar-2: #e8572a;
+  --eco-construir-1: #d6f5b0; --eco-construir-2: #4fb06d;
+  --eco-plantar-1: #f2ff9e; --eco-plantar-2: #5fcf4a;
+  --eco-canal-1: #c9e6ff; --eco-canal-2: #6a7bff;
+  /* movimento (liquid.js): mola k/c */
+  --eco-mola-k: 190; --eco-mola-c: 17; --eco-toque: .9; --eco-foco: 1.17; --eco-escolha: 1.3;
+}
