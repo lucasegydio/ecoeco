@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bestiário e inventário · ecoeco</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+:root{--ink:#fff5e3;--mut:#cfc9e2}
+*{box-sizing:border-box}body{margin:0;background:#0d1121;color:var(--ink);font:15px/1.45 'DM Sans',sans-serif}
+header{padding:28px 16px 8px;max-width:1200px;margin:auto}h1{font:700 1.5rem 'Zen Kaku Gothic New';margin:0 0 4px}header p{margin:0;color:var(--mut);max-width:60ch}
+.dec{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.dec span{font-size:.74rem;padding:.2rem .65rem;border-radius:100px;background:#ffffff14;box-shadow:inset 0 0 0 1px #ffffff2a}
+main{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;padding:20px 16px 60px;max-width:1200px;margin:auto}
+figure{margin:0;width:340px;max-width:100%}figcaption{font-size:.8rem;color:var(--mut);margin-top:8px;text-align:center}
+.ph{position:relative;height:640px;border-radius:34px;overflow:hidden;background:radial-gradient(90% 50% at 50% 28%,#ff9d5c55,transparent 70%),linear-gradient(180deg,#1b2a3c,#2c2438 55%,#171a2c);box-shadow:0 20px 50px -20px #000,inset 0 0 0 1px #ffffff22;isolation:isolate}
+.ph .planet{position:absolute;left:50%;top:38%;width:230px;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bff59a,#4a9d56 45%,#1f4d4a);filter:blur(.5px);opacity:.85}
+.hud{position:absolute;top:14px;left:14px;right:14px;display:flex;gap:6px;align-items:center}
+.chip{border:0;color:#fff;font:600 .74rem 'DM Sans';padding:.35rem .7rem;border-radius:100px;background:#ffffff1c;backdrop-filter:blur(10px) saturate(1.4);box-shadow:inset 0 1px 1px #fff8,inset 0 0 0 1px #ffffff22;display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.hud .inv{margin-left:auto}
+.dot{width:11px;height:11px;border-radius:58% 42% 52% 48%/46% 54% 46% 54%;background:radial-gradient(circle at 34% 30%,#fffc,transparent 40%),radial-gradient(circle at 50% 70%,var(--c2),var(--c1))}
+.sheet{position:absolute;left:12px;right:12px;bottom:12px;max-height:80%;overflow:auto;padding:16px 14px;border-radius:28px;background:linear-gradient(160deg,#ffffff26,#ffffff0a);backdrop-filter:blur(22px) saturate(1.5);box-shadow:inset 0 1px 1px #fffb,inset 0 0 0 1px #ffffff26,0 20px 40px -16px #000;transition:transform .45s cubic-bezier(.3,1.4,.5,1),opacity .3s}
+.sheet[hidden]{display:block;transform:translateY(110%);opacity:0;pointer-events:none}
+.sheet h3{font:700 1.05rem 'Zen Kaku Gothic New';margin:0 0 2px}.sub{font-size:.72rem;color:var(--mut);margin:0 0 10px}
+.mats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;list-style:none;margin:0;padding:0}
+.mat{display:grid;justify-items:center;gap:2px;padding:10px 4px;border-radius:18px;background:#ffffff10;box-shadow:inset 0 0 0 1px #ffffff1c;text-align:center}
+.mat .blob{width:46px;aspect-ratio:1;border-radius:56% 44% 52% 48%/48% 54% 46% 52%;display:grid;place-items:center;font:700 1.15rem 'Zen Kaku Gothic New';background:radial-gradient(circle at 34% 28%,#ffffff70,transparent 34%),radial-gradient(120% 90% at 50% 115%,var(--c2),transparent 70%),linear-gradient(160deg,#ffffff22,#ffffff06);box-shadow:inset 0 1px 1px #ffffffa0,inset 0 -6px 10px -5px var(--c2);color:#fff;text-shadow:0 1px 3px #0008}
+.mat b{font-size:.78rem}.mat small{font-size:.62rem;color:var(--mut);line-height:1.25}
+.mat[data-z="0"] .blob{background:#0b0a1a55;box-shadow:inset 0 0 0 1.5px #ffffff30;outline:1.5px dashed #ffffff40;outline-offset:-5px;color:#ffffff80}
+.mat[data-z="0"]{opacity:.7}
+.recs{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:5px}.recs li{display:flex;justify-content:space-between;font-size:.74rem;padding:.4rem .7rem;border-radius:14px;background:#ffffff0d}.recs em{font-style:normal;color:#ffd0a8}.recs li.ok em{color:#b6f5a0}
+.tabs{display:flex;gap:6px;margin-bottom:8px}.tab{border:0;color:#fff;font:600 .78rem 'DM Sans';padding:.4rem .85rem;border-radius:100px;cursor:pointer;background:#ffffff14;box-shadow:inset 0 0 0 1px #ffffff2a}
+.tab[aria-selected=true]{background:linear-gradient(160deg,#ffffff40,#ff4f8666);box-shadow:inset 0 1px 1px #fffb}
+.count{font-size:.72rem;color:var(--mut);margin:0 0 8px}.count b{color:#fff}
+.bar{height:6px;border-radius:9px;background:#ffffff1a;margin:0 0 10px;overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#ffb36b,#ff5f9e)}
+.album{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.card{all:unset;box-sizing:border-box;display:grid;justify-items:center;text-align:center;gap:3px;padding:10px 8px 12px;border-radius:18px;background:#ffffff10;box-shadow:inset 0 0 0 1px #ffffff1c;cursor:pointer}
+.art{width:78px;aspect-ratio:1;display:grid;place-items:center;border-radius:56% 44% 52% 48%/48% 54% 46% 52%;overflow:hidden;background:radial-gradient(circle at 34% 28%,#ffffff50,transparent 34%),radial-gradient(120% 90% at 50% 115%,color-mix(in srgb,var(--c2) 55%,transparent),transparent 62%),linear-gradient(160deg,#ffffff22,#ffffff06);box-shadow:inset 0 1px 1px #ffffffa0,inset 0 -8px 12px -6px color-mix(in srgb,var(--c2) 60%,transparent)}
+.art img,.art svg{width:78%;height:78%;object-fit:contain;filter:drop-shadow(0 3px 3px #0006)}
+.card[data-st=nao] .art{background:#0b0a1a55;box-shadow:inset 0 0 0 1.5px #ffffff30;outline:1.5px dashed #ffffff40;outline-offset:-6px}
+.card[data-st=nao] .art>*{filter:brightness(0) drop-shadow(0 0 1px #fff8);opacity:.7}
+.card[data-st=visto] .art>*{filter:saturate(.45) drop-shadow(0 3px 3px #0006);opacity:.9}
+.card strong{font-size:.86rem}.st{font-style:normal;font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c1)}
+.card[data-st=nao] .st{color:#cfc9e2}.linha{font-size:.68rem;color:var(--mut);line-height:1.3}
+.ficha{text-align:center;display:grid;justify-items:center;gap:6px}.ficha .art{width:120px}.ficha h3{font-size:1.2rem}
+.rows{width:100%;display:grid;gap:5px;text-align:left;margin-top:4px}.rows div{display:flex;justify-content:space-between;font-size:.76rem;padding:.4rem .75rem;border-radius:14px;background:#ffffff0d}.rows span{color:var(--mut)}
+.btn{border:0;color:#fff;font:650 .78rem 'DM Sans';padding:.5rem 1rem;border-radius:100px;cursor:pointer;background:linear-gradient(160deg,#ffffff34,color-mix(in srgb,var(--c2) 45%,transparent));box-shadow:inset 0 1px 1px #fffb,0 6px 12px -6px var(--c2)}
+.back{position:absolute;top:10px;left:12px;font-size:.74rem}
+.flow{display:flex;align-items:center;justify-content:space-around;height:100%;padding:70px 10px 40px;flex-direction:column}
+.flow .row{display:flex;align-items:center;gap:6px}.flow .row .card{width:96px}.arrow{color:#ffffff90;font-size:1.3rem}
+.cap{font-size:.72rem;color:var(--mut);text-align:center;max-width:26ch}
+.toast{position:absolute;left:14px;right:14px;top:56px;padding:.6rem .9rem;border-radius:22px;font-size:.8rem;background:linear-gradient(160deg,#ffffff30,#ffffff10);backdrop-filter:blur(16px);box-shadow:inset 0 1px 1px #fffb,inset 0 0 0 1px #ffffff26;transition:.4s;display:flex;gap:8px;align-items:center}
+.toast[hidden]{display:flex;opacity:0;transform:translateY(-14px);pointer-events:none}
+h2.sec{width:100%;text-align:center;font:700 .95rem 'Zen Kaku Gothic New';color:#ffd9a8;margin:8px 0 -10px}
+</style></head><body>
+<header><h1>Bestiário e inventário</h1><p>Rodada 21 · frente bestiário. Toque nos chips, nas abas e nas fichas.</p>
+<div class="dec"><span>Modelo: Álbum</span><span>A06: silhueta</span><span>Estados: não descoberto · visto · na coleção</span><span>Posse: fotografar o bicho</span></div></header>
+<main>
+<h2 class="sec">Inventário</h2>
+<figure><div class="ph" id="p1"><i class="planet"></i><div class="hud"><span class="chip">Planeta Terra</span><button class="chip inv" id="invChip" aria-expanded="false"></button></div>
+<div class="sheet" id="invSheet" hidden></div></div><figcaption>Chip no HUD (só mostra o que você tem). Toque abre a tela com os cinco materiais e o que dá para fazer.</figcaption></figure>
+<h2 class="sec">Bestiário · álbum</h2>
+<figure><div class="ph" id="p2"><i class="planet"></i><div class="hud"><span class="chip">Planeta Terra</span><button class="chip inv" id="dexChip">Bestiário <b id="dexN"></b></button></div>
+<div class="toast" id="toast" hidden></div><div class="sheet" id="dexSheet" hidden></div></div><figcaption>Álbum por planeta. Toque numa ficha para abrir. “Fotografar” transforma Visto em Na coleção.</figcaption></figure>
+<h2 class="sec">Estados</h2>
+<figure><div class="ph"><div class="flow">
+<div class="row"><div id="f1"></div><span class="arrow">→</span><div id="f2"></div><span class="arrow">→</span><div id="f3"></div></div>
+<p class="cap">Não descoberto é uma silhueta escura com a pista. Ao ver o bicho no mundo ele fica “Visto” (cor apagada). Ao fotografá-lo, entra na coleção.</p>
+<p class="cap">Lagarto-deserto ainda sem arte: o desenho abaixo é um esboço de pincel para o time aprovar.</p>
+<div class="art" style="--c1:#ffcf8a;--c2:#e8572a;width:120px" id="lagBig"></div></div></div><figcaption>Fluxo dos três estados + esboço do lagarto</figcaption></figure>
+</main>
+<script>
+const A=(n)=>`assets/${n}.webp`;
+const LAG=`<svg viewBox="0 0 64 64" fill="none" stroke="#ffcf8a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10 40c6-14 18-18 28-12 6 4 10 3 14-2" fill="#e8572a55"/><path d="M10 40c4 6 14 8 24 4s16-2 20 4" /><circle cx="50" cy="26" r="1.6" fill="#fff5e3" stroke="none"/><path d="M20 44l-4 8M30 46l-2 8M42 46l2 8M50 46l4 6M12 38l-6-2"/><path d="M26 30l2-5 3 4 3-5 3 5" stroke="#ffb36b"/></svg>`;
+const SP=[{id:"brotinho",n:"Brotinho",img:A("brotinho-frente"),pl:"terra",reg:"Bosque do Orvalho",hint:"Chora perto de uma árvore com gota",c:["#f2ff9e","#5fcf4a"],st:"possui",quando:"Fotografado ao acalmar"},
+{id:"cinza",n:"Bichinho-cinza",img:A("bichinho-cinza"),pl:"terra",reg:"Encosta de Pedra",hint:"Vive entre as rochas duras",c:["#e4e0f2","#8a83a8"],st:"visto",quando:"Visto entre as rochas"},
+{id:"rabanete",n:"Rabanete-antena",img:A("rabanete-antena"),pl:"vulcanico",reg:"Planeta vulcânico",hint:"Escuta longe, na terra quente",c:["#ffc2a8","#ff5f7e"],st:"nao"},
+{id:"lagarto",n:"Lagarto-deserto",svg:LAG,pl:"vulcanico",reg:"Deserto do vulcânico",hint:"Toma sol nas pedras quentes",c:["#ffcf8a","#e8572a"],st:"nao"}];
+const LB={possui:"Na coleção",visto:"Visto",nao:"Não descoberto"};
+const art=(s)=>s.img?`<img src="${s.img}" alt="">`:s.svg;
+const num=(s)=>String(SP.indexOf(s)+1).padStart(2,"0");
+const card=(s,tag="button")=>`<${tag} class="card" data-st="${s.st}" data-id="${s.id}" style="--c1:${s.c[0]};--c2:${s.c[1]}"><span class="art">${art(s)}</span><strong>${s.st==="nao"?"Nº "+num(s)+" · ?":s.n}</strong><em class="st">${LB[s.st]}</em><span class="linha">${s.st==="possui"?s.reg:s.st==="visto"?"Visto · "+s.reg:s.hint}</span></${tag}>`;
+// inventário
+const MATS=[["fibra","Fibra",["#e6ff86","#1fbf5b"],3,"Passarela, canal"],["pedra","Pedra",["#e4e0f2","#8a83a8"],1,"Passarela, placa"],["semente","Semente",["#ffe39a","#d08a2a"],1,"Plantar"],["placa","Placa",["#bfe0ff","#4f63f2"],0,"Nave"],["nucleo","Núcleo",["#ffb3d6","#ff4f86"],0,"Nave"]];
+const inv=document.getElementById("invChip"),is=document.getElementById("invSheet");
+inv.innerHTML=MATS.filter(m=>m[3]).map(m=>`<span style="--c1:${m[2][0]};--c2:${m[2][1]};display:inline-flex;gap:4px;align-items:center"><i class="dot"></i>${m[3]}</span>`).join("");
+const REC=[["Passarela","fibra 2 · pedra 2",false],["Canal","fibra 1 · pedra 1",true],["Placa","fibra 1 · pedra 1",true],["Nave","placa 1 · núcleo 1",false]];
+is.innerHTML=`<h3>Materiais</h3><p class="sub">O que você carrega. Os vazios ficam tracejados.</p><ul class="mats">${MATS.map(m=>`<li class="mat" data-z="${m[3]?1:0}" style="--c1:${m[2][0]};--c2:${m[2][1]}"><span class="blob">${m[3]}</span><b>${m[1]}</b><small>${m[4]}</small></li>`).join("")}</ul><ul class="recs">${REC.map(r=>`<li class="${r[2]?"ok":""}"><span>${r[0]} <small style="color:#cfc9e2">${r[1]}</small></span><em>${r[2]?"Dá para fazer":"Falta"}</em></li>`).join("")}</ul>`;
+inv.onclick=()=>{is.hidden=!is.hidden;inv.setAttribute("aria-expanded",String(!is.hidden))};
+// bestiário
+let pl="terra",ds=document.getElementById("dexSheet"),open=null;
+const toast=document.getElementById("toast");
+function say(t){toast.innerHTML=t;toast.hidden=false;setTimeout(()=>toast.hidden=true,2400)}
+function dex(){document.getElementById("dexN").textContent=SP.filter(s=>s.st==="possui").length+"/"+SP.length;
+ if(open){const s=SP.find(x=>x.id===open);ds.innerHTML=`<button class="chip back" id="bk">← Álbum</button><div class="ficha" style="--c1:${s.c[0]};--c2:${s.c[1]};padding-top:20px"><span class="art">${art(s)}</span><h3>${s.st==="nao"?"Nº "+num(s)+" · ?":s.n}</h3><em class="st" style="color:${s.c[0]}">${LB[s.st]}</em><div class="rows"><div><span>Onde vive</span>${s.st==="nao"?"Ainda não sabemos":s.reg}</div><div><span>Pista</span>${s.hint}</div><div><span>Registro</span>${s.quando||(s.st==="nao"?"—":"Visto de longe")}</div></div>${s.st==="visto"?'<button class="btn" id="foto">Fotografar</button>':s.st==="possui"?'<button class="btn">Seguir o eco</button>':'<button class="btn" id="see">Simular: avistar</button>'}</div>`;
+  document.getElementById("bk").onclick=()=>{open=null;dex()};
+  const f=document.getElementById("foto"),se=document.getElementById("see");
+  if(f)f.onclick=()=>{s.st="possui";s.quando="Fotografado agora";say("<i class='dot' style='--c1:"+s.c[0]+";--c2:"+s.c[1]+"'></i> "+s.n+" entrou na coleção");dex();rest()};
+  if(se)se.onclick=()=>{s.st="visto";s.quando="Avistado de longe";say("Você viu algo novo. Fotografe para registrar.");dex();rest()};return}
+ const list=SP.filter(s=>s.pl===pl),own=SP.filter(s=>s.st==="possui").length,seen=SP.filter(s=>s.st!=="nao").length;
+ ds.innerHTML=`<h3>Bestiário</h3><div class="tabs">${[["terra","Terra"],["vulcanico","Vulcânico"]].map(([k,l])=>`<button class="tab" data-p="${k}" aria-selected="${pl===k}">${l}</button>`).join("")}</div><p class="count"><b>${own}</b> na coleção · <b>${seen}</b> vistas · ${SP.length} espécies</p><div class="bar"><i style="width:${own/SP.length*100}%"></i></div><ul class="album">${list.map(s=>"<li style='display:contents'>"+card(s)+"</li>").join("")}</ul>${pl==="vulcanico"?'<p class="sub" style="margin-top:10px">Outro planeta aparece depois da decolagem.</p>':""}`;
+ ds.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{pl=b.dataset.p;dex()});
+ ds.querySelectorAll(".card").forEach(b=>b.onclick=()=>{open=b.dataset.id;dex()})}
+function rest(){setTimeout(()=>{fl()},0)}
+document.getElementById("dexChip").onclick=()=>{ds.hidden=!ds.hidden};
+function fl(){[["f1","nao"],["f2","visto"],["f3","possui"]].forEach(([id,st])=>{const s={...SP[1],st,id:"x",img:A("bichinho-cinza")};document.getElementById(id).innerHTML=card(s,"div")});}
+document.getElementById("lagBig").innerHTML=LAG;
+dex();fl();ds.hidden=false;
+</script></body></html>

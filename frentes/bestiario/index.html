@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3f2ed">
+<meta name="description" content="Direção de arte da interface de ecoeco. Um estudo interativo de HUD circular, ícones e movimento.">
+<title>ecoeco™</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="leque.css">
+<link rel="stylesheet" href="planeta.css">
+<link rel="stylesheet" href="vidro.css">
+<link rel="stylesheet" href="revisao.css">
+<script src="hud.js" defer></script>
+<script src="icons.js" defer></script>
+<script src="liquid.js" defer></script>
+<script src="leque.js" defer></script>
+<script src="planeta.js" defer></script>
+<script src="jogo.js" defer></script>
+<script src="revisao.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;family=Zen+Kaku+Gothic+New:wght@400;500;700&amp;display=swap">
+<style>
+/* One grid cell defines the device glass for both the world and its title screen. */
+#jogo .game-stage {width:min(370px,100%,37.9svh);isolation:isolate}
+#jogo .game,#jogo #entrada {grid-area:1/1;width:100%;border-radius:34px}
+#jogo #entrada {position:relative;align-self:stretch;overflow:hidden;z-index:12;container-type:inline-size;touch-action:none;color:#fff5e3;background:linear-gradient(180deg,#0d1121fa 0%,#171728e8 28%,#24203470 55%,#121425ee 88%);font-family:'DM Sans',sans-serif;transition:opacity .55s ease}
+#entrada[hidden]{display:none}
+#jogo #entrada.saindo{opacity:0;pointer-events:none}
+.game-stage:has(#entrada:not([hidden]):not(.saindo)) .game > :not(canvas):not(.globe-dots){visibility:hidden}
+#entrada .po-luz,#entrada .orbital{position:absolute;inset:0;pointer-events:none}
+.po-luz{background:radial-gradient(ellipse 70% 35% at var(--lx,25%) var(--ly,45%),#ffb36b50,transparent),radial-gradient(ellipse 80% 48% at var(--lx2,60%) var(--ly2,55%),#bd7bc747,transparent)}
+.po-luz i{position:absolute;width:3px;height:3px;background:#fff5ce;border-radius:50%;box-shadow:0 0 8px 2px #ffc89888;animation:deriva 5s ease-in-out infinite alternate}
+@keyframes deriva{to{transform:translate(7px,-19px);opacity:.25}}
+.orbital{overflow:hidden}
+.orbital::before,.orbital::after{content:"";position:absolute;left:-21%;top:42%;width:142%;height:19%;border:1px solid #ffe2af5c;border-radius:50%;transform:rotate(-19deg);box-shadow:0 -1px 5px #ffb36b18}
+.orbital::after{top:43%;height:18%;border-style:dotted;opacity:.54}
+.entrada-miolo{position:absolute;inset:0;text-align:center}
+#entrada .source-wordmark{position:absolute;left:12%;top:17%;width:76%;mix-blend-mode:screen;animation:surgir .9s both}
+#entrada .source-wordmark img{filter:brightness(.61) contrast(5.2) invert(1)}
+.entrada-creditos{position:absolute;bottom:5%;width:100%;margin:0;font:400 clamp(10px,3cqi,12px) 'DM Sans',sans-serif;color:#eee1d6}
+.gota-iniciar{position:absolute;top:72%;left:50%;translate:-50% 0;transform:translate(var(--x,0),var(--y,0)) scale(var(--s,1))}
+#iniciar{min-height:52px;padding:10px 38px;color:#261d30;font:500 19px 'Zen Kaku Gothic New',sans-serif;border:1px solid #fff3da;border-radius:var(--b1,50%);background:radial-gradient(ellipse at var(--hx,25%) var(--hy,15%),#fff9ee,transparent 58%),linear-gradient(var(--ha,125deg),#ebc6ae,#c4abd1);box-shadow:inset 0 2px 4px #fff9,0 0 20px #ffbb892d}
+#iniciar:focus-visible{outline:2px solid white;outline-offset:5px}
+#jogo .game{font-family:'DM Sans',sans-serif}
+#jogo .game h3{font-family:'Zen Kaku Gothic New',sans-serif}
+@keyframes surgir{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#entrada *,#jogo #entrada{animation:none!important;transition:none!important}#jogo #entrada .po-luz{background:radial-gradient(ellipse at 45% 45%,#ffc99644,transparent 55%)}.gota-iniciar{transform:none}}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="site-head wrap">
+  <a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a>
+  <nav aria-label="Navegação principal"><a href="#jogo">Jogo</a><a href="#leque">Ring</a><a href="#planeta">Planeta</a><a href="#hud">HUD</a><a href="#linguagem">Linguagem</a><a href="referencias.html">Referências</a></nav>
+</header>
+<main id="conteudo" class="wrap">
+  <section class="intro" aria-labelledby="title">
+    <div>
+      <p class="eyebrow"><span class="key-dot"></span> Direção de arte da interface</p>
+      <h1 id="title">Interface <br class="intro-break">em órbita<span>.</span></h1>
+    </div>
+    <p class="lede">Um sistema visual para ecoeco. Formas suaves, espaço para respirar e movimento que responde ao toque.</p>
+  </section>
+
+  <section class="showcase jogo" id="jogo" data-review aria-labelledby="jogo-title">
+    <div class="study">
+      <div>
+        <p class="eyebrow">Protótipo interativo · rodadas 08–09</p>
+        <h2 id="jogo-title">O jogo no celular</h2>
+        <p>Não há personagem: você olha o planeta. <strong>Arraste</strong> para girar e use a <strong>pinça</strong> (dois dedos, ou a roda do mouse) para aproximar. Siga o eco e faça o primeiro planeta inteiro: gota, polinizar, minerar, plantar, canal, colheita, evolução, núcleo, placa, nave e decolagem. Afaste tudo para abrir o menu do planeta. Os atalhos levam direto às cenas.</p>
+      </div>
+      <div>
+        <div class="switch jogo-insist" role="group" aria-label="Insistência das pistas">
+          <button type="button" data-insist="sutil" aria-pressed="false">Sutil</button>
+          <button type="button" data-insist="padrao" aria-pressed="true">Padrão</button>
+          <button type="button" data-insist="explicita" aria-pressed="false">Explícita</button>
+        </div>
+        <div class="zoom-controls"><span class="zlabel">Pinça</span><input type="range" id="jogo-zoom" min="0" max="100" value="50" aria-label="Pinça: distância da câmera"></div>
+        <p class="variant-note">Pista atual: <span id="jogo-level" class="level-chip">buscar · pista 0</span></p>
+        <div class="dex-controls">
+          <p class="zlabel">Coleção</p>
+          <div class="switch dex-model" role="group" aria-label="Modelo de coleção">
+            <button type="button" data-model="album" aria-pressed="true">A · Álbum</button>
+            <button type="button" data-model="orbita" aria-pressed="false">B · Órbita</button>
+          </div>
+          <p class="zlabel">Não descoberto (A06)</p>
+          <div class="switch dex-a06" role="group" aria-label="Como mostrar espécie não descoberta">
+            <button type="button" data-a06="silhueta" aria-pressed="true">Silhueta</button>
+            <button type="button" data-a06="pista" aria-pressed="false">Pista</button>
+            <button type="button" data-a06="numero" aria-pressed="false">Número</button>
+            <button type="button" data-a06="borrado" aria-pressed="false">Borrado</button>
+          </div>
+        </div>
+        <div class="study-actions jump"><button type="button" class="quiet" id="jogo-reset"><span aria-hidden="true">↻</span> Recomeçar</button><button type="button" class="outline-link small" data-pular-dex="visto">Abrir a coleção</button><button type="button" class="outline-link small" data-pular="evolucao">Pular para a evolução</button><button type="button" class="outline-link small" data-pular="decolagem">Pular para a decolagem</button></div>
+      </div>
+    </div>
+    <div class="phone-bay">
+      <div class="stage leque-stage liquid game-stage" data-fan="closed" data-step="buscar" data-crying="true" data-off="true">
+        <div role="region" id="entrada" aria-label="ecoeco™ · Menu inicial">
+  <div class="po-luz" aria-hidden="true"></div>
+  <div class="orbital" aria-hidden="true"></div><div class="entrada-miolo">
+    <span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt="ecoeco™"></span>
+    <p class="entrada-creditos">Lucas · Joaquim · Peixe · Theo</p>
+    <div class="gota-iniciar"><button type="button" id="iniciar">Iniciar</button></div>
+  </div>
+</div>
+<div class="game" inert>
+          <i class="lumen" aria-hidden="true"></i><i class="lumen two" aria-hidden="true"></i>
+          <canvas class="globe" aria-label="Planeta: arraste para girar, pinça para aproximar"></canvas>
+          <i class="globe-dots" aria-hidden="true"></i>
+          <div class="objs"></div>
+          <div class="ring-layer"></div>
+          <div class="menu-layer"></div>
+          <div class="mini-prog" hidden><i class="ring"></i><b>Polinizando 0%</b></div>
+          <span class="eco-float eco-icon" aria-hidden="true"><span class="eco-rot" style="--ang:-90deg"><svg class="eco-ico" viewBox="0 0 32 32" aria-hidden="true"><circle class="src" cx="9" cy="16" r="2.7"/><path class="a1" d="M14 11.4a6.4 6.4 0 0 1 0 9.2"/><path class="a2" d="M18.6 8a11.4 11.4 0 0 1 0 16"/><path class="a3" d="M23.2 4.6a16.2 16.2 0 0 1 0 22.8"/></svg></span></span>
+          <button type="button" class="eco-edge eco-icon" aria-label="Eco de quem chora. Tocar para ir até lá"><span class="eco-rot"><svg class="eco-ico" viewBox="0 0 32 32" aria-hidden="true"><circle class="src" cx="9" cy="16" r="2.7"/><path class="a1" d="M14 11.4a6.4 6.4 0 0 1 0 9.2"/><path class="a2" d="M18.6 8a11.4 11.4 0 0 1 0 16"/><path class="a3" d="M23.2 4.6a16.2 16.2 0 0 1 0 22.8"/></svg></span></button>
+          <div class="hud-top">
+            <span class="hud-chip hud-planet">Planeta Terra</span>
+            <span class="hud-chip hud-inv" aria-live="polite"></span>
+          </div>
+          <p class="hud-hint" role="status" hidden></p>
+          <div class="cine" hidden aria-hidden="true"></div>
+          <div class="cine-card" role="status" hidden></div>
+          <section class="mapa" hidden aria-label="Primeira região revelada">
+            <p class="mapa-kicker">Primeira região revelada</p>
+            <div class="mapa-campo">
+              <i class="orbita o1"></i><i class="orbita o2"></i>
+              <span class="dest casa"><img src="assets/planeta-1A.webp" alt=""><b>Planeta Terra</b></span>
+              <span class="dest vulcanico"><i class="bola"></i><b>Vulcânico</b><em>ao alcance</em><span class="eco-sinal eco-icon"><span class="eco-rot"><svg class="eco-ico" viewBox="0 0 32 32" aria-hidden="true"><circle class="src" cx="9" cy="16" r="2.7"/><path class="a1" d="M14 11.4a6.4 6.4 0 0 1 0 9.2"/><path class="a2" d="M18.6 8a11.4 11.4 0 0 1 0 16"/><path class="a3" d="M23.2 4.6a16.2 16.2 0 0 1 0 22.8"/></svg></span></span></span>
+              <span class="dest longe l1"><i class="bola"></i><b>?</b><em>fora do alcance</em></span>
+              <span class="dest longe l2"><i class="bola"></i><b>?</b><em>sinais de criaturas</em><span class="eco-sinal eco-icon"><span class="eco-rot"><svg class="eco-ico" viewBox="0 0 32 32" aria-hidden="true"><circle class="src" cx="9" cy="16" r="2.7"/><path class="a1" d="M14 11.4a6.4 6.4 0 0 1 0 9.2"/><path class="a2" d="M18.6 8a11.4 11.4 0 0 1 0 16"/><path class="a3" d="M23.2 4.6a16.2 16.2 0 0 1 0 22.8"/></svg></span></span></span>
+            </div>
+            <p class="mapa-nota">Melhorias na nave aumentam o alcance e revelam novas regiões.</p>
+            <button type="button" class="mapa-voltar">Voltar ao planeta</button>
+          </section>
+          <section class="sheet game-sheet" hidden aria-label="Menu do planeta">
+            <div class="sheet-head"><h3 class="sheet-title">Receitas</h3><button type="button" class="sheet-close" aria-label="Fechar">×</button></div>
+            <div class="sheet-body"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="hypotheses">
+      <p class="eyebrow">Como este protótipo segue o jogo</p>
+      <ul>
+        <li>A câmera é orbital, sem avatar. Arrastar gira o planeta com inércia, e a pinça vai da escala planetária até o chão. Os objetos ficam de pé na superfície e somem do outro lado.</li>
+        <li>O anel sobre o Brotinho mostra só o que vale agora: Carinho sempre, mais a tarefa da vez (Polinizar, Minerar, Plantar, Canal e, depois de evoluir, Alcançar, Fabricar, Montar e Decolar). Uma ação sem material aparece vazada, com o que falta.</li>
+        <li><strong>Evolução:</strong> a colheita irrigada dispara a cena. A câmera foca, faíscas de vidro giram em espiral até o Brotinho, ele brilha, encolhe e estoura, e a flor vira copa com mola. Um cartão de vidro diz o que mudou ("agora ele alcança o alto"), e a câmera aponta para o núcleo no galho.</li>
+        <li><strong>Decolagem:</strong> a nave treme e acende como o eco, dispara com rastro, e a câmera se afasta além da atmosfera. O planeta encolhe e abre o mapa da primeira região, com o destino ao alcance, os de fora do alcance e sinais de criaturas como ecos.</li>
+        <li>A arte vem do Drive do time, recortada no Photoshop. A copa da evolução usa a árvore do bosque como substituta, até a forma evoluída existir.</li>
+        <li><strong>Coleção e Tracker (rodada 20):</strong> dois modelos para comparar. A · Álbum é uma folha por planeta, com cartões. B · Órbita mostra as espécies em bolhas de vidro girando em volta do planeta, com as de outro planeta numa órbita externa. A coleção é por posse; quem você só viu aparece como "Visto". Rastrear liga o eco na cor da espécie até encontrá-la. O seletor A06 compara quatro jeitos de mostrar quem ainda não foi descoberto.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="showcase leque" id="leque" data-review aria-labelledby="leque-title">
+    <div class="study">
+      <div>
+        <p class="eyebrow">Protótipo interativo · rodada 05</p>
+        <h2 id="leque-title">Anel de vidro</h2>
+        <p>Toque no bichinho para observar e abrir o leque. Ele mostra só o que dá para fazer ali. Recolha o que aparecer com um toque.</p>
+      </div>
+      <div>
+        <div class="switch scenes" role="group" aria-label="Contexto">
+          <button type="button" data-scene="flor" aria-pressed="true">Flor</button>
+          <button type="button" data-scene="rocha" aria-pressed="false">Rocha</button>
+          <button type="button" data-scene="travessia" aria-pressed="false">Travessia</button>
+          <button type="button" data-scene="canteiro" aria-pressed="false">Canteiro</button>
+        </div>
+
+        <p class="variant-note" id="leque-note">Anel de vidro líquido. Bolhas orgânicas em volta do bicho e uma luz quente que segue o dedo. Passe o mouse pelo palco.</p>
+        <div class="study-actions"><button type="button" class="quiet" id="leque-reset"><span aria-hidden="true">↻</span> Recomeçar</button></div>
+      </div>
+    </div>
+    <div class="stage leque-stage liquid" data-layout="anel" data-mat="vidro" data-open="false" data-fan="closed" data-observing="false" data-busy="false">
+      <div class="stage-top">
+        <div class="inventory" aria-label="Inventário">
+          <span data-res="fibra"><i></i>fibra <b>0</b></span>
+          <span data-res="pedra"><i></i>pedra <b>0</b></span>
+          <span data-res="semente"><i></i>semente <b>0</b></span>
+        </div>
+        <span>Ring contextual</span>
+      </div>
+      <div class="leque-scene">
+        <i class="lumen" aria-hidden="true"></i><i class="lumen two" aria-hidden="true"></i>
+        <div class="ground"></div>
+        <button type="button" class="target" data-kind="flor" data-state="flor" aria-label="flor">
+          <svg viewBox="0 0 120 90" aria-hidden="true">
+            <g data-s="flor"><path d="M60 84V50"/><path d="M60 66c-8-2-12-8-12-14 7 0 12 5 12 14"/><circle cx="60" cy="40" r="5" class="lime"/><ellipse cx="60" cy="29" rx="5.5" ry="9" transform="rotate(0 60 40)"/><ellipse cx="60" cy="29" rx="5.5" ry="9" transform="rotate(72 60 40)"/><ellipse cx="60" cy="29" rx="5.5" ry="9" transform="rotate(144 60 40)"/><ellipse cx="60" cy="29" rx="5.5" ry="9" transform="rotate(216 60 40)"/><ellipse cx="60" cy="29" rx="5.5" ry="9" transform="rotate(288 60 40)"/></g>
+            <g data-s="fruto"><path d="M60 84V50"/><path d="M60 66c-8-2-12-8-12-14 7 0 12 5 12 14"/><ellipse cx="60" cy="38" rx="13" ry="15" class="lime fill"/><path d="M60 23c2-5 6-7 10-7"/></g>
+            <g data-s="rocha"><path d="M22 82 30 52 52 36 82 40 100 62 96 82Z" class="fill" opacity=".55"/><path d="M50 48 60 60 56 72"/></g>
+            <g data-s="pedras"><ellipse cx="42" cy="76" rx="13" ry="8" class="lime fill"/><ellipse cx="66" cy="70" rx="10" ry="7" class="lime fill"/><ellipse cx="84" cy="79" rx="9" ry="6" class="lime fill"/></g>
+            <g data-s="vao"><path d="M4 60h36v26M116 60H80v26"/><path d="M48 74h4M66 80h4" stroke-dasharray="2 4"/></g>
+            <g data-s="passarela"><path d="M4 60h36v26M116 60H80v26"/><path d="M38 58q22 10 44 0" class="lime"/><path d="M46 61v6M54 63v6M62 64v6M70 63v6M78 61v6" class="lime"/></g>
+            <g data-s="seco"><ellipse cx="60" cy="68" rx="46" ry="14"/><path d="M36 66l8 3 4-4M68 70l9-2 5 3M54 62l5 4" stroke-dasharray="3 3"/><path d="M110 40v-8M106 36h8" opacity=".5"/></g>
+            <g data-s="plantado"><ellipse cx="60" cy="68" rx="46" ry="14"/><path d="M36 66l8 3 4-4M68 70l9-2 5 3" stroke-dasharray="3 3"/><path d="M60 68v-10M60 60c-5 0-8-3-8-7 5 0 8 3 8 7"/></g>
+            <g data-s="irrigado"><ellipse cx="60" cy="68" rx="46" ry="14" class="water"/><path d="M28 68q8-4 16 0t16 0 16 0 16 0" class="water"/><path d="M106 68h12" class="water"/></g>
+            <g data-s="muda"><ellipse cx="60" cy="68" rx="46" ry="14" class="water"/><path d="M28 72q8-4 16 0t16 0 16 0 16 0" class="water"/><path d="M60 68V40M60 52c-10 0-15-6-15-13 10 0 15 6 15 13M60 46c9 0 14-6 14-12-9 0-14 5-14 12" class="lime"/></g>
+          </svg>
+          <span class="target-label">flor</span>
+        </button>
+        <div class="recipe" hidden></div>
+        <span class="task-chip" aria-hidden="true"></span>
+        <div class="bg-halos" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="fan" id="leque-fan"></div>
+        <button type="button" class="critter" aria-controls="leque-fan" aria-expanded="false" aria-label="Brotinho · tocar para observar e abrir o anel">
+          <span class="aura"></span>
+          <span class="prog" aria-hidden="true"><i class="fill"></i><i class="track"></i><i class="arc"></i><i class="head"><b></b></i></span>
+          <span class="body"><img class="pet-img" src="assets/brotinho-frente.webp" alt="" width="240" height="258"></span>
+          <span class="critter-name">Brotinho</span>
+        </button>
+      </div>
+      <div class="stage-bottom"><span id="leque-status" role="status">Toque no bichinho</span><span class="stage-help">Brotinho: arte do time</span></div>
+    </div>
+    <div class="states" aria-label="Estados de uma casa do leque">
+      <figure><div class="spec"><svg viewBox="0 0 32 32"><path d="M13.2 12.3C9.3 4 19 3.6 18.6 11.8 25.4 6.7 29 16 21.1 17.9 27.5 23.5 20.5 29.2 16.4 22.1 12.8 29.5 5.2 24.5 10.9 18.4 2.8 17 5.8 7.6 13.2 12.3Z"/></svg></div><figcaption><strong>Disponível</strong>Bolha de vidro com a tinta da ação. No toque, ela se enche de cor, cresce com mola e o ícone fica branco.</figcaption></figure>
+      <figure><div class="spec falta"><svg viewBox="0 0 32 32"><path d="M4 21Q16 13 28 21M4 21v5M28 21v5M10 18.4V24M16 17v7M22 18.4V24"/></svg></div><figcaption><strong>Falta material</strong>Só o contorno tracejado, com um selo do que falta. Tocar abre a receita no alvo.</figcaption></figure>
+      <figure><div class="spec aceito"><svg viewBox="0 0 32 32"><path d="M13.2 12.3C9.3 4 19 3.6 18.6 11.8 25.4 6.7 29 16 21.1 17.9 27.5 23.5 20.5 29.2 16.4 22.1 12.8 29.5 5.2 24.5 10.9 18.4 2.8 17 5.8 7.6 13.2 12.3Z"/></svg></div><figcaption><strong>Aceito</strong>A bolha incha e cai no bicho, que respinga em anéis quentes. As outras voltam para ele.</figcaption></figure>
+      <figure><div class="spec andamento"><i></i></div><figcaption><strong>Em andamento</strong>Anel líquido na cor da ação: a água sobe por dentro, e no fim o anel floresce e respinga.</figcaption></figure>
+    </div>
+    <div class="hypotheses">
+      <p class="eyebrow">Hipóteses desta rodada</p>
+      <ul>
+        <li>O anel de vidro, que o time preferiu, vira a base. As gotas deram lugar a bolhas orgânicas, e cada uma tem forma própria e muda devagar.</li>
+        <li>A luz é quente e colorida (âmbar, coral e magenta) e segue o dedo. Sem toque, ela passeia sozinha. O vidro refrata essa luz, e o brilho de cada bolha fica do lado virado para ela.</li>
+        <li>O movimento usa molas físicas. As bolhas são atraídas de leve pelo dedo, esticam na direção em que se movem, e o ícone atrasa pela inércia.</li>
+        <li>Cor fixa por ação e só o ícone dentro da bolha. O nome aparece fora, no hover, no foco e na barra de estado.</li>
+        <li>Uma ação sem material aparece só no contorno. A outra opção é escondê-la, como o jogo faz hoje.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="showcase planeta" id="planeta" data-review aria-labelledby="planeta-title">
+    <div class="study">
+      <div>
+        <p class="eyebrow">Protótipo interativo · rodadas 04–05</p>
+        <h2 id="planeta-title">Menu do planeta</h2>
+        <p>Afaste a câmera até o planeta ficar pequeno. As bolhas do menu aparecem em volta dele, e cada uma abre uma folha de vidro.</p>
+      </div>
+      <div>
+        <div class="zoom-controls">
+          <button type="button" id="planet-in">Aproximar</button>
+          <input type="range" id="planet-zoom" min="0" max="100" value="0" aria-label="Distância da câmera">
+          <button type="button" id="planet-out">Afastar</button>
+        </div>
+        <p class="variant-note">No celular, a pinça faz esse papel. No navegador, use a roda do mouse sobre o palco ou o controle acima.</p>
+      </div>
+    </div>
+    <div class="stage leque-stage planet-stage liquid" data-layout="anel" data-mat="vidro" data-fan="closed">
+      <div class="stage-top"><span class="scale-label">Escala local</span><span>Menu do planeta</span></div>
+      <div class="planet-scene">
+        <div class="bg-halos" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <i class="lumen" aria-hidden="true"></i><i class="lumen two" aria-hidden="true"></i>
+        <div class="planet" aria-hidden="true"></div>
+        <img class="planet-critter" src="assets/brotinho-frente.webp" alt="" aria-hidden="true">
+        <div class="planet-fan" id="planet-fan"></div>
+        <p class="zoom-hint" aria-hidden="true"><i></i>Afaste com a pinça para abrir o menu</p>
+        <section class="sheet" id="planet-sheet" hidden aria-labelledby="planet-sheet-title">
+          <div class="sheet-head"><h3 class="sheet-title" id="planet-sheet-title">Receitas</h3><button type="button" class="sheet-close" aria-label="Fechar">×</button></div>
+          <div class="sheet-body"></div>
+        </section>
+      </div>
+      <div class="stage-bottom"><span id="planet-status" role="status">Toques no mundo ligados</span><span class="stage-help">Planeta 1A: arte do time</span></div>
+    </div>
+    <div class="hypotheses">
+      <p class="eyebrow">Hipóteses desta rodada</p>
+      <ul>
+        <li>O menu do planeta usa as mesmas gotas do ring, em volta do planeta e com a ponta virada para ele. A mesma família serve para o bicho e para o planeta.</li>
+        <li>O menu abre sozinho ao passar para a escala planetária e some ao voltar para a local, como no jogo hoje. Não há botão extra no HUD.</li>
+        <li>O conteúdo abre numa folha de vidro. No celular, em retrato, ela fica no pé da tela, com até 520 px, como no jogo. Em tela larga, entra pela lateral. O planeta se afasta para continuar visível.</li>
+        <li>Receitas mostram quatro estados: feita, dá para fazer, falta material e em espera. Na coleção, a espécie não descoberta aparece como silhueta em gota mais uma pista (A06 segue em aberto).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="showcase" id="hud" data-review aria-labelledby="hud-title">
+    <div class="study">
+      <div>
+        <p class="eyebrow">Estudo anterior · rodadas 01–02</p>
+        <h2 id="hud-title">Anel completo</h2>
+        <p>Explore dois desenhos para o mesmo menu. Toque num ícone para ver a resposta do anel.</p>
+      </div>
+      <div>
+        <div class="switch" role="group" aria-label="Forma do menu">
+          <button type="button" data-form="petalas" aria-pressed="true">Pétalas</button>
+          <button type="button" data-form="orbita" aria-pressed="false">Órbita</button>
+        </div>
+        <p class="variant-note" id="variant-note">Superfícies macias agrupam as ações em torno de um centro livre.</p>
+        <div class="study-actions"><button type="button" class="quiet" id="replay"><span aria-hidden="true">↻</span> Rever abertura</button></div>
+      </div>
+    </div>
+    <div class="stage" id="stage" data-form="petalas" data-open="true">
+      <div class="stage-top"><span><i></i> Menu de ação</span><span>Estudo em movimento</span></div>
+      <div class="ring" aria-label="Demonstração do menu circular">
+        <div class="guide outer"></div><div class="guide middle"></div><div class="guide inner"></div>
+        <span class="axis axis-y"></span><span class="axis axis-x"></span>
+        <div class="ripple" data-ripple></div>
+        <div class="orbit-items" id="orbit-items"></div>
+        <button class="core" type="button" aria-controls="orbit-items" aria-expanded="true" aria-label="Fechar menu">
+          <span class="source-mark source-symbol" aria-hidden="true"><img src="assets/prancheta-1.png" alt=""></span>
+          <span class="core-label">Fechar</span>
+        </button>
+      </div>
+      <div class="stage-bottom"><span id="stage-state" role="status">Regar · selecionada</span><span class="stage-help">Toque para selecionar</span></div>
+    </div>
+    <div class="response" id="selection">
+      <span class="eyebrow">Ação em foco</span>
+      <p id="action-desc"><strong>Regar</strong> <span>O preenchimento e o pulso visual indicam a seleção.</span></p>
+      <span class="annotation">Ações ilustrativas</span>
+    </div>
+  </section>
+
+  <section class="language" id="linguagem" data-review aria-labelledby="visual-title">
+    <div class="section-head"><div><p class="eyebrow">Sistema visual</p><h2 id="visual-title">Forma, cor e gesto.</h2></div><p>Uma linguagem provisória para controles, ícones e respostas visuais de ecoeco.</p></div>
+    <div class="plates">
+      <article class="plate"><div class="plate-art contours" aria-hidden="true"><span class="source-mark source-symbol-plate"><img src="assets/prancheta-1.png" alt=""></span></div><h3>Contorno aberto</h3><p>Ovóides, cortes e repetições partem das pranchetas da marca. A abertura dá direção às formas.</p></article>
+      <article class="plate"><div class="plate-art swatches" aria-label="Marfim, tinta, lilás e lima"><i></i><i></i><i></i><i></i></div><h3>Cor como estado</h3><p>Marfim e tinta dão a base. Lilás dá corpo ao controle. Lima, preenchimento e texto marcam a seleção.</p></article>
+      <article class="plate"><div class="plate-art gestures" aria-hidden="true"><i></i><i></i><i></i></div><h3>Resposta ao toque</h3><p>O menu abre do centro. Ao selecionar, o foco muda e um pulso curto assenta o gesto. A leitura funciona sem áudio.</p></article>
+    </div>
+  </section>
+
+  <section class="originals" id="pranchetas" data-review aria-labelledby="originals-title">
+    <div class="section-head">
+      <div><p class="eyebrow">Identidade ecoeco</p><h2 id="originals-title">Pranchetas originais.</h2></div>
+      <p>A assinatura em linha abre a apresentação. O símbolo concêntrico dá forma ao botão central, e o estudo em perspectiva orienta a expansão do anel.</p>
+    </div>
+    <div class="originals-grid">
+      <figure>
+        <a href="assets/prancheta-1.png" target="_blank" rel="noreferrer" aria-label="Ver Prancheta 1 original em tamanho completo"><img src="assets/prancheta-1.png" width="2560" height="1440" loading="lazy" alt="Estudos do logotipo ecoeco em linha e em pilha, símbolo concêntrico e letras em órbita."></a>
+        <figcaption><strong>Prancheta 1</strong><span>Assinaturas e símbolo concêntrico</span></figcaption>
+      </figure>
+      <figure>
+        <a href="assets/prancheta-2.png" target="_blank" rel="noreferrer" aria-label="Ver Prancheta 2 original em tamanho completo"><img src="assets/prancheta-2.png" width="2560" height="1440" loading="lazy" alt="Letras ovais distribuídas em anéis, em perspectiva e com variação de escala."></a>
+        <figcaption><strong>Prancheta 2</strong><span>Letras em órbita e perspectiva</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="review-summary" aria-labelledby="review-summary-title">
+    <div><h2 id="review-summary-title">Resumo da revisão</h2><p>As respostas ficam neste navegador. Copie o resumo para compartilhar com a equipe.</p></div>
+    <button type="button" class="outline-link" id="review-copy">Copiar resumo</button>
+    <p id="review-status" role="status"></p>
+    <textarea id="review-fallback" aria-label="Resumo para copiar" readonly hidden></textarea>
+  </section>
+
+  <section class="ref-callout" aria-labelledby="ref-title">
+    <div><p class="eyebrow">Pesquisa visual</p><h2 id="ref-title">Board de referências</h2><p>Formas que se unem, direção dos ícones, uso do vazio e animações que respondem ao gesto.</p></div>
+    <div><a class="outline-link" href="variacoes-ui.html">Estudos de interface</a> <a class="outline-link" href="referencias.html">Abrir board</a></div>
+  </section>
+</main>
+<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface · rodada 20</span></footer>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const menu = document.querySelector('#entrada');
+  const game = document.querySelector('#jogo .game');
+  const drop = menu.querySelector('.gota-iniciar');
+  const center = () => ({x: menu.clientWidth / 2, y: drop.offsetTop + drop.offsetHeight / 2});
+  const glass = Liquid.create({stage:menu, scene:menu, center});
+  glass.setItems([{id:'iniciar', el:drop, bx:0, by:0, delay:380}]);
+  glass.open();
+  for (const [x,y] of [[16,36],[29,68],[38,25],[67,31],[76,62],[83,44],[55,78]]) {
+    const mote = document.createElement('i');
+    Object.assign(mote.style,{left:x+'%',top:y+'%',animationDelay:-x/12+'s'});
+    menu.querySelector('.po-luz').append(mote);
+  }
+  let transitionTimer;
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  function enterGame() {
+    clearTimeout(transitionTimer);
+    menu.hidden = true;
+    game.inert = false;
+    // as pistas começam a contar quando o jogo começa, não durante a abertura
+    document.dispatchEvent(new CustomEvent('ecoeco:iniciar'));
+  }
+  menu.querySelector('button').onclick = () => {
+    if (menu.classList.contains('saindo')) return;
+    glass.accept('iniciar'); menu.classList.add('saindo');
+    transitionTimer = setTimeout(() => {enterGame(); game.tabIndex=-1; game.focus({preventScroll:true});},reducedMotion.matches ? 0 : 550);
+  };
+  document.querySelectorAll('[data-pular]').forEach(button => button.addEventListener('click',enterGame));
+  document.addEventListener('ecoeco:pular', enterGame);
+  document.querySelector('#jogo-reset').addEventListener('click',() => {
+    clearTimeout(transitionTimer);
+    game.inert=true; menu.classList.remove('saindo'); menu.hidden=false; glass.open(); menu.querySelector('button').focus({preventScroll:true});
+  });
+});
+</script>
+</body>
+</html>
