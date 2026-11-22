@@ -18,8 +18,57 @@
 <script src="planeta.js" defer></script>
 <script src="jogo.js" defer></script>
 <script src="revisao.js" defer></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&amp;display=swap">
+<style>
+#entrada{box-sizing:border-box;position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:1.5rem;border:0;color:#333b31;background:radial-gradient(ellipse at 58% 58%,#fff9e9,transparent 46%),#f2f1e9;font-family:'DM Sans',sans-serif}
+#entrada[open]{display:grid;place-items:center}
+#entrada::backdrop{background:#f2f1e9}
+body:has(#entrada[open]){overflow:hidden}
+.entrada-miolo{position:relative;text-align:center;width:min(72vw,28rem)}
+.entrada-miolo .source-wordmark{animation:aparecer .85s ease-out both}
+.entrada-creditos{margin:2rem auto 3rem;font-size:.8rem;line-height:1.8;color:#565c51;animation:aparecer .7s .25s both}
+#iniciar{font:500 1rem 'DM Sans',sans-serif;min-height:48px;padding:.8rem 2.6rem;border-radius:52% 48% 49% 51% / 58% 53% 47% 42%;color:#343c32;border:1px solid #d3d5c6;background:linear-gradient(145deg,#fffefa,#e5e7db);box-shadow:inset 0 2px 3px white,0 5px 18px #7176581a;animation:aparecer .65s .45s both}
+#iniciar:focus-visible{outline:2px solid #566346;outline-offset:5px}
+.po-luz{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.po-luz i{position:absolute;width:4px;height:4px;background:#fffdf0;border-radius:50%;box-shadow:0 0 9px 3px #ddbb7c80;animation:flutuar 7s ease-in-out infinite alternate}
+@keyframes flutuar{to{transform:translate(9px,-20px);opacity:.35}}
+@keyframes aparecer{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@media(pointer:fine){#entrada,#entrada button,#jogo .game,#jogo .game button{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='10' cy='10' r='7' fill='%23fff9e5' fill-opacity='.7' stroke='%2357614c'/%3E%3Ccircle cx='10' cy='10' r='2' fill='%2357614c'/%3E%3C/svg%3E") 10 10,auto}}
+@media(prefers-reduced-motion:reduce){#entrada *{animation:none!important}}
+</style>
 </head>
 <body>
+<dialog id="entrada" aria-label="ecoeco™ · Menu inicial">
+  <div class="po-luz" aria-hidden="true"></div>
+  <div class="entrada-miolo">
+    <span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt="ecoeco™"></span>
+    <p class="entrada-creditos">Lucas Egydio · Joaquim · Peixe · Theo</p>
+    <button type="button" id="iniciar">Iniciar</button>
+  </div>
+</dialog>
+<script>
+{
+  const entrada = document.querySelector('#entrada');
+  if (!location.hash) {
+    const luz = entrada.querySelector('.po-luz');
+    for (const [i, ponto] of [[16,36],[29,68],[38,25],[67,31],[76,62],[83,44],[55,78]].entries()) {
+      const p = document.createElement('i');
+      Object.assign(p.style,{left:ponto[0]+'%',top:ponto[1]+'%',animationDelay:-i+'s'});
+      luz.append(p);
+    }
+    entrada.showModal();
+    document.querySelector('#iniciar').onclick = () => {
+      entrada.close();
+      location.hash = 'jogo';
+      const jogo = document.querySelector('#jogo .game');
+      jogo.tabIndex = -1;
+      jogo.focus({preventScroll:true});
+      jogo.scrollIntoView({block:'center',behavior:'instant'});
+    };
+  }
+}
+</script>
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <header class="site-head wrap">
   <a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a>
