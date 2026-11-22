@@ -79,7 +79,21 @@
         </div>
         <div class="zoom-controls"><span class="zlabel">Pinça</span><input type="range" id="jogo-zoom" min="0" max="100" value="50" aria-label="Pinça: distância da câmera"></div>
         <p class="variant-note">Pista atual: <span id="jogo-level" class="level-chip">buscar · pista 0</span></p>
-        <div class="study-actions jump"><button type="button" class="quiet" id="jogo-reset"><span aria-hidden="true">↻</span> Recomeçar</button><button type="button" class="outline-link small" data-pular="evolucao">Pular para a evolução</button><button type="button" class="outline-link small" data-pular="decolagem">Pular para a decolagem</button></div>
+        <div class="dex-controls">
+          <p class="zlabel">Coleção</p>
+          <div class="switch dex-model" role="group" aria-label="Modelo de coleção">
+            <button type="button" data-model="album" aria-pressed="true">A · Álbum</button>
+            <button type="button" data-model="orbita" aria-pressed="false">B · Órbita</button>
+          </div>
+          <p class="zlabel">Não descoberto (A06)</p>
+          <div class="switch dex-a06" role="group" aria-label="Como mostrar espécie não descoberta">
+            <button type="button" data-a06="silhueta" aria-pressed="true">Silhueta</button>
+            <button type="button" data-a06="pista" aria-pressed="false">Pista</button>
+            <button type="button" data-a06="numero" aria-pressed="false">Número</button>
+            <button type="button" data-a06="borrado" aria-pressed="false">Borrado</button>
+          </div>
+        </div>
+        <div class="study-actions jump"><button type="button" class="quiet" id="jogo-reset"><span aria-hidden="true">↻</span> Recomeçar</button><button type="button" class="outline-link small" data-pular-dex="visto">Abrir a coleção</button><button type="button" class="outline-link small" data-pular="evolucao">Pular para a evolução</button><button type="button" class="outline-link small" data-pular="decolagem">Pular para a decolagem</button></div>
       </div>
     </div>
     <div class="phone-bay">
@@ -136,6 +150,7 @@
         <li><strong>Evolução:</strong> a colheita irrigada dispara a cena. A câmera foca, faíscas de vidro giram em espiral até o Brotinho, ele brilha, encolhe e estoura, e a flor vira copa com mola. Um cartão de vidro diz o que mudou ("agora ele alcança o alto"), e a câmera aponta para o núcleo no galho.</li>
         <li><strong>Decolagem:</strong> a nave treme e acende como o eco, dispara com rastro, e a câmera se afasta além da atmosfera. O planeta encolhe e abre o mapa da primeira região, com o destino ao alcance, os de fora do alcance e sinais de criaturas como ecos.</li>
         <li>A arte vem do Drive do time, recortada no Photoshop. A copa da evolução usa a árvore do bosque como substituta, até a forma evoluída existir.</li>
+        <li><strong>Coleção e Tracker (rodada 20):</strong> dois modelos para comparar. A · Álbum é uma folha por planeta, com cartões. B · Órbita mostra as espécies em bolhas de vidro girando em volta do planeta, com as de outro planeta numa órbita externa. A coleção é por posse; quem você só viu aparece como "Visto". Rastrear liga o eco na cor da espécie até encontrá-la. O seletor A06 compara quatro jeitos de mostrar quem ainda não foi descoberto.</li>
       </ul>
     </div>
   </section>
@@ -335,7 +350,7 @@
     <div><a class="outline-link" href="variacoes-ui.html">Estudos de interface</a> <a class="outline-link" href="referencias.html">Abrir board</a></div>
   </section>
 </main>
-<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface</span></footer>
+<footer class="site-foot wrap"><a class="brand" href="./index.html" aria-label="ecoeco, início"><span class="source-mark source-wordmark"><img src="assets/prancheta-1.png" alt=""></span></a><span>Estudo de interface · rodada 20</span></footer>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const menu = document.querySelector('#entrada');
@@ -365,6 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     transitionTimer = setTimeout(() => {enterGame(); game.tabIndex=-1; game.focus({preventScroll:true});},reducedMotion.matches ? 0 : 550);
   };
   document.querySelectorAll('[data-pular]').forEach(button => button.addEventListener('click',enterGame));
+  document.addEventListener('ecoeco:pular', enterGame);
   document.querySelector('#jogo-reset').addEventListener('click',() => {
     clearTimeout(transitionTimer);
     game.inert=true; menu.classList.remove('saindo'); menu.hidden=false; glass.open(); menu.querySelector('button').focus({preventScroll:true});

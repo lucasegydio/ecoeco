@@ -556,3 +556,77 @@ button.gobj { pointer-events: auto; cursor: pointer; }
 .game .hud-chip { min-height: 27px; max-width: 100%; padding: 4px 8px; font-size: clamp(11px,3.5cqi,13px); }
 .game .hud-inv { margin-inline-start: auto; justify-content: flex-end; flex-wrap: wrap; gap: 3px 6px; }
 .game .hud-hint { background: linear-gradient(145deg,#29382ddc,#26332eda); font-size: clamp(12px,3.6cqi,14px); }
+
+/* ---------- Rodada 20 · coleção e tracker ---------- */
+.dex-controls { display: grid; gap: 6px; margin-top: 14px; }
+.dex-controls .switch { flex-wrap: wrap; border-radius: 22px; }
+.dex-controls .switch button { padding: .5rem .8rem; min-height: 38px; font-size: .8rem; }
+.gobj-cinza.hop img { animation: hop .7s var(--spring); }
+.gobj-cinza img { animation: cinzaBob 3.4s ease-in-out infinite; transform-origin: 50% 100%; }
+@keyframes cinzaBob { 50% { scale: 1.03 .97; } }
+/* abas e contagem */
+.dex-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+.dex-tab { border: 0; color: #fff; font-size: .78rem; font-weight: 650; padding: .4rem .85rem; border-radius: 100px; cursor: pointer; background: #ffffff14; box-shadow: inset 0 0 0 1px #ffffff2a; }
+.dex-tab[aria-selected=true] { background: linear-gradient(160deg, #ffffff40, color-mix(in srgb, var(--c2, #ff4f86) 40%, transparent)); box-shadow: inset 0 1px 1px #fffb; }
+.dex-count { font-size: .72rem; color: #cfc9e2; margin: 0 0 8px; }
+.dex-count b { color: #fff; }
+/* Modelo A · álbum */
+.album { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.card { display: grid; justify-items: center; text-align: center; gap: 3px; padding: 10px 8px 12px; border-radius: 18px; background: #ffffff10; box-shadow: inset 0 0 0 1px #ffffff1c; min-width: 0; }
+.card-art, .orb-art { position: relative; width: 64px; aspect-ratio: 1; display: grid; place-items: center; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%;
+  background: radial-gradient(circle at 34% 28%, #ffffff50, transparent 34%), radial-gradient(120% 90% at 50% 115%, color-mix(in srgb, var(--c2) 55%, transparent), transparent 62%), linear-gradient(160deg, #ffffff22, #ffffff06);
+  box-shadow: inset 0 1px 1px #ffffffa0, inset 0 -8px 12px -6px color-mix(in srgb, var(--c2) 60%, transparent); overflow: hidden; }
+.card-art img, .orb-art img { width: 78%; height: 78%; object-fit: contain; filter: drop-shadow(0 3px 3px #0006); }
+.card[data-st=nao] .card-art, .orb[data-st=nao] .orb-art { background: #0b0a1a55; box-shadow: inset 0 0 0 1.5px #ffffff30; outline: 1.5px dashed #ffffff40; outline-offset: -6px; }
+.card[data-st=visto] .card-art img, .orb[data-st=visto] .orb-art img { filter: saturate(.55) drop-shadow(0 3px 3px #0006); opacity: .9; }
+.card strong { font-size: .86rem; } .card .st { font-style: normal; font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c1); }
+.card[data-st=nao] .st { color: #cfc9e2; } .card .linha { font-size: .68rem; color: #cfc9e2; line-height: 1.3; }
+.formas { display: flex; gap: 4px; margin-top: 2px; }
+.formas i { font-style: normal; font-size: .62rem; padding: .1rem .45rem; border-radius: 100px; box-shadow: inset 0 0 0 1px #ffffff40; color: #cfc9e2; }
+.formas i.on { background: color-mix(in srgb, var(--c2) 45%, transparent); color: #fff; box-shadow: inset 0 1px 1px #fff8; }
+.rastrear { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; border: 0; color: #fff; font-size: .74rem; font-weight: 650; padding: .35rem .75rem .35rem .45rem; border-radius: 100px; cursor: pointer;
+  background: linear-gradient(160deg, #ffffff34, color-mix(in srgb, var(--c2) 45%, transparent)); box-shadow: inset 0 1px 1px #fffb, 0 6px 12px -6px var(--c2); }
+.rastrear svg { width: 18px; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; filter: url(#pincel); }
+.rastrear svg .f { fill: #fff; stroke: none; }
+/* A06: quatro jeitos de mostrar quem não foi descoberto */
+img.sil { filter: brightness(0) drop-shadow(0 0 1px #fff8) !important; opacity: .7; }
+img.borrado, .blob-sil.borrado { filter: blur(5px) saturate(.4) !important; opacity: .75; }
+.blob-sil { width: 62%; aspect-ratio: .9; border-radius: 52% 48% 44% 56% / 60% 58% 42% 40%; background: #000; opacity: .7; box-shadow: 0 0 0 1px #fff4; }
+.pista-glyph { width: 60%; color: #fff; opacity: .85; } .pista-glyph svg { width: 100%; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; filter: url(#pincel); }
+.pista-glyph svg .f { fill: currentColor; stroke: none; }
+.caixa-num { font: 700 1.2rem 'Zen Kaku Gothic New', sans-serif; color: #ffffffc0; letter-spacing: .04em; }
+.nome-borrado { filter: blur(3.5px); user-select: none; }
+/* Modelo B · órbita */
+.dex-orbit { position: absolute; inset: 0; z-index: 9; pointer-events: none; opacity: 0; transition: opacity .35s; }
+.dex-orbit.in { opacity: 1; }
+.dex-orbit[hidden] { display: none; }
+.orb { position: absolute; left: 0; top: 0; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; animation: orbIn .6s var(--spring) both; animation-delay: calc(var(--i) * 70ms); }
+.orb .orb-art { width: 58px; transition: scale .35s var(--spring); }
+.orb[data-planet=vulcanico] .orb-art { width: 44px; outline: 1.5px dashed #ffb36b88; outline-offset: 3px; }
+.orb:hover .orb-art, .orb.sel .orb-art { scale: 1.16; box-shadow: inset 0 1px 1px #fff, 0 0 18px var(--c2); }
+.orb:focus-visible { outline: none; } .orb:focus-visible .orb-art { box-shadow: 0 0 0 2px #fff; }
+@keyframes orbIn { from { opacity: 0; scale: .3; } to { opacity: 1; scale: 1; } }
+.orb-fechar { position: absolute; right: 14px; top: 62px; width: 36px; height: 36px; border-radius: 50%; border: 0; color: #fff; font-size: 1.1rem; cursor: pointer; pointer-events: auto; background: #ffffff22; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: inset 0 1px 1px #fff8; }
+.game-stage[data-orbit] .menu-layer { opacity: 0; pointer-events: none; }
+.dex-caption {
+  position: absolute; left: 50%; bottom: 16px; translate: -50% 0; z-index: 13; width: calc(100% - 28px); display: grid; justify-items: center; gap: 2px; text-align: center; color: #fff;
+  padding: 12px 14px; border-radius: 20px; background: linear-gradient(160deg, #ffffff2c, color-mix(in srgb, var(--c2) 22%, transparent)); -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #fffb, 0 12px 26px -10px #0009; opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .45s var(--spring);
+}
+.dex-caption.in { opacity: 1; transform: none; } .dex-caption[hidden] { display: none; }
+.dex-caption strong { font-size: .95rem; } .dex-caption em { font-style: normal; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--c1); } .dex-caption span { font-size: .74rem; color: #e3def0; }
+/* tracker: o eco ganha a cor da espécie rastreada */
+.game-stage[data-track] .eco-edge { opacity: 1 !important; scale: 1 !important; pointer-events: auto !important; }
+.game-stage[data-track][data-off=false] .eco-edge { opacity: 0 !important; pointer-events: none !important; }
+.game-stage[data-track][data-off=false] .eco-float { opacity: 1; }
+.game-stage[data-track] .eco-icon .eco-rot { animation: ecoBuzz var(--vib) linear infinite; }
+.game-stage[data-track] .eco-icon { background: radial-gradient(circle at 34% 28%, #ffffff70, transparent 32%), radial-gradient(120% 90% at 50% 115%, color-mix(in srgb, var(--trk2, #ff5f9e) 65%, transparent), transparent 62%), linear-gradient(160deg, #ffffff30, #ffffff08); }
+/* toast de vidro */
+.g-toast { position: absolute; left: 50%; top: 58px; translate: -50% 0; z-index: 14; display: flex; align-items: center; gap: 10px; padding: 8px 14px 8px 8px; border-radius: 18px; color: #fff; max-width: calc(100% - 24px);
+  background: linear-gradient(160deg, #ffffff30, color-mix(in srgb, var(--warm2) 20%, transparent)); -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
+  box-shadow: inset 0 1px 1px #fffb, 0 12px 24px -10px #0009; opacity: 0; transform: translateY(-8px) scale(.96); transition: opacity .3s, transform .5s var(--spring); pointer-events: none; }
+.g-toast.in { opacity: 1; transform: none; } .g-toast[hidden] { display: none; }
+.g-toast b { display: block; font-size: .84rem; } .g-toast small { font-size: .7rem; color: #e3def0; }
+.t-art { width: 38px; height: 38px; border-radius: 56% 44% 52% 48% / 48% 54% 46% 52%; display: grid; place-items: center; background: #ffffff22; box-shadow: inset 0 1px 1px #fff8; flex: none; }
+.t-art img { width: 80%; height: 80%; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) { .orb, .gobj-cinza img { animation: none !important; } }

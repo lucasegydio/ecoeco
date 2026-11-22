@@ -60,6 +60,7 @@
   const A = (n) => `assets/${n}.webp`;
   const OBJ = [
     { id: "pet", img: A("brotinho-frente"), lat: 14, lon: 150, size: 21, tap: true, label: "Brotinho", anchor: -94 },
+    { id: "cinza", img: A("bichinho-cinza"), lat: -16, lon: -72, size: 19, tap: true, label: "Bichinho-cinza", anchor: -96 },
     { id: "tree", img: A("arvore"), lat: 19, lon: 142, size: 26, tap: true, label: "Árvore com gota" },
     { id: "nucleo", lat: 19, lon: 142, size: 5, label: "Núcleo de propulsão", anchor: -620, hidden: false, kind: "orb" },
     { id: "flower", img: A("flor-creme"), lat: 10, lon: 157, size: 9, label: "Flor" },
@@ -148,6 +149,32 @@
   const fresh = () => ({ calm: false, pollinated: false, fruitTaken: false, mined: false, stonesTaken: false, planted: false,
     irrigated: false, harvested: false, evolved: false, nucleo: false, placa: false, nave: false, launched: false });
   let S = fresh(), busy = false;
+
+  // ---------- coleção e tracker (rodada 20) ----------
+  // Coleção por posse (decisão 5 do hub): a espécie entra quando você tem um bicho dela vivo.
+  // Três estados: na coleção (possui) · visto (encontrou no mundo, ainda não é seu) · não descoberto (A06).
+  const SPECIES = [
+    { id: "brotinho", name: "Brotinho", img: A("brotinho-frente"), planet: "terra", region: "Bosque do Orvalho", obj: "pet", hint: "Chora perto de uma árvore com gota", glyph: "plantar", c: ["#f2ff9e", "#5fcf4a"] },
+    { id: "cinza", name: "Bichinho-cinza", img: A("bichinho-cinza"), planet: "terra", region: "Encosta de Pedra", obj: "cinza", hint: "Vive entre as rochas duras", glyph: "minerar", c: ["#e4e0f2", "#8a83a8"] },
+    { id: "rabanete", name: "Rabanete-antena", img: A("rabanete-antena"), planet: "vulcanico", region: "Planeta vulcânico", hint: "Escuta longe, na terra quente", glyph: "som", c: ["#ffc2a8", "#ff5f7e"] },
+    { id: "lagarto", name: "Lagarto-deserto", img: null, planet: "vulcanico", region: "Deserto do vulcânico", hint: "Toma sol nas pedras quentes", glyph: "polinizar", c: ["#ffcf8a", "#e8572a"] }
+  ];
+  let seen = { cinza: false };
+  let dexModel = "album", a06 = "silhueta", dexPlanet = "terra", tracking = null, foundAt = 0, orbitOpen = false, orbitSel = null;
+  const status = (sp) => sp.id === "brotinho" ? (S.calm ? "possui" : "nao") : seen[sp.id] ? "visto" : "nao";
+  const STLABEL = { possui: "Na coleção", visto: "Visto", nao: "Não descoberto" };
+  const canTrack = (sp) => sp.obj && sp.planet === "terra" && status(sp) !== "nao";
+  const num = (sp) => String(SPECIES.indexOf(sp) + 1).padStart(2, "0");
+  // arte conforme o estado e, para não descobertos, conforme a opção A06 escolhida
+  function art(sp, st) {
+    if (st !== "nao") return sp.img ? `<img src="${sp.img}" alt="">` : `<i class="blob-sil"></i>`;
+    if (a06 === "silhueta") return sp.img ? `<img class="sil" src="${sp.img}" alt="">` : `<i class="blob-sil"></i>`;
+    if (a06 === "pista") return `<span class="pista-glyph"><svg viewBox="0 0 32 32">${ICONS[sp.glyph]}</svg></span>`;
+    if (a06 === "numero") return `<span class="caixa-num">${num(sp)}</span>`;
+    return sp.img ? `<img class="borrado" src="${sp.img}" alt="">` : `<i class="blob-sil borrado"></i>`;
+  }
+  const nameFor = (sp, st) => st !== "nao" ? sp.name : a06 === "borrado" ? `<span class="nome-borrado">${sp.name}</span>` : a06 === "numero" ? `Nº ${num(sp)}` : "?";
+  const lineFor = (sp, st) => st === "possui" ? sp.region : st === "visto" ? `Visto · ${sp.region}` : a06 === "numero" ? "Ainda não descoberto" : sp.hint;
   let inv = { fibra: 0, pedra: 0, semente: 0, nucleo: 0, placa: 0 };
   const RESC = { fibra: ["#e6ff86", "#1fbf5b"], pedra: ["#e4e0f2", "#8a83a8"], semente: ["#ffe39a", "#d08a2a"], nucleo: ["#ffb3d6", "#ff4f86"], placa: ["#bfe0ff", "#4f63f2"] };
   const renderInv = (bump) => {
@@ -403,7 +430,7 @@
       requestAnimationFrame(stepFn);
     }, delay);
   }
-  ecoEdge.addEventListener("click", (e) => { e.stopPropagation(); if (!locked) focus(pet, .8, .6); });
+  ecoEdge.addEventListener("click", (e) => { e.stopPropagation(); if (!locked) focus(tracking ? byId[tracking.obj] : pet, .8, .6); });
 
   // ---------- cena de EVOLUÇÃO ----------
   // Foco no Brotinho → a luz quente converge → faíscas de vidro giram em espiral até ele → ele brilha,
@@ -491,6 +518,8 @@
     }));
   };
   function openSheet(id) {
+    if (id === "colecao" && dexModel === "orbita") { closeSheet(); orbitOpen ? closeOrbit() : openOrbit(); return; }
+    if (orbitOpen) closeOrbit();
     if (activeSheet === id) { closeSheet(); return; }
     activeSheet = id;
     menuSlots.forEach((s) => { const b = s.querySelector(".fan-item"); b.dataset.state = b.dataset.id === id ? "aceito" : "ok"; });
@@ -513,14 +542,118 @@
       const st = done ? "feita" : ok ? "pronta" : "falta";
       return `<li data-state="${st}"><div><strong>${n}</strong><span>No mundo</span></div><div class="chips">${Object.entries(need).map(([k, v]) => chip(k, done ? v : inv[k] || 0, v)).join("")}</div><em>${{ feita: "Feita", pronta: "Dá para fazer", falta: "Falta material" }[st]}</em></li>`;
     }).join("")}</ul>`,
-    colecao: () => `<ul class="dex dex-art">${[["Brotinho", A("brotinho-frente"), S.calm], ["Bichinho-cinza", A("bichinho-cinza"), false, "Pista: rochas duras"], ["Rabanete-antena", A("rabanete-antena"), false, "Pista: escuta longe"]].map(([n, img, own, hint]) => `<li class="${own ? "owned" : "unknown"}"><img src="${img}" alt=""><strong>${own ? n : "?"}</strong><span>${own ? (S.evolved && n === "Brotinho" ? "Evoluiu: copa" : "Na sua coleção") : hint || "Ainda não encontrado"}</span></li>`).join("")}</ul><p class="sheet-note">Silhueta e pista para quem você ainda não encontrou (A06 em aberto).</p>`,
+    colecao: () => {
+      // Modelo A · álbum por planeta
+      const list = SPECIES.filter((sp) => sp.planet === dexPlanet);
+      const owned = SPECIES.filter((sp) => status(sp) === "possui").length, vistos = SPECIES.filter((sp) => status(sp) !== "nao").length;
+      return `<div class="dex-tabs" role="tablist">${[["terra", "Terra"], ["vulcanico", "Vulcânico"]].map(([k, l]) => `<button type="button" role="tab" class="dex-tab" data-planet="${k}" aria-selected="${dexPlanet === k}">${l}</button>`).join("")}</div>
+      <p class="dex-count"><b>${owned}</b> na coleção · <b>${vistos}</b> vistas · ${SPECIES.length} espécies</p>
+      <ul class="album">${list.map((sp) => {
+        const st = status(sp);
+        const forms = sp.id === "brotinho" && st === "possui" ? `<span class="formas"><i class="on">Broto</i><i class="${S.evolved ? "on" : ""}">Copa</i></span>` : "";
+        return `<li class="card" data-st="${st}" style="--c1:${sp.c[0]};--c2:${sp.c[1]}"><span class="card-art">${art(sp, st)}</span><strong>${nameFor(sp, st)}</strong><em class="st">${STLABEL[st]}</em><span class="linha">${lineFor(sp, st)}</span>${forms}${canTrack(sp) ? `<button type="button" class="rastrear" data-track="${sp.id}"><svg viewBox="0 0 32 32" aria-hidden="true">${ICONS.eco}</svg>Rastrear</button>` : ""}</li>`;
+      }).join("")}</ul>${dexPlanet === "vulcanico" ? '<p class="sheet-note">Espécies de outro planeta aparecem depois da decolagem.</p>' : ""}`;
+    },
     som: () => `<div class="toggles">${["Música", "Efeitos", "Vibração no eco"].map((l, i) => `<label class="toggle"><span>${l}</span><input type="checkbox" id="g-snd-${i}" checked><i aria-hidden="true"></i></label>`).join("")}</div>`,
     ajustes: () => `<div class="toggles">${["Movimento reduzido", "Texto maior", "Dicas explícitas"].map((l, i) => `<label class="toggle"><span>${l}</span><input type="checkbox" id="g-adj-${i}"${i === 2 ? " checked" : ""}><i aria-hidden="true"></i></label>`).join("")}</div>`
   };
 
+  // ---------- toast de vidro ----------
+  const toastEl = document.createElement("div"); toastEl.className = "g-toast"; toastEl.hidden = true; toastEl.setAttribute("role", "status");
+  game.append(toastEl);
+  let toastTimer = 0;
+  function toast(html, ms = 2600) {
+    toastEl.innerHTML = html; toastEl.hidden = false;
+    toastEl.classList.remove("in"); void toastEl.offsetWidth; toastEl.classList.add("in");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { toastEl.classList.remove("in"); setTimeout(() => { toastEl.hidden = true; }, 300); }, ms);
+  }
+
+  // ---------- tracker: escolher uma espécie e seguir o eco até ela ----------
+  function track(id) {
+    const sp = SPECIES.find((x) => x.id === id);
+    if (!sp || !canTrack(sp)) return;
+    tracking = sp; foundAt = 0;
+    closeSheet(); closeOrbit();
+    cam.zt = Math.max(cam.zt, .56);
+    stage.dataset.track = sp.id;
+    for (const el of [ecoEdge, ecoTag]) { el.style.setProperty("--trk1", sp.c[0]); el.style.setProperty("--trk2", sp.c[1]); }
+    toast(`<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>Rastreando ${sp.name}</b><small>Siga o eco na borda</small></span>`);
+  }
+  function stopTrack() { tracking = null; foundAt = 0; delete stage.dataset.track; }
+  sheet.addEventListener("click", (e) => {
+    const tab = e.target.closest(".dex-tab"), tr = e.target.closest(".rastrear");
+    if (tab) { dexPlanet = tab.dataset.planet; sheet.querySelector(".sheet-body").innerHTML = SHEETS.colecao(); }
+    if (tr) track(tr.dataset.track);
+  });
+
+  // ---------- Modelo B · coleção em órbita do planeta ----------
+  // As espécies viram bolhas de vidro girando em volta do planeta; as de outro planeta ficam numa órbita
+  // externa, menores e tracejadas. Tocar abre uma legenda de vidro com Rastrear.
+  const orbitLayer = document.createElement("div"); orbitLayer.className = "dex-orbit"; orbitLayer.hidden = true;
+  const caption = document.createElement("div"); caption.className = "dex-caption"; caption.hidden = true;
+  game.append(orbitLayer, caption);
+  function openOrbit() {
+    orbitOpen = true; orbitSel = null; caption.hidden = true;
+    cam.zt = 0;   // planeta no menor tamanho para as órbitas caberem
+    stage.dataset.orbit = "1";
+    orbitLayer.innerHTML = SPECIES.map((sp, i) => {
+      const st = status(sp);
+      return `<button type="button" class="orb" data-sp="${sp.id}" data-st="${st}" data-planet="${sp.planet}" style="--c1:${sp.c[0]};--c2:${sp.c[1]};--i:${i}" aria-label="${st === "nao" ? "Espécie não descoberta" : sp.name}"><span class="orb-art">${art(sp, st)}</span></button>`;
+    }).join("") + '<button type="button" class="orb-fechar" aria-label="Fechar coleção">×</button>';
+    orbitLayer.hidden = false; orbitLayer.classList.remove("in"); void orbitLayer.offsetWidth; orbitLayer.classList.add("in");
+    menuEngine.close();
+  }
+  function closeOrbit() {
+    if (!orbitOpen) return;
+    orbitOpen = false; delete stage.dataset.orbit; caption.hidden = true;
+    orbitLayer.classList.remove("in"); setTimeout(() => { if (!orbitOpen) orbitLayer.hidden = true; }, 300);
+    if (menuOpen) { placeMenu(); menuEngine.open(); }
+  }
+  orbitLayer.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (e.target.closest(".orb-fechar")) { closeOrbit(); return; }
+    const b = e.target.closest(".orb"); if (!b) return;
+    const sp = SPECIES.find((x) => x.id === b.dataset.sp), st = status(sp);
+    orbitSel = sp.id;
+    orbitLayer.querySelectorAll(".orb").forEach((o) => o.classList.toggle("sel", o === b));
+    caption.style.setProperty("--c1", sp.c[0]); caption.style.setProperty("--c2", sp.c[1]);
+    caption.innerHTML = `<strong>${nameFor(sp, st)}</strong><em>${STLABEL[st]}${sp.planet === "vulcanico" ? " · outro planeta" : ""}</em><span>${lineFor(sp, st)}</span>${canTrack(sp) ? `<button type="button" class="rastrear" data-track="${sp.id}"><svg viewBox="0 0 32 32" aria-hidden="true">${ICONS.eco}</svg>Rastrear</button>` : ""}`;
+    caption.hidden = false; caption.classList.remove("in"); void caption.offsetWidth; caption.classList.add("in");
+  });
+  caption.addEventListener("click", (e) => { e.stopPropagation(); const tr = e.target.closest(".rastrear"); if (tr) track(tr.dataset.track); });
+  ["pointerdown"].forEach((ev) => { orbitLayer.addEventListener(ev, (e) => e.stopPropagation()); caption.addEventListener(ev, (e) => e.stopPropagation()); });
+
+  // bichinho-cinza: tocar registra "visto" (ainda não é seu: posse pede outro passo do game design)
+  byId.cinza.el.addEventListener("click", (e) => {
+    e.stopPropagation(); if (moved > 8 || locked) return;
+    const sp = SPECIES[1], first = !seen.cinza;
+    seen.cinza = true;
+    halo(byId.cinza.sx, byId.cinza.sy - byId.cinza.px * .5, sp.c[1]);
+    byId.cinza.el.classList.remove("hop"); void byId.cinza.el.offsetWidth; byId.cinza.el.classList.add("hop");
+    toast(first ? `<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>Nova espécie vista</b><small>Bichinho-cinza · Encosta de Pedra</small></span>`
+      : `<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>Bichinho-cinza</b><small>Visto. Ainda não é seu.</small></span>`);
+    if (tracking && tracking.id === "cinza") stopTrack();
+  });
+  root.querySelectorAll(".dex-model button").forEach((b) => b.addEventListener("click", () => {
+    dexModel = b.dataset.model;
+    root.querySelectorAll(".dex-model button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    if (activeSheet === "colecao" || orbitOpen) { closeSheet(); closeOrbit(); openSheet("colecao"); }
+  }));
+  root.querySelectorAll(".dex-a06 button").forEach((b) => b.addEventListener("click", () => {
+    a06 = b.dataset.a06;
+    root.querySelectorAll(".dex-a06 button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    if (activeSheet === "colecao") sheet.querySelector(".sheet-body").innerHTML = SHEETS.colecao();
+    if (orbitOpen) openOrbit();
+  }));
+  root.querySelectorAll("[data-pular-dex]").forEach((b) => b.addEventListener("click", () => {
+    reset(); S.calm = true; stage.dataset.crying = "false"; seen.cinza = b.dataset.pularDex === "visto";
+    cam.zt = cam.z = .1; document.dispatchEvent(new CustomEvent("ecoeco:pular"));
+  }));
+
   // ---------- recomeçar e atalhos de playtest ----------
   function reset(to) {
     S = fresh(); busy = false; inv = { fibra: 0, pedra: 0, semente: 0, nucleo: 0, placa: 0 };
+    seen = { cinza: false }; stopTrack(); closeOrbit();
     ["fruit", "stones", "fruit2", "nave"].forEach(hide);
     byId.nucleo.hidden = false; byId.nucleo.el.hidden = false; byId.nucleo.el.classList.remove("beckon");
     byId.flower.dim = false; byId.canteiro.el.dataset.state = "seco";
@@ -653,9 +786,10 @@
     menuLayer.style.setProperty("--cx", v.cx.toFixed(1) + "px");
     menuLayer.style.setProperty("--cy", v.cy.toFixed(1) + "px");
 
-    // eco
-    const pq = pet.q || rotate(pet.p);
-    const onScreen = pq[2] > .1 && showK > .5 && pet.sx > 0 && pet.sx < W && pet.sy > 40 && pet.sy < H - 40;
+    // eco: segue quem chora (Brotinho) ou, com o tracker, a espécie rastreada
+    const T = tracking ? byId[tracking.obj] : pet;
+    const pq = T.q || rotate(T.p);
+    const onScreen = pq[2] > .1 && showK > .5 && T.sx > 0 && T.sx < W && T.sy > 40 && T.sy < H - 40;
     const q0 = [(W / 2 - v.cx) / v.R, (v.cy - H * .55) / v.R], l0 = Math.hypot(q0[0], q0[1]);
     const c0 = l0 < 1 ? [q0[0], q0[1], Math.sqrt(1 - l0 * l0)] : [q0[0] / l0, q0[1] / l0, 0];
     const near = Math.pow(clamp(1 - Math.acos(clamp(pq[0] * c0[0] + pq[1] * c0[1] + pq[2] * c0[2], -1, 1)) / (Math.PI * .7), 0, 1), 1.4);
@@ -665,23 +799,48 @@
       el.style.setProperty("--pulse", pulse.toFixed(2) + "s"); el.style.setProperty("--near", near.toFixed(2));
     }
     stage.dataset.off = String(!onScreen);
-    if (!S.calm && !reduce.matches && now - lastPulse > pulse * 1000) {
+    if ((!S.calm || tracking) && !reduce.matches && now - lastPulse > pulse * 1000) {
       lastPulse = now;
       for (const el of [ecoEdge, ecoTag]) { el.classList.remove("ping"); void el.offsetWidth; el.classList.add("ping"); }
     }
-    if (onScreen) ecoTag.style.transform = `translate(${pet.sx.toFixed(1)}px, ${(pet.sy - pet.px * 1.15).toFixed(1)}px)`;
+    if (onScreen) ecoTag.style.transform = `translate(${T.sx.toFixed(1)}px, ${(T.sy - T.px * 1.15).toFixed(1)}px)`;
     else {
-      let dx = pet.sx - W / 2, dy = pet.sy - H / 2;
+      let dx = T.sx - W / 2, dy = T.sy - H / 2;
       if (pq[2] <= .1) { dx = pq[0]; dy = -pq[1]; if (Math.hypot(dx, dy) < .05) { dx = 0; dy = 1; } }
       const s = Math.min((W / 2 - 34) / Math.abs(dx || 1e-6), (H / 2 - 74) / Math.abs(dy || 1e-6));
       ecoEdge.style.setProperty("--px", (W / 2 + dx * s).toFixed(1) + "px");
       ecoEdge.style.setProperty("--py", (H / 2 + dy * s).toFixed(1) + "px");
       ecoEdge.querySelector(".eco-rot").style.setProperty("--ang", (Math.atan2(-dy, -dx) * 180 / Math.PI).toFixed(1) + "deg");
     }
+    // tracker: encontrado quando o alvo fica à vista, perto do centro, por quase um segundo
+    if (tracking) {
+      if (onScreen && near > .72) {
+        if (!foundAt) foundAt = now;
+        else if (now - foundAt > 900) {
+          const sp = tracking; stopTrack();
+          halo(T.sx, T.sy - T.px * .5, sp.c[1]);
+          toast(`<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>Encontrado</b><small>${sp.name} · ${sp.region}</small></span>`);
+        }
+      } else foundAt = 0;
+    }
+
+    // orbita da coleção (modelo B): bolhas giram devagar em volta do planeta
+    if (orbitOpen) {
+      const u = W / 100, t = now / 1000;
+      orbitLayer.querySelectorAll(".orb").forEach((b, i) => {
+        const outer = b.dataset.planet !== "terra";
+        // órbitas elípticas: a tela é alta, então a externa passa acima e abaixo do planeta
+        const rx = outer ? Math.min(v.R / u + 6, 38) : Math.min(v.R / u + 12, 40);
+        const ry = outer ? rx * 1.9 : rx * 1.2;
+        const a = rad((outer ? 250 : -90) + (i % 2) * (outer ? 180 : 150)) + t * (outer ? -.06 : .09);
+        b.style.transform = `translate(${(v.cx + Math.cos(a) * rx * u).toFixed(1)}px, ${(v.cy + Math.sin(a) * ry * u).toFixed(1)}px) translate(-50%, -50%)`;
+      });
+    }
+    const petq = pet.q || rotate(pet.p);
 
     // etapa e pista
-    const seen = pq[2] > .1 && pet.sx > 0 && pet.sx < W && pet.sy > 0 && pet.sy < H;
-    const st = stepNow(seen, showK);
+    const petSeen = petq[2] > .1 && pet.sx > 0 && pet.sx < W && pet.sy > 0 && pet.sy < H;
+    const st = stepNow(petSeen, showK);
     if (st !== step) { step = st; stepAt = now; level = -1; stage.dataset.step = st; }
     const [t1, t2] = INSIST[insist], idle = (now - stepAt) / 1000;
     const lv = idle >= t2 ? 2 : idle >= t1 ? 1 : 0;
