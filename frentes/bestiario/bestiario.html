@@ -48,11 +48,12 @@ h4{font:700 .72rem 'DM Sans';letter-spacing:.1em;text-transform:uppercase;color:
 .recs{display:grid;gap:5px;margin:0;padding:0;list-style:none}.recs li{display:flex;justify-content:space-between;align-items:center;font-size:.76rem;padding:.45rem .8rem;border-radius:14px;background:#ffffff0d}.recs em{font-style:normal;color:#ffd0a8;font-size:.7rem}.recs li.ok em{color:#b6f5a0}.recs small{color:var(--mut)}
 /* barra de baixo */
 .nav{display:flex;gap:6px;padding:8px 14px 14px;background:linear-gradient(0deg,#0d1121cc,transparent)}.nav button{flex:1;border:0;color:var(--mut);font:650 .8rem 'DM Sans';padding:.6rem;border-radius:100px;background:var(--l);cursor:pointer}.nav button[aria-selected=true]{color:#fff;background:#ffffff38;box-shadow:inset 0 1px 1px #fffb}
+.carta{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:9;background:#14131f}
 .toast{position:absolute;left:14px;right:14px;top:60px;z-index:5;padding:.55rem .9rem;border-radius:22px;font-size:.8rem;background:linear-gradient(160deg,#ffffff40,#ffffff18);backdrop-filter:blur(16px);box-shadow:inset 0 1px 1px #fffb;transition:.4s}.toast[hidden]{display:block;opacity:0;transform:translateY(-14px);pointer-events:none}
 .game{position:relative;flex:1;display:grid;place-items:center}.game .planet{width:230px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bff59a,#4a9d56 45%,#1f4d4a)}
 .hud{position:absolute;top:16px;left:14px;right:14px;display:flex;gap:6px;align-items:center}.hud .btn{background:#ffffff22;box-shadow:inset 0 1px 1px #fff8}
 </style></head><body>
-<header><h1>Bestiário e inventário</h1><p>Rodada 21 · frente bestiário. Agora são telas cheias, um HUD à parte que substitui o do jogo. Os bichos ficam em células iguais, sem bolha. Toque nas células, nas abas e nos botões.</p>
+<header><h1>Bestiário e inventário</h1><p>Rodada 21 · frente bestiário. Agora são telas cheias, um HUD à parte que substitui o do jogo. Os bichos ficam em células iguais, sem bolha. Tocar numa célula abre a carta do passaporte em tela cheia.</p>
 <div class="dec"><span>Álbum</span><span>A06 silhueta</span><span>Visto existe</span><span>Posse: fotografar</span><span>Células uniformes</span></div></header>
 <main>
 <figure><div class="ph" id="p0"></div><figcaption>Do jogo: o chip do HUD abre a tela cheia. Toque em “Bestiário” ou no chip de materiais.</figcaption></figure>
@@ -96,9 +97,12 @@ function inv(){const m=MATS.find(x=>x.id===st.msel);
 function game(){return `<div class="game"><i class="planet"></i><div class="hud"><span class="btn">Planeta Terra</span><button class="btn" data-t="inv" style="margin-left:auto">3 · 1 · 1</button><button class="btn" data-t="best">Bestiário ${SP.filter(x=>x.st==="possui").length}/${SP.length}</button></div></div>`}
 function render(id,tab){const el=document.getElementById(id);el.dataset.tab=tab;el.innerHTML=tab==="best"?best():tab==="inv"?inv():game();
  el.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>render(id,b.dataset.t));
- el.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{st.sel=b.dataset.id;render(id,"best")});
+ el.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{st.sel=b.dataset.id;render(id,"best");abrir(id,SP.find(x=>x.id===st.sel))});
  el.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{st.msel=b.dataset.m;render(id,"inv")});
  el.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{st.pl=b.dataset.p;render(id,"best")});
  const a=el.querySelector("#act");if(a)a.onclick=()=>{const s=SP.find(x=>x.id===st.sel);if(s.st==="visto"){s.st="possui";render(id,"best");toast(document.getElementById(id),s.n+" entrou na coleção")}else if(s.st==="nao"){s.st="visto";render(id,"best");toast(document.getElementById(id),"Você viu algo novo. Fotografe para registrar.")}}}
+const CARTA={brotinho:1,cinza:6,rabanete:2},STM={possui:"foto",visto:"visto",nao:"nao"};
+function abrir(id,sp){const el=document.getElementById(id);if(!CARTA[sp.id])return false;el.querySelector(".carta")?.remove();const f=document.createElement("iframe");f.className="carta";f.title="Carta de "+sp.n;f.src=`carta/carta.html?embed=1&id=${CARTA[sp.id]}&st=${STM[sp.st]}`;el.append(f);return true}
+addEventListener("message",e=>{if(e.data&&e.data.fechar)document.querySelectorAll(".ph .carta").forEach(f=>f.remove())});
 render("p0","jogo");render("p1","best");render("p2","inv");
 </script></body></html>
