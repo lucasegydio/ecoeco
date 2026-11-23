@@ -26,13 +26,13 @@ figure{margin:0;width:360px;max-width:100%}figcaption{font-size:.8rem;color:var(
 /* grade uniforme: sem bolha, mesma célula para todos */
 .chips{display:flex;gap:6px;margin:10px 0 8px}.chip{border:0;color:#fff;font:600 .74rem 'DM Sans';padding:.35rem .8rem;border-radius:100px;cursor:pointer;background:var(--l);box-shadow:inset 0 0 0 1px #ffffff2a}.chip[aria-selected=true]{background:#ffffff38;box-shadow:inset 0 1px 1px #fffb}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;list-style:none;margin:0;padding:0}
-.cell{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto 1fr;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#ffffff1e,#ffffff0a);box-shadow:inset 0 0 0 1px #ffffff1f}
+.cell{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-rows:auto 1fr;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#ffffff1e,#ffffff0a);box-shadow:inset 0 0 0 1px #ffffff1f}
 .cell[aria-pressed=true]{box-shadow:inset 0 0 0 2px #fff,0 0 18px -4px var(--c2)}
 .cell .n{font:700 .62rem 'DM Sans';letter-spacing:.06em;padding:.22rem .5rem;background:color-mix(in srgb,var(--c2) 38%,#ffffff12);color:#fff}
 .cell[data-st=nao] .n{background:#ffffff18;color:var(--mut)}
 .cell .art{position:relative;aspect-ratio:1;display:grid;align-items:end;justify-items:center;padding:8px 6px 10px}
 .cell .art::after{content:"";position:absolute;bottom:7px;width:56%;height:7px;border-radius:50%;background:radial-gradient(closest-side,#0007,transparent)}
-.cell .art>*{position:relative;z-index:1;height:100%;width:100%;object-fit:contain}
+.cell .art{overflow:hidden;width:100%;align-self:start}.cell .art>*{position:absolute;left:6px;top:8px;width:calc(100% - 12px);height:calc(100% - 18px);z-index:1;object-fit:contain}
 .cell[data-st=nao] .art>*{filter:brightness(0) invert(1);opacity:.14}
 .cell[data-st=visto] .art>*{filter:saturate(.35) brightness(.95)}
 .cell.vazio{opacity:.5;background:transparent;outline:1.5px dashed #ffffff40;outline-offset:-2px;box-shadow:none}
@@ -68,7 +68,7 @@ const SP=[{id:"brotinho",n:"Brotinho",img:A("brotinho-frente"),pl:"terra",reg:"B
 {id:"rabanete",n:"Rabanete-antena",img:A("rabanete-antena"),pl:"vulcanico",reg:"Planeta vulcânico",hint:"Escuta longe, na terra quente",c:["#ffc2a8","#ff5f7e"],st:"nao"},
 {id:"lagarto",n:"Lagarto-deserto",svg:LAG,pl:"vulcanico",reg:"Deserto do vulcânico",hint:"Toma sol nas pedras quentes",c:["#ffcf8a","#e8572a"],st:"nao"}];
 const LB={possui:"Na coleção",visto:"Visto",nao:"Não descoberto"};
-const no=s=>String(SP.indexOf(s)+1).padStart(3,"0"),art=s=>s.img?`<img src="${s.img}" alt="">`:s.svg;
+const NUM={brotinho:1,rabanete:2,cinza:6,lagarto:8},no=s=>String(NUM[s.id]).padStart(3,"0"),art=s=>s.img?`<img src="${s.img}" alt="">`:s.svg;
 const ic=(p,c)=>`<svg viewBox="0 0 64 64" fill="none" stroke="${c[0]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const MATS=[{id:"fibra",n:"Fibra",q:3,c:["#e6ff86","#1fbf5b"],d:"Folhas e caules. Vira passarela e canal.",p:'<path d="M32 54V26M32 40c-10-2-16-10-16-20 10 0 16 8 16 20M32 34c8-2 14-8 14-16-9 0-14 6-14 16" fill="#1fbf5b55"/>'},
 {id:"pedra",n:"Pedra",q:1,c:["#e4e0f2","#8a83a8"],d:"Lascas das rochas duras. Vira passarela e placa.",p:'<path d="M12 48 18 28 34 18 52 26 56 46 44 54Z" fill="#8a83a866"/><path d="M30 26 38 36 34 46"/>'},
@@ -80,8 +80,8 @@ const st={tab:"jogo",sel:"brotinho",msel:"fibra",pl:"todos"};
 function toast(el,t){const x=el.querySelector(".toast");x.innerHTML=t;x.hidden=false;setTimeout(()=>x.hidden=true,2400)}
 function nav(t){return `<div class="nav">${[["best","Bestiário"],["inv","Materiais"]].map(([k,l])=>`<button data-t="${k}" aria-selected="${t===k}">${l}</button>`).join("")}</div>`}
 function best(){const s=SP.find(x=>x.id===st.sel),own=SP.filter(x=>x.st==="possui").length;
- const list=SP.filter(x=>st.pl==="todos"||x.pl===st.pl);
- const cells=list.map(x=>`<li><button class="cell" data-st="${x.st}" data-id="${x.id}" aria-pressed="${x.id===st.sel}" style="--c2:${x.c[1]}"><span class="n">Nº ${no(x)}</span><span class="art">${art(x)}</span></button></li>`).join("")+(st.pl==="todos"?[5,6].map(i=>`<li><span class="cell vazio"><span class="n" style="background:transparent">Nº 00${i}</span><span class="art"></span></span></li>`).join(""):"");
+ const list=SP.filter(x=>st.pl==="todos"||x.pl===st.pl).sort((a,b)=>NUM[a.id]-NUM[b.id]);
+ const cells=list.map(x=>`<li><button class="cell" data-st="${x.st}" data-id="${x.id}" aria-pressed="${x.id===st.sel}" style="--c2:${x.c[1]}"><span class="n">Nº ${no(x)}</span><span class="art">${art(x)}</span></button></li>`).join("")+(st.pl==="todos"?[3,4].map(i=>`<li><span class="cell vazio"><span class="n" style="background:transparent">Nº 00${i}</span><span class="art"></span></span></li>`).join(""):"");
  const hid=s.st==="nao";
  return `<div class="top"><button class="btn round" data-t="jogo">←</button><h2>Bestiário</h2><span class="cnt">${own}<small>/${SP.length}</small></span></div><div class="body">
  <div class="hero" style="--c1:${s.c[0]};--c2:${s.c[1]}"><i class="glow"></i><div class="stage"><i class="floor"></i><span style="display:contents;${hid?"filter:brightness(0) invert(1);opacity:.16":s.st==="visto"?"filter:saturate(.35)":""}">${art(s)}</span></div>
@@ -102,7 +102,7 @@ function render(id,tab){const el=document.getElementById(id);el.dataset.tab=tab;
  el.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{st.pl=b.dataset.p;render(id,"best")});
  const a=el.querySelector("#act");if(a)a.onclick=()=>{const s=SP.find(x=>x.id===st.sel);if(s.st==="visto"){s.st="possui";render(id,"best");toast(document.getElementById(id),s.n+" entrou na coleção")}else if(s.st==="nao"){s.st="visto";render(id,"best");toast(document.getElementById(id),"Você viu algo novo. Fotografe para registrar.")}}}
 const CARTA={brotinho:1,cinza:6,rabanete:2},STM={possui:"foto",visto:"visto",nao:"nao"};
-function abrir(id,sp){const el=document.getElementById(id);if(!CARTA[sp.id])return false;el.querySelector(".carta")?.remove();const f=document.createElement("iframe");f.className="carta";f.title="Carta de "+sp.n;f.src=`carta/carta.html?embed=1&id=${CARTA[sp.id]}&st=${STM[sp.st]}`;el.append(f);return true}
+function abrir(id,sp){const el=document.getElementById(id);if(!CARTA[sp.id])return false;el.querySelector(".carta")?.remove();const f=document.createElement("iframe");f.className="carta";f.title="Carta de "+sp.n;f.src=`carta/carta.html?v=1795393960&embed=1&id=${CARTA[sp.id]}&st=${STM[sp.st]}`;el.append(f);return true}
 addEventListener("message",e=>{if(e.data&&e.data.fechar)document.querySelectorAll(".ph .carta").forEach(f=>f.remove())});
 render("p0","jogo");render("p1","best");render("p2","inv");
 </script></body></html>
