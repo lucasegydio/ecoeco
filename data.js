@@ -1,4 +1,4 @@
-/* Fonte dos dados do site. Para atualizar: edite NOVIDADES e PARTES (releia FRENTES.md e os Historico.md). */
+/* Fonte dos dados do site. Para atualizar: edite NOTAS e PARTES (releia FRENTES.md e os Historico.md). */
 window.EQUIPE = {Lucas:"direção de arte", Joaquim:"regras e textos", Theo:"arte", Peixe:"Godot"};
 window.GRUPOS = {
   jogo:{nome:"No jogo", cor:"coral", txt:"As telas e os sistemas que o jogador toca."},
@@ -11,9 +11,9 @@ window.PARTES = [
  {id:"jogo",g:"jogo",ic:"planeta",t:"O jogo no celular",s:"aprovado",o:"Planeta 3D na tela do celular: arrastar gira, pinça aproxima, sem personagem.",
   d:"Sem avatar. Eco que vibra no lugar da seta. Pistas em 3 níveis (só o mundo, reforço visual, frase curta).",a:"Arte da evolução e da decolagem; insistência das pistas.",
   p:[["Joaquim","Textos das pistas de nível 2."]],l:"frentes/prototipo/",r:"Jogar"},
- {id:"inicio",g:"jogo",ic:"jogar",t:"Tela inicial",s:"revisao",o:"Ícone, splash, título e primeira entrada no planeta.",
+ {id:"inicio",g:"jogo",ic:"jogar",t:"Tela inicial",s:"revisao",o:"Ícone, splash, título, primeira entrada no planeta e tela Registro do 1º eco.",
   d:"Sem barra de carregamento. Planeta vivo com bolha única e luz que segue o dedo. Entrada de 2,4 s na 1ª vez, 0,9 s em Continuar.",a:"Teste em 375 px. Som fica bloqueado até haver trilha.",
-  p:[["Lucas","Revisar a tela inicial."],["Joaquim","Trilha e conta opcional."]],l:"frentes/inicio/",r:"Abrir"},
+  p:[["Lucas","Revisar a tela inicial e a Registro; nome da coleção."],["Joaquim","Trilha e conta opcional."]],l:"frentes/inicio/",r:"Abrir"},
  {id:"hud",g:"jogo",ic:"inventario",t:"HUD in-game",s:"revisao",o:"Chips, pílula e inventário rápido sobre o planeta.",
   d:"Inventário fixo; progresso em pontinhos no chip. Observar e escala planetária escondem peças; safe areas por env().",a:"3 variações: A Gota, B Ilhas, C Calmo.",
   p:[["Lucas","Escolher A, B ou C."]],l:"frentes/hud/",r:"Ver as 3 variações"},
@@ -31,13 +31,16 @@ window.PARTES = [
  {id:"bestiario",g:"menus",ic:"colecao",t:"Inventário e bestiário",s:"decidido",o:"Coleção de espécies e Tracker para reencontrar o bicho.",
   d:"Lucas aprovou o Álbum (Órbita fora). Coleção por posse, estado Visto. Tela cheia v2 com células uniformes, sem bolha. No protótipo: Fotografar e inventário com 5 materiais.",a:"A06: como mostrar um bicho não descoberto (silhueta, pista, número ou borrado).",
   p:[["Lucas","Escolher a A06."],["Theo","Arte do Lagarto-deserto (hoje só esboço)."]],l:"frentes/bestiario/bestiario.html",r:"Abrir o bestiário"},
+ {id:"passaporte",g:"menus",ic:"colecao",t:"Passaporte e carta do bichinho",s:"decidido",o:"Bestiário-passaporte intergaláctico e ficha 3D de cada bichinho.",
+  d:"Carta aprovada por Lucas: moldura por raridade, vitrine 3D, 3 gênios, 4 afinidades, carimbo Visto. 3 estados: não visto (silhueta), visto, fotografado.",a:"Modelo 3D do time (hoje fatias provisórias); fps e pinça em celular real.",
+  p:[["Theo","Modelo 3D do bichinho."]],l:"frentes/passaporte/carta.html",r:"Ver a carta"},
  {id:"linguagem",g:"ident",ic:"gota",t:"Linguagem visual",s:"revisao",o:"Forma, cor e gesto: bolhas, estados e tokens.",
-  d:"Caminho liquid glass + iluminação. A versão antiga foi reprovada. Estado novo: bloqueado.",a:"Estados: normal, foco, selecionado, vazado, bloqueado.",
+  d:"Caminho liquid glass + iluminação. Guia novo aprovado por Lucas (rodada 21); a versão antiga foi reprovada. Estado novo: bloqueado.",a:"Estados: normal, foco, selecionado, vazado, bloqueado.",
   p:[["Lucas","Revisar o guia novo."]],l:"frentes/linguagem/",r:"Abrir o guia"},
  {id:"tipografia",g:"ident",ic:"placa",t:"Tipografia",s:"decidido",o:"Fonte do HUD, números e nomes.",
   d:"Lucas escolheu Nunito no texto; marca e números em Menda Medium. Já está no protótipo e neste site.",a:"Licença da Menda para levar ao jogo.",
   p:[["Joaquim","Confirmar a licença da Menda."]],l:"frentes/tipografia/",r:"Ver o especímen"},
- {id:"icones",g:"ident",ic:"brotinho",t:"Ícones de pincel",s:"revisao",o:"Família de 52 ícones de pincel (12 ações, 14 menu, 7 materiais, 11 estados, 3 eco, 5 bestiário).",
+ {id:"icones",g:"ident",ic:"brotinho",t:"Ícones de pincel",s:"revisao",o:"Família de 62 ícones de pincel (rodada 2: receitas, conquistas, vulcânico, deserto).",
   d:"Pronta para integrar: `icons.js` e SVGs brancos 32×32 sem filtro, para tingir no Godot.",a:"Já integrados no protótipo; falta o Godot usar os SVGs.",
   p:[["Peixe","Usar os SVGs de `22-icones/svg/`."]],l:"frentes/icones/",r:"Ver a família"},
  {id:"paleta",g:"ident",ic:"sol",t:"Paleta",s:"revisao",o:"Cores, contraste, estados, biomas e dia/noite.",
@@ -54,20 +57,22 @@ window.PARTES = [
   d:"Eco no lugar da seta; SPEC com evolução, decolagem, coleção e tracker.",a:"Ainda não rodou no Godot. Subir no Drive depende de Lucas (cota cheia).",
   p:[["Peixe","Importar e conferir os erros."],["Lucas","Liberar espaço no Drive."]],l:null,r:""}
 ];
-window.NOVIDADES = [
- ["22/11","mapa","Mapa com 5 estados, hangar, viagem e chegada; 6 planetas por região.","frentes/mapa/"],
- ["22/11","movimento","13 movimentos, ritmo contemplativo, tokens web e Godot.","frentes/movimento/"],
- ["22/11","paleta","Tokens finais, contraste, biomas, noite e daltonismo.","frentes/paleta/"],
- ["22/11","hud","HUD: 3 variações (A Gota, B Ilhas, C Calmo), testadas em 375 e 430 px.","frentes/hud/"],
- ["22/11","som","12 eventos de som e vibração tocáveis, com SPEC para Joaquim.","frentes/som/"],
- ["22/11","icones","Família de 62 ícones de pincel (receitas, conquistas, bioma), no protótipo.","frentes/icones/"],
- ["22/11","bestiario","Tela cheia v2: células uniformes, sem bolha.","frentes/bestiario/bestiario.html"],
- ["22/11","tipografia","Decidida: Menda Medium + Nunito.","frentes/tipografia/"],
- ["22/11","prototipo","Protótipo rodada 2: agora com paleta, ícones, movimento, HUD C Calmo, som e mapa.","frentes/prototipo/"],
- ["22/11","inicio","Ícone, splash, título, Ajustes e entrada no planeta.","frentes/inicio/"],
- ["22/11","onboarding","Luz-dedo, pistas sem texto e toque.","frentes/onboarding/"],
- ["22/11","linguagem","Guia novo com bolhas reais, estados e tokens (novo: bloqueado).","frentes/linguagem/"],
- ["22/11","menu","Abas reais no menu do planeta e anel por contexto.","frentes/menu/"],
- ["22/11","godot","Pack pronto para revisão: eco no lugar da seta, SPEC completa.","#godot"],
- ["rodada 20","timeline","Coleção e Tracker: Lucas aprovou jogo, anel de vidro e menu do planeta; reprovou o Anel completo.","timeline.html"]
+/* Notas de atualização: mais recente primeiro. [data, frente, título, [1 a 3 linhas], link]. Fonte: "Recados entre frentes" do FRENTES.md. */
+window.NOTAS = [
+ ["23/11","passaporte","Passaporte e carta 3D do bichinho",["Carta aprovada por Lucas: moldura por raridade, vitrine 3D, 3 gênios e 4 afinidades.","Pacote pronto para o bestiário abrir a carta ao tocar a célula."],"frentes/passaporte/carta.html"],
+ ["23/11","hud","HUD: A Gota, B Ilhas e C Calmo",["QA aprovou as 3 variações, testadas em 375 e 430 px.","Lucas ainda escolhe A, B ou C; o protótipo usa C Calmo até lá."],"frentes/hud/"],
+ ["23/11","inicio","Nova tela Registro do 1º eco",["O eco ressoa, a criatura surge em bolha e a ficha aparece com o nome letra a letra.","Falta decidir o nome da coleção (não é \"bestiário\")."],"frentes/inicio/"],
+ ["22/11","prototipo","Protótipo rodada 2",["Integrados paleta, ícones, movimento, HUD C Calmo, som com vibração e mapa pós-decolagem.","Faltam eco por proximidade, voo de coleta, câmera por mola e licença da Menda."],"frentes/prototipo/"],
+ ["22/11","mapa","Mapa, hangar e viagem",["Mapa com 5 estados, 6 planetas por região e nave customizável.","Viagem de 3,6 s na ida e 1,7 s na volta."],"frentes/mapa/"],
+ ["22/11","som","12 eventos de som e vibração",["Tocáveis na página, com SPEC-som.md para Joaquim.","Sem música ambiente; vibração ligada por padrão."],"frentes/som/"],
+ ["22/11","movimento","13 movimentos contemplativos",["Tokens de mola para web e Godot (.gd); liquid.js novo.","Faltam voo de coleta e câmera por mola no protótipo."],"frentes/movimento/"],
+ ["22/11","paleta","Paleta final",["Tokens, contraste, biomas, noite e daltonismo (construir-2 e plantar-2 ajustados).","Substitui o tokens.css da linguagem."],"frentes/paleta/"],
+ ["22/11","icones","Ícones: 62 no total (rodada 2)",["Entram receitas, conquistas, vulcânico e deserto; estados na bolha.","SVGs brancos 32×32 prontos para o Godot."],"frentes/icones/"],
+ ["22/11","menu","Menu do planeta e anel por contexto",["Abas reais no menu e anel por contexto no jogo."],"frentes/menu/"],
+ ["22/11","bestiario","Bestiário em tela cheia v2",["Células uniformes, sem bolha. Álbum aprovado por Lucas; Órbita fora."],"frentes/bestiario/bestiario.html"],
+ ["22/11","linguagem","Guia de linguagem aprovado",["Bolhas reais, estados e tokens; novo estado bloqueado.","Aprovado por Lucas na rodada 21."],"frentes/linguagem/"],
+ ["22/11","tipografia","Menda Medium + Nunito",["Decidida: marca e números em Menda, texto em Nunito."],"frentes/tipografia/"],
+ ["22/11","onboarding","Luz-dedo, pistas e eco",["Pistas sem texto como base; orientação é eco, nunca seta."],"frentes/onboarding/"],
+ ["22/11","godot","Pack Godot atualizado",["SPEC seções 9 a 22, 62 ícones, tokens e molas; zip regerado."],"#godot"],
+ ["rodada 20","timeline","Coleção e Tracker",["Lucas aprovou jogo, anel de vidro e menu do planeta; reprovou o Anel completo."],"timeline.html"]
 ];

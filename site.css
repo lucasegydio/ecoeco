@@ -98,3 +98,5 @@ box-shadow:0 14px 40px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.14)}
 @media(max-width:640px){.wrap{width:calc(100% - 32px)}.topo .wrap{border-radius:26px;flex-wrap:wrap;padding:10px 12px}.nav{width:100%;flex-wrap:wrap;gap:2px}.nav a{white-space:nowrap;padding:.4rem .7rem;font-size:.85rem}.nav .jogar{margin-left:auto}
 .item{grid-template-columns:70px 1fr;gap:6px 12px}.item p{grid-column:1/-1}.item .seta{display:none}.quem{grid-template-columns:1fr}.tl{grid-template-columns:44px 1fr;gap:10px}.tl .n{font-size:1.3rem}.cards{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*:before{animation:none!important;transition:none!important}.rev{opacity:1;transform:none}html{scroll-behavior:auto}}
+
+.item h4{margin:0 0 2px;font-size:1rem}.item div p{margin:0;color:var(--mudo);font-size:.92rem}

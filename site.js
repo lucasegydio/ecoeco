@@ -1,7 +1,7 @@
 /* ecoeco · topo, luz que segue o dedo, revelar ao rolar, brilho nos cartões */
 (function(){
 var pg=document.body.dataset.page||"";
-var nav=[["index.html#novidades","Novidades","novidades"],["index.html#pendencias","Pendências","pend"],["index.html#partes","Partes","partes"],["timeline.html","Timeline","timeline"]];
+var nav=[["index.html#novidades","Notas","novidades"],["index.html#pendencias","Pendências","pend"],["index.html#partes","Partes","partes"],["timeline.html","Timeline","timeline"]];
 var h='<header class="topo"><div class="wrap"><a class="marca" href="index.html" aria-label="ecoeco, início"><i></i>ecoeco</a><nav class="nav" aria-label="Principal">';
 nav.forEach(function(n){h+='<a href="'+n[0]+'"'+(pg===n[2]?' aria-current="page"':'')+'>'+n[1]+'</a>'});
 h+='<a class="jogar" href="frentes/prototipo/">Jogar ▸</a></nav></div></header>';
