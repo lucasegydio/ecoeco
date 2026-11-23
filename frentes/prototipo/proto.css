@@ -91,3 +91,5 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #14151f; col
 @keyframes regLinha { from { opacity: 0; transform: translateX(-10px); filter: blur(4px); } }
 .registro.f3 .reg-nome, .registro.f3 .reg-ficha { opacity: 0; transition: opacity .8s; }
 @media (prefers-reduced-motion: reduce) { .registro * { animation: none !important; } }
+.col-aberta .novo { display: none !important; }
+.colecao-wrap { overflow: hidden; contain: paint; }

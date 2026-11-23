@@ -570,11 +570,11 @@
   function openColecao(tab) {
     closeSheet(); if (orbitOpen) closeOrbit();
     const q = new URLSearchParams({ v: "1795415958", tab, brotinho: status(SPECIES[0]), cinza: status(SPECIES[1]), inv: ["fibra", "pedra", "semente", "placa", "nucleo"].map((k) => inv[k] || 0).join(",") });
-    colWrap.querySelector("iframe").src = "colecao/index.html?" + q; colWrap.hidden = false; snd("navegar");
+    colWrap.querySelector("iframe").src = "colecao/index.html?" + q; colWrap.hidden = false; snd("navegar"); document.body.classList.add("col-aberta");
   }
   addEventListener("message", (e) => {
     const d = e.data || {}; if (!d.colecao) return;
-    if (d.colecao === "fechar") colWrap.hidden = true;
+    if (d.colecao === "fechar") { colWrap.hidden = true; document.body.classList.remove("col-aberta"); }
     if (d.colecao === "foto") { photo[d.id] = true; snd("foto"); }
   });
   invEl.addEventListener("click", (e) => {
