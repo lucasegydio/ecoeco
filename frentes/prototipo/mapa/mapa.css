@@ -13,7 +13,7 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; }
 .k { width: 14px; height: 14px; border-radius: 50%; display: inline-block; } .k.visitado { background: var(--verde); box-shadow: 0 0 0 3px #7fd38a55; } .k.alcance { background: var(--ambar); box-shadow: 0 0 0 3px #ffb36b55; }
 .k.longe { background: #ffffff30; } .k.sinal { border: 1.5px dashed #fff9; } .k.bloq { background: #555; }
 .phone-bay { padding: 12px; border-radius: 46px; background: #0b0a14; box-shadow: 0 0 0 2px #ffffff18, 0 30px 80px #0009; }
-.phone { position: relative; width: 375px; height: 760px; max-width: calc(100vw - 48px); border-radius: 36px; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #2d2756, #151428 78%); isolation: isolate; }
+.phone { position: relative; width: 375px; height: min(760px, calc(100svh - 48px)); max-width: calc(100vw - 48px); border-radius: 36px; overflow: hidden; background: radial-gradient(ellipse at 50% 40%, #2d2756, #151428 78%); isolation: isolate; }
 .estrelas { position: absolute; inset: 0; z-index: 0; background-image: radial-gradient(1.5px 1.5px at 20% 15%, #fff, transparent), radial-gradient(1px 1px at 70% 30%, #fffc, transparent), radial-gradient(1.5px 1.5px at 40% 70%, #fffa, transparent), radial-gradient(1px 1px at 85% 80%, #fff, transparent), radial-gradient(1px 1px at 10% 85%, #fff9, transparent), radial-gradient(1.5px 1.5px at 60% 8%, #fff8, transparent);
   background-size: 180px 220px; animation: deriva 60s linear infinite; }
 @keyframes deriva { to { background-position: 0 220px; } }

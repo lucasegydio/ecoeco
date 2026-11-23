@@ -69,3 +69,25 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #14151f; col
   .novo > button::before { content: "⚙"; font-size: 18px; }
   .novo .caixa { right: auto; left: 0; }
 }
+/* coleção em tela cheia (21-bestiario + carta do passaporte) */
+.colecao-wrap { position: absolute; inset: 0; z-index: 20; background: #0d1121; } .colecao-wrap[hidden] { display: none; }
+.colecao-frame { width: 100%; height: 100%; border: 0; }
+/* registro do 1º encontro (21-inicio) */
+.registro { position: absolute; inset: 0; z-index: 18; background: radial-gradient(120% 80% at 50% 40%, #33263fee, #16171ff2); font-family: var(--ui); cursor: pointer; }
+.registro[hidden] { display: none; }
+.reg-cena { position: absolute; left: 50%; top: 20%; width: 64cqi; aspect-ratio: 1; translate: -50% 0; display: grid; place-items: center; }
+.registro .rastro { position: absolute; inset: 0; border-radius: 50%; border: 2px solid #ffb36baa; opacity: 0; }
+.registro.f1 .rastro { animation: regOnda 2.4s ease-out 2; } .registro.f1 .r2 { animation-delay: .4s; } .registro.f1 .r3 { animation-delay: .8s; }
+@keyframes regOnda { from { transform: scale(.4); opacity: .9; } to { transform: scale(1.5); opacity: 0; } }
+.reg-cria { width: 80%; aspect-ratio: 1; border-radius: 58% 42% 55% 45%/47% 56% 44% 53%; display: grid; place-items: center; transform: scale(.2); opacity: 0; border: 1px solid #ffffff3d; backdrop-filter: blur(14px);
+  background: radial-gradient(circle at 30% 22%, #ffffff55, #ffffff1a 60%), linear-gradient(135deg, #ffb36b44, color-mix(in srgb, var(--c2, #b58cff) 40%, transparent)); box-shadow: inset 0 1px 6px #fff6, 0 10px 40px #0008, 0 0 40px color-mix(in srgb, var(--c2, #ffb36b) 45%, transparent); }
+.registro.f2 .reg-cria { transform: scale(1); opacity: 1; transition: transform .9s cubic-bezier(.3, 1.5, .5, 1), opacity .5s; }
+.reg-cria img { height: 82%; filter: drop-shadow(0 8px 14px #0007); }
+.registro.f3 .reg-cria { transform: translate(34cqi, 70cqi) scale(.15); opacity: .9; transition: transform 1s cubic-bezier(.6, 0, .4, 1), opacity 1s; }
+.reg-nome { position: absolute; left: 0; right: 0; top: 66%; text-align: center; font: 500 7cqi var(--num); letter-spacing: .03em; color: #fff; text-shadow: 0 0 18px #ffb36b88; min-height: 9cqi; margin: 0; }
+.reg-ficha { position: absolute; left: 12cqi; right: 12cqi; top: 74%; margin: 0; font: 600 3.2cqi ui-monospace, Menlo, monospace; color: #ffe1c2; }
+.reg-ficha div { display: flex; justify-content: space-between; padding: 1.4cqi 0; border-bottom: 1px dashed #ffffff2a; animation: regLinha .5s both; }
+.reg-ficha dt { opacity: .6; text-transform: uppercase; letter-spacing: .08em; font-size: 2.8cqi; } .reg-ficha dd { margin: 0; }
+@keyframes regLinha { from { opacity: 0; transform: translateX(-10px); filter: blur(4px); } }
+.registro.f3 .reg-nome, .registro.f3 .reg-ficha { opacity: 0; transition: opacity .8s; }
+@media (prefers-reduced-motion: reduce) { .registro * { animation: none !important; } }

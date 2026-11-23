@@ -548,6 +548,7 @@
     }));
   };
   function openSheet(id) {
+    if (id === "colecao") { openColecao("best"); return; }
     if (id === "colecao" && dexModel === "orbita") { closeSheet(); orbitOpen ? closeOrbit() : openOrbit(); return; }
     if (orbitOpen) closeOrbit();
     if (activeSheet === id) { closeSheet(); return; }
@@ -564,8 +565,20 @@
     sheet.style.scale = ""; sheet.style.transition = ""; void sheet.offsetWidth; sheet.classList.add("in");
   }
   const MATS = [["fibra", "Fibra", "Passarela, canal"], ["pedra", "Pedra", "Passarela, placa"], ["semente", "Semente", "Plantar"], ["placa", "Placa", "Nave"], ["nucleo", "Núcleo", "Nave"]];
+  const colWrap = document.createElement("div"); colWrap.className = "colecao-wrap"; colWrap.hidden = true;
+  colWrap.innerHTML = '<iframe class="colecao-frame" title="Coleção"></iframe>'; game.append(colWrap);
+  function openColecao(tab) {
+    closeSheet(); if (orbitOpen) closeOrbit();
+    const q = new URLSearchParams({ v: "1795415958", tab, brotinho: status(SPECIES[0]), cinza: status(SPECIES[1]), inv: ["fibra", "pedra", "semente", "placa", "nucleo"].map((k) => inv[k] || 0).join(",") });
+    colWrap.querySelector("iframe").src = "colecao/index.html?" + q; colWrap.hidden = false; snd("navegar");
+  }
+  addEventListener("message", (e) => {
+    const d = e.data || {}; if (!d.colecao) return;
+    if (d.colecao === "fechar") colWrap.hidden = true;
+    if (d.colecao === "foto") { photo[d.id] = true; snd("foto"); }
+  });
   invEl.addEventListener("click", (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); openColecao("inv"); return;
     if (activeSheet === "inv") { closeSheet(); return; }
     activeSheet = "inv"; sheet.style.setProperty("--c1", "#ffcf73"); sheet.style.setProperty("--c2", "#ff6a2c");
     sheet.querySelector(".sheet-title").textContent = "Materiais";
@@ -623,6 +636,26 @@
     for (const el of [ecoEdge, ecoTag]) { el.style.setProperty("--trk1", sp.c[0]); el.style.setProperty("--trk2", sp.c[1]); }
     toast(`<span class="t-art"><img src="${sp.img}" alt=""></span><span><b>Rastreando ${sp.name}</b><small>Siga o eco na borda</small></span>`);
   }
+  // ---------- registro do 1º encontro (21-inicio): eco ressoa, criatura em bolha, nome letra a letra, ficha, voa para a coleção ----------
+  const reg = document.createElement("div"); reg.className = "registro"; reg.hidden = true;
+  reg.innerHTML = '<div class="reg-cena"><i class="rastro r1"></i><i class="rastro r2"></i><i class="rastro r3"></i><div class="reg-cria"><img alt=""></div></div><h2 class="reg-nome" aria-live="polite"></h2><dl class="reg-ficha"></dl>';
+  game.append(reg); let regTm = [];
+  function registro(sp) {
+    regTm.forEach((t) => { clearTimeout(t); clearInterval(t); }); regTm = [];
+    const pad = (n) => String(n).padStart(2, "0"), d = new Date(), n$ = reg.querySelector(".reg-nome"), f$ = reg.querySelector(".reg-ficha");
+    const cod = (Math.floor(Math.random() * 9000) + 1000) + "." + (Math.floor(Math.random() * 900) + 100);
+    const L = [["Código", cod], ["Planeta", "Terra"], ["Cód. planeta", "T-1A"], ["Data", pad(d.getDate()) + "." + pad(d.getMonth() + 1) + "." + d.getFullYear()], ["Hora", pad(d.getHours()) + ":" + pad(d.getMinutes())]];
+    reg.querySelector("img").src = sp.img; reg.style.setProperty("--c2", sp.c[1]); n$.textContent = ""; f$.innerHTML = "";
+    reg.classList.remove("f1", "f2", "f3"); reg.hidden = false; void reg.offsetWidth;
+    const at = (ms, fn) => regTm.push(setTimeout(fn, reduce.matches ? Math.min(ms, 80) : ms));
+    at(100, () => reg.classList.add("f1"));
+    at(1100, () => { reg.classList.add("f2"); let i = 0; const t = setInterval(() => { n$.textContent = sp.name.slice(0, ++i); if (i >= sp.name.length) clearInterval(t); }, 60); regTm.push(t); });
+    at(2200, () => L.forEach((l, i) => regTm.push(setTimeout(() => f$.insertAdjacentHTML("beforeend", "<div><dt>" + l[0] + "</dt><dd>" + l[1] + "</dd></div>"), i * 220))));
+    at(4000, () => reg.classList.add("f3"));
+    at(5000, () => { reg.hidden = true; navigator.vibrate && ECO_SOM && ECO_SOM.SOM.vib && navigator.vibrate([20, 40, 20]); });
+  }
+  window.ECO_REGISTRO = registro;
+  reg.addEventListener("click", () => { regTm.forEach((t) => { clearTimeout(t); clearInterval(t); }); reg.hidden = true; });
   function stopTrack() { tracking = null; foundAt = 0; delete stage.dataset.track; }
   sheet.addEventListener("click", (e) => {
     const vb = e.target.closest(".seg [data-vib]");
@@ -680,7 +713,7 @@
   // bichinho-cinza: tocar registra "visto" (ainda não é seu: posse pede outro passo do game design)
   byId.cinza.el.addEventListener("click", (e) => {
     e.stopPropagation(); if (moved > 8 || locked) return;
-    const sp = SPECIES[1], first = !seen.cinza; if (first) snd("nova-especie");
+    const sp = SPECIES[1], first = !seen.cinza; if (first) { snd("nova-especie"); registro(sp); }
     seen.cinza = true;
     halo(byId.cinza.sx, byId.cinza.sy - byId.cinza.px * .5, sp.c[1]);
     byId.cinza.el.classList.remove("hop"); void byId.cinza.el.offsetWidth; byId.cinza.el.classList.add("hop");
