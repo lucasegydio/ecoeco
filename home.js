@@ -8,8 +8,8 @@ $("numeros").innerHTML=[[P.length,"partes"],[cont("aprovado")+cont("decidido"),"
 var corDe=function(id){var p=P.filter(function(x){return x.id===id})[0];return p?G[p.g].cor:"lilas"};
 var feed=$("feed"),mostra=6;
 function pinta(){feed.innerHTML=NOTAS.slice(0,mostra).map(function(n){return '<a class="vidro item rev" href="'+n[4]+'"><time>'+n[0]+'</time><b class="chip c-'+corDe(n[1])+'">'+n[1]+'</b><div><h4>'+n[2]+'</h4>'+n[3].map(function(l){return '<p>'+l+'</p>'}).join("")+'</div><span class="seta">›</span></a>'}).join("");
- $("mais").hidden=mostra>=NOTAS.length;ecoReveal(feed)}
-$("mais").onclick=function(){mostra=NOTAS.length;pinta()};pinta();
+ $("mais").textContent=mostra>=NOTAS.length?"Ver menos":"Ver mais";$("mais").setAttribute("aria-expanded",mostra>=NOTAS.length);ecoReveal(feed)}
+$("mais").onclick=function(){mostra=mostra>=NOTAS.length?6:NOTAS.length;pinta()};pinta();
 /* pendências por pessoa */
 $("quem").innerHTML=Object.keys(EQUIPE).map(function(q){
  var it=[];P.forEach(function(p){p.p.forEach(function(x){if(x[0]===q)it.push('<li><a href="#'+p.id+'"><b>'+p.t+'</b>'+cd(x[1])+'</a></li>')})});
