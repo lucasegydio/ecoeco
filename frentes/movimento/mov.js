@@ -23,7 +23,7 @@ const spr = (id, i = 0) => M.movs.find((m) => m.id === id).springs[i];
 function ring(stage, o = {}) {
   const sc = mk("", stage, "position:absolute;inset:0"), n = 5, els = [];
   const L = Liquid.create({ stage, scene: sc, center: () => ({ x: sc.clientWidth / 2, y: sc.clientHeight / 2 }), tune: { ...PROP }, reduced: () => RM });
-  const items = Array.from({ length: n }, (_, i) => { const a = i / n * Math.PI * 2 - Math.PI / 2, el = mk("it", sc); el.innerHTML = "<button></button>"; els.push(el);
+  const items = Array.from({ length: n }, (_, i) => { const a = i / n * Math.PI * 2 - Math.PI / 2, el = mk("it", sc); el.innerHTML = `<button aria-label="Ação ${i + 1}"></button>`; els.push(el);
     return { el, id: "b" + i, bx: Math.cos(a) * 15, by: Math.sin(a) * 15 * .9, delay: i * 55 }; });
   L.setItems(items); stage.vis = true; stage._L = L; stage._cmp = "proposto";
   if (!o.noToggle) { const b = document.createElement("button"); b.className = "bt"; b.textContent = "proposto"; b.setAttribute("aria-pressed", "true");
