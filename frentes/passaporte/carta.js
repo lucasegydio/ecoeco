@@ -39,7 +39,7 @@ function carta(b) {
   const foto = b.st == 'foto', visto = b.st == 'visto', nao = b.st == 'nao', tot = '120';
   const chips = GEN.map(([k, l], i) => `<li><span class="ci">${ic(k)}</span><div><small>${l}</small><b>${foto ? b.tr[i] : '? ? ?'}</b></div></li>`).join('');
   const bars = AF.map(([k, l], i) => { const v = foto ? b.s[i] : 0; return `<li class="a-${k}"><span class="ai">${ic(k)}</span><b>${l}</b><div class="pips">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= v ? 'on' : ''}"></i>`).join('')}</div></li>`; }).join('');
-  return `<div class="deck" id="deck"><article class="carta2 r-${b.r} st-${b.st}" id="c" data-bioma="${b.p}">
+  return `<div class="fit" id="fit"><div class="deck" id="deck"><article class="carta2 r-${b.r} st-${b.st}" id="c" data-bioma="${b.p}">
   <div class="miolo">
    <svg class="canto tl"><use href="#canto"/></svg><svg class="canto tr"><use href="#canto"/></svg><svg class="canto bl"><use href="#canto"/></svg><svg class="canto br"><use href="#canto"/></svg>
    <header class="topc"><div class="num"><small>Nº</small><b>${nao ? '???' : pad(b.id)}</b><em>/${tot}</em></div>
@@ -54,7 +54,7 @@ function carta(b) {
    <ul class="afin">${bars}</ul>
    <div class="rod"><div>${ic('planeta')}<small>Planeta</small><b>${PL[b.p].n}</b></div><div>${ic('habitat')}<small>Habitat</small><b>${nao ? '???' : b.hab}</b></div><div>${ic('camera')}<small>${foto ? 'Registrado' : 'Visto em'}</small><b>${nao ? '???' : b.d.slice(0, 6)}</b></div></div>
    <p class="cit">${foto ? '“' + b.q + '”' : visto ? 'Fotografe de perto para registrar a espécie.' : 'Explore o planeta para encontrar a silhueta.'}</p>
-   <i class="brilho"></i><i class="holo"></i></div></article></div>`;
+   <i class="brilho"></i><i class="holo"></i></div></article></div></div>`;
 }
 function arco() {
   const sel = BICHOS.findIndex(b => b.id == S.cur);
@@ -65,6 +65,7 @@ function render(anim) {
   const b = BICHOS.find(b => b.id == S.cur);
   app.innerHTML = `<section class="stage ${anim ? 'entra' : ''}">${carta(b)}</section>${arco()}`;
   const cv = $('#cv'); if (cv) { S.m = mount(cv, { src: `assets/${b.img}.webp`, mode: b.st == 'foto' ? 'foto' : 'sil', bioma: b.p, rar: b.r }); $('#rec').onclick = () => S.m.reset(); }
+  fit();
   const c = $('#c'), deck = $('#deck'), v = $('.vitrine');
   const mv = e => {
     const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
@@ -80,3 +81,6 @@ let sx = null; document.addEventListener('pointerdown', e => { if (e.target.clos
 document.addEventListener('pointerup', e => { if (sx == null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) < 40) return; const i = BICHOS.findIndex(b => b.id == S.cur) + (dx < 0 ? 1 : -1); if (BICHOS[i]) { S.cur = BICHOS[i].id; render(true); } });
 render(true);
 window.__S = S; window.__render = render;
+
+function fit() { const st = $('.stage'), f = $('#fit'); if (!st || !f) return; f.style.transform = ''; f.style.marginBottom = ''; const h = f.offsetHeight, a = st.clientHeight - 14, w = f.offsetWidth, aw = st.clientWidth - 28, k = Math.min(1, a / h, aw / w); f.style.transformOrigin = 'top center'; f.style.transform = `scale(${k})`; f.style.marginBottom = (h * k - h) + 'px'; }
+addEventListener('resize', fit);
