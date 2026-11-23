@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#202130">
-<title>ecoeco · protótipo</title>
+<title>ecoeco · protótipo</title><link rel="icon" href="assets/glifo.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap">
-<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="leque.css"><link rel="stylesheet" href="planeta.css"><link rel="stylesheet" href="vidro.css"><link rel="stylesheet" href="tokens.css"><link rel="stylesheet" href="proto.css"><link rel="stylesheet" href="entrada.css"><link rel="stylesheet" href="hud22.css">
-<script src="icons.js" defer></script><script src="liquid.js" defer></script><script src="jogo.js" defer></script><script src="entrada.js" defer></script><script src="hud22.js" defer></script>
+<link rel="stylesheet" href="style.css?v=29934e34"><link rel="stylesheet" href="leque.css?v=2180e622"><link rel="stylesheet" href="planeta.css?v=e222bc5c"><link rel="stylesheet" href="vidro.css?v=a4001adf"><link rel="stylesheet" href="tokens.css?v=d29e4bf7"><link rel="stylesheet" href="proto.css?v=8389febe"><link rel="stylesheet" href="entrada.css?v=8089adb0"><link rel="stylesheet" href="hud22.css?v=e2f50022">
+<link rel="stylesheet" href="tokens-movimento.css?v=9330ec0a"><script src="som.js?v=be607a8f" defer></script><script src="icons.js?v=09fdc403" defer></script><script src="liquid.js?v=b7ece768" defer></script><script src="jogo.js?v=83c16e9c" defer></script><script src="entrada.js?v=33e678fd" defer></script><script src="hud22.js?v=ba95bfd1" defer></script>
 </head><body>
 <section class="showcase jogo" id="jogo" aria-label="ecoeco · protótipo jogável">
   <div class="phone-bay">
@@ -71,12 +71,14 @@
 <h4>Integrado</h4>
 <ul><li><b>Início:</b> splash, título (1ª abertura e Continuar), Ajustes, viagem ao planeta</li><li><b>Onboarding:</b> luz-dedo, pistas sem texto, ponto de toque</li><li><b>Linguagem:</b> tokens e estado bloqueado (Som, até a trilha)</li><li><b>Tipografia A:</b> Nunito + Menda Medium</li><li><b>Menu:</b> folha nasce da gota, Ajustes com Dicas segmentadas</li><li><b>Bestiário:</b> Álbum, silhueta, Visto, Fotografar, inventário, esboço do lagarto</li></ul>
 <h4>Pendente</h4><ul id="novo-pend"><li>Fotografar só no Álbum (sem câmera no mundo)</li><li>Licença da Menda Medium</li><li>Arte final do lagarto-deserto</li></ul>
+<h4>HUD</h4><div class="switch hud-sel" role="group" aria-label="Variação do HUD"><button type="button" data-hud="gota" aria-pressed="false">A Gota</button><button type="button" data-hud="ilhas" aria-pressed="false">B Ilhas</button><button type="button" data-hud="calmo" aria-pressed="true">C Calmo</button></div>
 <h4>Pistas</h4>
 <div class="switch jogo-insist" role="group" aria-label="Insistência das pistas"><button type="button" data-insist="sutil" aria-pressed="false">Sutil</button><button type="button" data-insist="padrao" aria-pressed="true">Padrão</button><button type="button" data-insist="explicita" aria-pressed="false">Explícita</button></div>
 <p style="margin:6px 0 0"><span id="jogo-level" class="level-chip">buscar · pista 0</span></p>
 <div class="zoom-controls"><input type="range" id="jogo-zoom" min="0" max="100" value="50" aria-label="Pinça"></div>
-<div class="ctl"><button type="button" id="jogo-reset">↻ Recomeçar</button><button type="button" data-pular-dex="visto">Abrir a coleção</button><button type="button" data-pular="evolucao">Evolução</button><button type="button" data-pular="decolagem">Decolagem</button></div>
+<div class="ctl"><button type="button" id="tela-cheia">⛶ Tela cheia</button><button type="button" id="jogo-reset">↻ Recomeçar</button><button type="button" data-pular-dex="visto">Abrir a coleção</button><button type="button" data-pular="evolucao">Evolução</button><button type="button" data-pular="decolagem">Decolagem</button></div>
 </div></aside>
 <script>document.getElementById("novo-btn").onclick=function(){var c=document.getElementById("novo-caixa");c.hidden=!c.hidden;this.setAttribute("aria-expanded",String(!c.hidden))}</script>
 </section>
-</body></html>
+<script>(function(){var st=document.querySelector(".game-stage"),bs=document.querySelectorAll(".hud-sel button");function set(k,u){st.dataset.hud=k;bs.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.hud===k))});if(u){var q=new URLSearchParams(location.search);q.set("hud",k);history.replaceState(null,"","?"+q)}}
+bs.forEach(function(b){b.onclick=function(){set(b.dataset.hud,1)}});window.addEventListener("load",function(){set(st.dataset.hud||"calmo")});})();</script><script>document.getElementById("tela-cheia").onclick=function(){var d=document,e=d.documentElement;if(d.fullscreenElement){d.exitFullscreen()}else if(e.requestFullscreen){e.requestFullscreen()}else if(e.webkitRequestFullscreen){e.webkitRequestFullscreen()}};</script></body></html>

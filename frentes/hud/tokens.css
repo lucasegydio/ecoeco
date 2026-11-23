@@ -1,14 +1,38 @@
-/* ecoeco · tokens da linguagem (frente linguagem, 21). Importe depois de vidro.css.
-   Luz: o trio quente que segue o dedo. Ação: par [c1 claro, c2 tinta] de cada bolha. */
+/* ecoeco · tokens FINAIS da paleta (frente paleta, 22). Substitui 21-linguagem/site/tokens.css; mantém os mesmos nomes.
+   Camadas: base · luz · ação · estado · texto · bioma (acento) · noite. Contraste medido em index.html. */
 :root {
-  --eco-ambar: #ffb36b; --eco-coral: #ff5f9e; --eco-lilas: #b58cff;      /* luz (já são --warm1/2/3 em .liquid) */
-  --eco-noite: #202130; --eco-noite-2: #282939; --eco-vidro: #ffffff24;   /* base */
+  /* base. véu = escurecimento sob o vidro dos chips (garante texto 4,5) */
+  --eco-veu: .5; --eco-fundo: #14151f; --eco-noite: #202130; --eco-noite-2: #282939; --eco-vidro: #ffffff24;
+  /* luz (segue o dedo). lilás é da marca e entra aqui */
+  --eco-ambar: #ffb36b; --eco-coral: #ff5f9e; --eco-lilas: #b58cff;
+  /* texto */
+  --eco-texto: #ffffff; --eco-texto-2: #e9e7f4; --eco-texto-3: #dedcec; --eco-tinta: #232034;
+  /* ação: par [1 claro, 2 tinta] (cores da linguagem, mantidas) */
   --eco-carinho-1: #ffc2a8; --eco-carinho-2: #ff5f7e;
   --eco-polinizar-1: #fff0a0; --eco-polinizar-2: #ff9f43;
   --eco-minerar-1: #ffcf8a; --eco-minerar-2: #e8572a;
-  --eco-construir-1: #d6f5b0; --eco-construir-2: #4fb06d;
-  --eco-plantar-1: #f2ff9e; --eco-plantar-2: #5fcf4a;
+  --eco-construir-1: #d6f5b0; --eco-construir-2: #1f8f9c;
+  --eco-plantar-1: #f2ff9e; --eco-plantar-2: #2e8f35;
   --eco-canal-1: #c9e6ff; --eco-canal-2: #6a7bff;
-  /* movimento (liquid.js): mola k/c */
-  --eco-mola-k: 190; --eco-mola-c: 17; --eco-toque: .9; --eco-foco: 1.17; --eco-escolha: 1.3;
+  /* estado. lima da marca = só ok/aceito e Plantar */
+  --eco-lima: #e5f195;
+  --eco-ok: var(--eco-lima); --eco-foco: var(--eco-ambar); --eco-aceito: var(--eco-lima);
+  --eco-falta: #ff9488; --eco-bloqueado: #ffffff55; --eco-bloqueado-texto: #a3a1b8;
+  /* bioma: só o acento muda por planeta (base única). Terra é o padrão */
+  --eco-acento: #9bd36b; --eco-acento-2: #3f6b2a;
+  /* movimento (liquid.js) */
+  --eco-mola-k: 190; --eco-mola-c: 17; --eco-toque: .9; --eco-foco-escala: 1.17; --eco-escolha: 1.3;
+  --eco-luz-forca: 1; /* 0-1: multiplica a opacidade da luz-dedo */
+}
+/* biomas (propostas; Terra é o único existente) */
+[data-bioma=terra]    { --eco-acento: #9bd36b; --eco-acento-2: #3f6b2a; }
+[data-bioma=deserto]  { --eco-acento: #f2b46a; --eco-acento-2: #8a5524; }
+[data-bioma=gelo]     { --eco-acento: #a9dcff; --eco-acento-2: #3b6f9c; }
+[data-bioma=oceano]   { --eco-acento: #6fd8cf; --eco-acento-2: #1f6a7a; }
+[data-bioma=vulcao]   { --eco-acento: #ff8a5c; --eco-acento-2: #8f2f1c; }
+/* noite: lado noturno do planeta. Luz-dedo fica menor e mais lilás; vidro mais denso; texto continua branco */
+[data-lado=noite] {
+  --eco-fundo: #0d0e16; --eco-noite: #171826; --eco-noite-2: #1e1f30; --eco-vidro: #ffffff1c;
+  --eco-luz-forca: .72; --eco-ambar: #ffa65a; --eco-coral: #ff5f9e; --eco-lilas: #c3a0ff;
+  --eco-texto-3: #c3c1d6;
 }

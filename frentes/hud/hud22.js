@@ -1,5 +1,6 @@
 /* ecoeco · HUD 22: monta pontinhos do arco, botão de menu e barra de teste sobre o protótipo. */
 (() => {
+  if (window.HUD22_OPTIN && !new URLSearchParams(location.search).get("hud")) return; // no protótipo: só com ?hud=gota|ilhas|calmo
   const stage = document.querySelector(".game-stage"), game = stage.querySelector(".game"), top = game.querySelector(".hud-top"),
     planet = top.querySelector(".hud-planet"), inv = top.querySelector(".hud-inv");
   const ARC = [["buscar", "perto", "arvore"], ["polinizar", "fruto"], ["minerar", "pedras"], ["plantar", "canal", "colheita"], ["alcancar", "fabricar", "montar"], ["decolar", "mapa"]];

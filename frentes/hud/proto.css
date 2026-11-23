@@ -51,3 +51,21 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #14151f; col
 .lock { position: absolute; right: 6%; bottom: 8%; width: 28%; aspect-ratio: 1 / .85; border-radius: 30%; background: #2b2a3fe0; border: 1.5px solid #ffffff70; z-index: 3; }
 .lock::before { content: ""; position: absolute; left: 24%; right: 24%; bottom: 80%; height: 70%; border: 1.5px solid #ffffffa0; border-bottom: 0; border-radius: 99px 99px 0 0; }
 .lock::after { content: ""; position: absolute; left: 44%; top: 34%; width: 12%; aspect-ratio: 1; border-radius: 50%; background: #fff; }
+/* mapa pós-decolagem (22-mapa) em iframe sobre o jogo */
+.mapa { padding: 0 !important; }
+.mapa-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 1; }
+.mapa > :not(.mapa-frame):not(.mapa-voltar) { display: none; }
+.mapa .mapa-voltar { position: absolute; z-index: 2; left: 12px; top: 12px; padding: .45rem .9rem; font-size: .76rem; }
+/* tela cheia: o celular cresce até a altura da tela */
+:fullscreen #jogo .game-stage { width: min(100%, calc(100svh * .486)); }
+/* correções de QA */
+.mapa[hidden], .cine-card[hidden], .cine[hidden] { display: none; }
+#jogo { grid-template-columns: 1fr; }
+#jogo #entrada { aspect-ratio: 9 / 18.5; }
+@media (max-width: 520px) {
+  #jogo #entrada { aspect-ratio: auto; }
+  .novo { left: 8px; right: auto; bottom: 8px; }
+  .novo > button { width: 40px; height: 40px; padding: 0; font-size: 0; display: grid; place-items: center; }
+  .novo > button::before { content: "⚙"; font-size: 18px; }
+  .novo .caixa { right: auto; left: 0; }
+}

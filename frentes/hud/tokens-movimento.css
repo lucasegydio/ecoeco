@@ -1,0 +1,50 @@
+:root{ /* tokens de movimento · ritmo contemplativo · mola: k rigidez, c amortecimento, massa 1 */
+  --mov-anel-abrir-0-k:110; --mov-anel-abrir-0-c:17; /* ζ0.81 · assenta 366 ms · posição */
+  --mov-anel-abrir-1-k:200; --mov-anel-abrir-1-c:18; /* ζ0.64 · assenta 421 ms · escala */
+  --mov-anel-abrir-stagger-ms:55;
+  --mov-anel-fechar-0-k:170; --mov-anel-fechar-0-c:26; /* ζ1.0 · assenta 447 ms · posição */
+  --mov-anel-fechar-1-k:220; --mov-anel-fechar-1-c:24; /* ζ0.81 · assenta 258 ms · escala */
+  --mov-anel-fechar-stagger-ms:28;
+  --mov-ima-0-k:140; --mov-ima-0-c:22; /* ζ0.93 · assenta 427 ms · posição (ímã) */
+  --mov-ima-estica-max:0.12;
+  --mov-ima-ima-cqi:1.6;
+  --mov-ima-alcance-cqi:16;
+  --mov-ima-inercia:0.022;
+  --mov-bolha-hover-0-k:180; --mov-bolha-hover-0-c:22; /* ζ0.82 · assenta 292 ms · hover 1,12 */
+  --mov-bolha-hover-1-k:300; --mov-bolha-hover-1-c:28; /* ζ0.81 · assenta 221 ms · toque 0,92 */
+  --mov-aceitar-0-k:150; --mov-aceitar-0-c:16; /* ζ0.65 · assenta 488 ms · escolhida */
+  --mov-aceitar-1-k:140; --mov-aceitar-1-c:24; /* ζ1.01 · assenta 508 ms · outras (absorvem) */
+  --mov-aceitar-2-k:120; --mov-aceitar-2-c:14; /* ζ0.64 · assenta 545 ms · gota */
+  --mov-aceitar-atraso-gota-ms:220;
+  --mov-coletar-0-k:70; --mov-coletar-0-c:15; /* ζ0.9 · assenta 558 ms · voo */
+  --mov-coletar-1-k:260; --mov-coletar-1-c:18; /* ζ0.56 · assenta 361 ms · chip recebe */
+  --mov-coletar-estica-max:0.12;
+  --mov-coletar-arco-px:36;
+  --mov-menu-0-k:120; --mov-menu-0-c:22; /* ζ1.0 · assenta 539 ms · folha sobe */
+  --mov-menu-1-k:200; --mov-menu-1-c:24; /* ζ0.85 · assenta 296 ms · indicador da aba */
+  --mov-menu-fade-ms:180;
+  --mov-menu-desloca-px:10;
+  --mov-bestiario-0-k:130; --mov-bestiario-0-c:23; /* ζ1.01 · assenta 522 ms · célula → ficha */
+  --mov-bestiario-1-k:90; --mov-bestiario-1-c:12; /* ζ0.63 · assenta 629 ms · foto cai */
+  --mov-bestiario-flash-ms:90;
+  --mov-bestiario-giro-graus:-2;
+  --mov-eco-periodo-longe-ms:1800;
+  --mov-eco-periodo-perto-ms:520;
+  --mov-eco-treme-max-px:2.2;
+  --mov-eco-arcos-ms:120;
+  --mov-camera-0-k:50; --mov-camera-0-c:14.1; /* ζ1.0 · assenta 822 ms · zoom */
+  --mov-camera-fade-ms:300;
+  --mov-evolucao-0-k:80; --mov-evolucao-0-c:14; /* ζ0.78 · assenta 405 ms · antecipação */
+  --mov-evolucao-1-k:120; --mov-evolucao-1-c:10; /* ζ0.46 · assenta 757 ms · surgir */
+  --mov-evolucao-2-k:140; --mov-evolucao-2-c:20; /* ζ0.85 · assenta 351 ms · assentar */
+  --mov-evolucao-flash-ms:160;
+  --mov-evolucao-brilho-ms:1200;
+  --mov-decolagem-0-k:160; --mov-decolagem-0-c:20; /* ζ0.79 · assenta 291 ms · agacha */
+  --mov-decolagem-estica-max:0.25;
+  --mov-decolagem-aceleracao:1.4;
+  --mov-decolagem-dur-ms:1700;
+  --mov-reduzido-0-k:900; --mov-reduzido-0-c:60; /* ζ1.0 · assenta 196 ms · todas as molas */
+  --mov-reduzido-fade-ms:120;
+  --mov-reduzido-k:900; --mov-reduzido-c:60;
+}
+@media (prefers-reduced-motion:reduce){:root{ --mov-stagger:0; --mov-estica-max:0; }}
