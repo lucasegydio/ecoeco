@@ -61,20 +61,21 @@ td .ic{width:24px;height:24px;color:var(--creme);display:block}
 <li>Ícone do app (a frente inicio já fez) e marca: ficam fora desta família.</li>
 </ul>
 </main>
-<script src="icons.js?v=b1ba1ecd"></script>
+<script src="icons.js?v=cb865386"></script>
 <script>
 const I=window.ECO_ICONS,M=window.ECO_ICON_META,G=window.ECO_ICON_GROUPS;
 const P={carinho:["#ffc2a8","#ff5f7e"],polinizar:["#fff0a0","#ff9f43"],minerar:["#ffcf8a","#e8572a"],construir:["#d6f5b0","#4fb06d"],plantar:["#f2ff9e","#5fcf4a"],canal:["#c9e6ff","#6a7bff"],
 fibra:["#e6ff86","#1fbf5b"],pedra:["#e4e0f2","#8a83a8"],semente:["#ffe39a","#d08a2a"],nucleo:["#ffb3d6","#ff4f86"],placa:["#bfe0ff","#4f63f2"],gota:["#c9e6ff","#6a7bff"],fruto:["#ffd0a8","#ff7a4a"]};
 const GP={acoes:["#ffe2b0","#ff9a4a"],menu:["#e2d0ff","#8a5cf0"],materiais:["#e6ff86","#1fbf5b"],estados:["#ffc2d8","#ff5f9e"],eco:["#ffe2b0","#ff9a4a"],bestiario:["#d6f5b0","#4fb06d"],receitas2:["#d6f5b0","#4fb06d"],vulcanico:["#ffcf8a","#e8572a"],deserto:["#ffe9a0","#e0a030"]};
+const NM={vulcao:"vulcão",oasis:"oásis",colecao:"coleção",alcancar:"alcançar",inventario:"inventário",nucleo:"núcleo",regiao:"região",polinizar:"polinizar"};const nm=n=>NM[n]||n;
 const grp=n=>G.find(g=>g[2].includes(n))[0];
 const col=n=>P[n]||GP[grp(n)];
 const svg=n=>`<svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><g filter="url(#pincel)">${I[n]}</g></svg>`;
 const bub=(n,st="",d)=>{const c=col(n);return `<div class="b ${st}" style="--c1:${c[0]};--c2:${c[1]};${d?`--d:${d}px`:""}">${svg(n)}${st==="bloq"?`<span class="lk">${svg("bloqueado")}</span>`:""}</div>`};
-document.getElementById("familia").innerHTML=G.map(([id,t,l])=>`<h3 style="font-size:15px;margin:20px 0 10px;color:var(--ambar)">${t} · ${l.length}</h3><div class="grid">${l.map(n=>`<div class="cell">${bub(n)}<div class="real"><i style="width:32px;height:32px">${svg(n)}</i></div><b>${n}</b></div>`).join("")}</div>`).join("");
+document.getElementById("familia").innerHTML=G.map(([id,t,l])=>`<h3 style="font-size:15px;margin:20px 0 10px;color:var(--ambar)">${t} · ${l.length}</h3><div class="grid">${l.map(n=>`<div class="cell">${bub(n)}<div class="real"><i style="width:32px;height:32px">${svg(n)}</i></div><b>${nm(n)}</b></div>`).join("")}</div>`).join("");
 const pick=["carinho","minerar","plantar","fibra","eco","brotinho"];
 document.getElementById("estados").innerHTML=`<div></div>${["normal","foco","selecionado","bloqueado"].map(s=>`<div class="hd">${s}</div>`).join("")}`+pick.map(n=>`<div class="hd">${n}</div>${bub(n)}${bub(n,"foco")}${bub(n,"sel")}${bub(n,"bloq")}`).join("");
-document.getElementById("inv").innerHTML="<tr><th></th><th>Ícone</th><th>Grupo</th><th>Uso</th><th>Status</th></tr>"+G.flatMap(([id,t,l])=>l.map(n=>`<tr><td>${svg(n)}</td><td><b>${n}</b></td><td>${t}</td><td>${M[n][0]}</td><td><span class="tag ${M[n][1]==="novo"?"n":""}">${M[n][1]}</span></td></tr>`)).join("");
+document.getElementById("inv").innerHTML="<tr><th></th><th>Ícone</th><th>Grupo</th><th>Uso</th><th>Status</th></tr>"+G.flatMap(([id,t,l])=>l.map(n=>`<tr><td>${svg(n)}</td><td><b>${nm(n)}</b></td><td>${t}</td><td>${M[n][0]}</td><td><span class="tag ${M[n][1]==="novo"?"n":""}">${M[n][1]}</span></td></tr>`)).join("");
 const ring=["carinho","polinizar","colher","fotografar"],pos=[[20,140],[95,70],[195,70],[268,140]];
 document.getElementById("phone").innerHTML=`<div class="top"><div class="chip">${svg("planeta")}Planeta Terra</div><div class="chip">${svg("inventario")}5</div></div>
 <div class="ringp">${ring.map((n,i)=>`<div style="position:absolute;left:${pos[i][0]}px;top:${pos[i][1]}px">${bub(n,i==1?"foco":"",56)}</div>`).join("")}<div style="position:absolute;left:150px;top:150px">${bub("eco","",44)}</div></div>
