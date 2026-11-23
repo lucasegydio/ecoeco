@@ -38,3 +38,7 @@
 .abub .nm { position: absolute; top: 108%; left: 50%; translate: -50% 4px; opacity: 0; font-size: .64rem; white-space: nowrap; color: #fff; pointer-events: none; transition: opacity .2s, translate .3s; text-shadow: 0 1px 6px #000a; }
 .abub:hover .nm, .abub:focus-visible .nm, .abub[aria-pressed=true] .nm { opacity: 1; translate: -50% 0; }
 @media (prefers-reduced-motion: reduce) { .abub { animation: none; } .planet-stage .sheet-body > * { animation: none; } }
+/* folha compacta e com sinal de rolagem */
+.slider { padding: 7px 12px; gap: 4px; } .sliders { gap: 6px; }
+.planet-stage .sheet { -webkit-mask-image: linear-gradient(#000 calc(100% - 26px), transparent); mask-image: linear-gradient(#000 calc(100% - 26px), transparent); padding-bottom: 30px; }
+@media (max-width: 760px) { .planet-stage .sheet { max-height: 62%; } }
