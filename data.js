@@ -60,7 +60,7 @@ window.NOVIDADES = [
  ["22/11","paleta","Tokens finais, contraste, biomas, noite e daltonismo.","frentes/paleta/"],
  ["22/11","hud","HUD: 3 variações (A Gota, B Ilhas, C Calmo), testadas em 375 e 430 px.","frentes/hud/"],
  ["22/11","som","12 eventos de som e vibração tocáveis, com SPEC para Joaquim.","frentes/som/"],
- ["22/11","icones","Família de 52 ícones de pincel, pronta para integrar.","frentes/icones/"],
+ ["22/11","icones","Família de 62 ícones de pincel (receitas, conquistas, bioma), no protótipo.","frentes/icones/"],
  ["22/11","bestiario","Tela cheia v2: células uniformes, sem bolha.","frentes/bestiario/bestiario.html"],
  ["22/11","tipografia","Decidida: Menda Medium + Nunito.","frentes/tipografia/"],
  ["22/11","prototipo","Protótipo rodada 2: agora com paleta, ícones, movimento, HUD C Calmo, som e mapa.","frentes/prototipo/"],
