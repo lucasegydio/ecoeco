@@ -30,6 +30,9 @@ const ic = (n, c = '') => `<svg class="ic ${c}" viewBox="0 0 24 24" aria-hidden=
 const AF = [['carinho', 'Carinho'], ['polinizar', 'Polinizar'], ['plantar', 'Plantar'], ['minerar', 'Minerar']];
 const GEN = [['genio', 'Gênio'], ['dom', 'Dom'], ['habito', 'Hábito']];
 const S = { cur: 2, m: null };
+const Q = new URLSearchParams(location.search);
+if (Q.get('id')) { S.cur = +Q.get('id'); const bb = BICHOS.find(b => b.id == S.cur); if (bb && Q.get('st')) bb.st = Q.get('st'); }
+if (Q.get('embed')) document.body.classList.add('embed');
 const $ = s => document.querySelector(s), app = $('#app');
 const pad = n => String(n).padStart(3, '0');
 const stars = r => [0, 1, 2].map(i => `<i class="${i < STAR[r] ? 'on' : ''}">${ic('estrela')}</i>`).join('');
@@ -65,6 +68,7 @@ function render(anim) {
   const b = BICHOS.find(b => b.id == S.cur);
   app.innerHTML = `<section class="stage ${anim ? 'entra' : ''}">${carta(b)}</section>${arco()}`;
   const cv = $('#cv'); if (cv) { S.m = mount(cv, { src: `assets/${b.img}.webp`, mode: b.st == 'foto' ? 'foto' : 'sil', bioma: b.p, rar: b.r }); $('#rec').onclick = () => S.m.reset(); }
+  if (Q.get('embed')) { const f = document.createElement('button'); f.className = 'fechar'; f.setAttribute('aria-label', 'Voltar ao bestiário'); f.textContent = '←'; f.onclick = () => parent.postMessage({ fechar: 1 }, '*'); app.append(f); }
   fit();
   const c = $('#c'), deck = $('#deck'), v = $('.vitrine');
   const mv = e => {
