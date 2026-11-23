@@ -31,7 +31,7 @@ export function mount(canvas, o) {
   const [A, B, C] = (BIOMA[o.bioma] || BIOMA.terra).map(c => new THREE.Color(c));
   const rar = o.rar === 'l' ? 2 : o.rar === 'r' ? 1 : 0, foto = o.mode === 'foto';
   const r = new THREE.WebGLRenderer({ canvas, antialias: true });
-  r.setPixelRatio(Math.min(devicePixelRatio, 1.75)); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
+  r.setPixelRatio(Math.min(devicePixelRatio, 1.5)); r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.05;
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(32, 1, .1, 50); cam.position.z = 5;
   const U = { uA: { value: A }, uB: { value: B }, uC: { value: C }, uT: { value: 0 }, uRar: { value: rar }, uL: { value: new THREE.Vector2(.5, .6) } };
   // fundo
@@ -105,7 +105,7 @@ export function mount(canvas, o) {
   const ro = new ResizeObserver(() => { const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; r.setSize(w, h, false); comp.setPixelRatio(r.getPixelRatio()); comp.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); }); ro.observe(canvas);
   let raf; const clk = new THREE.Clock();
   (function loop() {
-    raf = requestAnimationFrame(loop); const dt = Math.min(clk.getDelta(), .05), t = clk.elapsedTime; U.uT.value = t;
+    raf = requestAnimationFrame(loop); if (document.hidden) return; const dt = Math.min(clk.getDelta(), .05), t = clk.elapsedTime; U.uT.value = t;
     if (!drag && (vx || vy)) { spin(vx, vy); vx *= .94; vy *= .94; if (Math.abs(vx) + Math.abs(vy) < .0004) vx = vy = 0; }
     if (tgt) { g.quaternion.slerp(tgt, .07); if (g.quaternion.angleTo(tgt) < .01) tgt = null; }
     lx += (tlx - lx) * .12; ly += (tly - ly) * .12;
