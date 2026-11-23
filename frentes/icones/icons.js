@@ -1,4 +1,4 @@
-// Frente 22-icones · família completa de ícones de pincel (52).
+// Frente 22-icones · família completa de ícones de pincel (62).
 // Grade 32, traço 2,8 px, pontas redondas. ".f" = ponto/forma cheia (o ponto recorrente). ".t" = traço fino 1,9 px (detalhe),
 // o que dá peso variável de pincel. O filtro #pincel dá a borda de tinta. Margem segura de 4 px.
 window.ECO_ICONS = {
@@ -59,7 +59,17 @@ window.ECO_ICONS = {
   cinza: '<path d="M5.8 21c-1-5.6 3-11.2 10.2-11.2s11.2 5.4 10.2 11.2c-.4 2.6-2.4 4-5 4H10.8c-2.6 0-4.6-1.4-5-4z"/><circle class="f" cx="12.4" cy="17" r="1.6"/><circle class="f" cx="19.6" cy="17" r="1.6"/>',
   lagarto: '<path d="M4.6 24.6c2-2.4 4.6-4 8-4.4 3.4-.4 5 1.2 8.2.4 2.8-.8 4-3.2 4-6"/><circle class="f" cx="25.2" cy="11.6" r="2.7"/><path class="t" d="M12.4 20.4l-1.6 4.4M19.4 20.6l1.2 4"/>',
   rabanete: '<path d="M16 12.4c5.4 0 8.4 3.6 8.4 7.6 0 3.2-3 6.6-8.4 6.6S7.6 23.2 7.6 20c0-4 3-7.6 8.4-7.6z"/><path class="t" d="M16 12.4V8M16 9.4c-2-2-4-2.6-6-2.4M16 9c2-2 4-2.6 6-2.4"/><circle class="f" cx="16" cy="5.2" r="1.9"/>',
-  regiao: '<path d="M3.6 25l8.2-13.4 4.6 7 3.2-4.6L28.4 25z"/><circle class="f" cx="24.4" cy="8" r="2.4"/>'
+  regiao: '<path d="M3.6 25l8.2-13.4 4.6 7 3.2-4.6L28.4 25z"/><circle class="f" cx="24.4" cy="8" r="2.4"/>',
+  passarela: '<path d="M4 20.4c3.4-3.4 6.8-3.4 12 0s8.6 3.4 12 0"/><path class="t" d="M9.4 17.6v7.4M16 18.6v7.4M22.6 17.6v7.4"/><circle class="f" cx="16" cy="9.4" r="2.2"/>',
+  nave: '<path d="M16 4.8c4.4 3.4 6 8 5.2 13.2h-10.4C10 12.8 11.6 8.2 16 4.8z"/><circle class="f" cx="16" cy="12" r="2"/><path class="t" d="M11 18l-3.4 4.6M21 18l3.4 4.6M16 21.4v5"/>',
+  conquista: '<path d="M16 5.4l3 6.2 6.6.8-4.8 4.6 1.2 6.6L16 20.4l-6 3.2 1.2-6.6L6.4 12.4l6.6-.8z"/><circle class="f" cx="16" cy="14.4" r="1.7"/>',
+  meta: '<circle cx="16" cy="14" r="8.6"/><path class="t" d="M12 14.4l3 3 5.4-6"/><path class="t" d="M11.6 22.4l-2 5 6.4-2 6.4 2-2-5"/>',
+  vulcao: '<path d="M3.8 25.6l7.6-12.2h9.2l7.6 12.2z"/><path class="t" d="M12.8 13.4c.4-1.6 1.8-1.8 3.2-1.8s2.8.2 3.2 1.8"/><circle class="f" cx="14" cy="7.2" r="1.7"/><circle class="f" cx="19.4" cy="5.6" r="1.3"/>',
+  magma: '<path d="M16 5.2c4.6 5.2 7.4 8.6 7.4 12.4 0 4-3.2 6.8-7.4 6.8s-7.4-2.8-7.4-6.8C8.6 13.8 11.4 10.4 16 5.2z"/><path class="t" d="M12.6 19c.2 2 1.6 3.4 3.4 3.6"/><circle class="f" cx="16" cy="16.4" r="1.9"/>',
+  brasa: '<path d="M5.4 22c0-6.2 4.6-10.4 10.6-10.4S26.6 15.8 26.6 22z"/><circle class="f" cx="12.4" cy="17.6" r="1.4"/><circle class="f" cx="19.6" cy="17.6" r="1.4"/><path class="t" d="M16 11.6c-1.4-2.4-.6-4.4 1-6M9 25.4h14"/>',
+  duna: '<path d="M3.6 24.8c3.4-8.6 7.2-12.6 11-12.6s5 5 8 5c2 0 3.6-1.4 5.8-4.4"/><path class="t" d="M4 27.6h24"/><circle class="f" cx="23.8" cy="7.4" r="2.4"/>',
+  oasis: '<path d="M16 25.4V12.6"/><path d="M16 13c-3.6-.2-6.4-2-8-5 3.6-.4 6.6 1 8 5z"/><path d="M16 13c3.6-.2 6.4-2 8-5-3.6-.4-6.6 1-8 5z"/><path class="t" d="M5.4 26.4c3-2 5.4-2 8 0s5.4 2 8 0 3.6-1.4 5-.6"/>',
+  cacto: '<path d="M16 26.6V8.4c0-1.6 1.2-2.8 2.6-2.8s2.6 1.2 2.6 2.8v18.2"/><path class="t" d="M10.6 17.4v-4.6c0-1.2-.8-1.8-1.6-1.8s-1.6.6-1.6 1.8v6.2c0 1.6 1 2.6 2.6 2.6h3.6"/><circle class="f" cx="22.6" cy="13" r="1.4"/>'
 };
 
 // Metadados: [grupo, nome, onde é usado, status]. status: refinado (já existia, redesenhado) | novo.
@@ -69,7 +79,10 @@ window.ECO_ICON_GROUPS = [
   ["materiais", "Materiais do inventário", ["fibra","pedra","semente","nucleo","placa","gota","fruto"]],
   ["estados", "Estados", ["bloqueado","visto","desconhecido","possui","falta","chora","calmo","toque","vibrar","sol","lua"]],
   ["eco", "Eco (orientação)", ["eco","eco2","eco1"]],
-  ["bestiario", "Bestiário e mundo", ["brotinho","cinza","lagarto","rabanete","regiao"]]
+  ["bestiario", "Bestiário e mundo", ["brotinho","cinza","lagarto","rabanete","regiao"]],
+  ["receitas2", "Receitas e conquistas", ["passarela","nave","conquista","meta"]],
+  ["vulcanico", "Próximos planetas: vulcânico", ["vulcao","magma","brasa"]],
+  ["deserto", "Próximos planetas: deserto", ["duna","oasis","cacto"]]
 ];
 window.ECO_ICON_META = {
   carinho:["Acalmar o Brotinho","refinado"], polinizar:["Polinizar a flor","refinado"], minerar:["Minerar rocha macia","refinado"], construir:["Passarela","refinado"], plantar:["Plantar no canteiro","refinado"], canal:["Cavar canal","refinado"], colher:["Colher o fruto / a colheita","novo"], alcancar:["Alcançar o núcleo no galho","refinado"], fabricar:["Fabricar a placa","refinado"], montar:["Montar a nave","refinado"], decolar:["Decolar","refinado"], fotografar:["Fotografar (bestiário)","novo"],
@@ -77,7 +90,8 @@ window.ECO_ICON_META = {
   fibra:["Material: fibra","novo"], pedra:["Material: pedra","novo"], semente:["Material: semente","novo"], nucleo:["Material: núcleo","novo"], placa:["Material: placa","novo"], gota:["Água / gota","novo"], fruto:["Fruto do Brotinho","novo"],
   bloqueado:["Estado bloqueado (cadeado)","novo"], visto:["Visto no bestiário","novo"], desconhecido:["Não descoberto","novo"], possui:["Na coleção","novo"], falta:["Falta material","novo"], chora:["Bichinho chorando","novo"], calmo:["Bichinho calmo","novo"], toque:["Pista de toque (luz-dedo)","novo"], vibrar:["Vibração (Ajustes)","novo"], sol:["Modo dia","novo"], lua:["Modo noite","novo"],
   eco:["Eco perto demais / chamado (3 arcos)","refinado"], eco2:["Eco médio (2 arcos)","novo"], eco1:["Eco longe (1 arco)","novo"],
-  brotinho:["Criatura: Brotinho","novo"], cinza:["Criatura: Bichinho-cinza","novo"], lagarto:["Criatura: Lagarto-deserto","novo"], rabanete:["Criatura: Rabanete-antena","novo"], regiao:["Região / terreno","novo"]
+  brotinho:["Criatura: Brotinho","novo"], cinza:["Criatura: Bichinho-cinza","novo"], lagarto:["Criatura: Lagarto-deserto","novo"], rabanete:["Criatura: Rabanete-antena","novo"], regiao:["Região / terreno","novo"],
+  passarela:["Receita: Passarela (resultado)","novo"], nave:["Receita: Nave","novo"], conquista:["Conquista (estrela)","novo"], meta:["Meta cumprida (selo)","novo"], vulcao:["Região: vulcão","novo"], magma:["Material: magma","novo"], brasa:["Criatura: Bicho-brasa (provisório)","novo"], duna:["Região: duna","novo"], oasis:["Região: oásis","novo"], cacto:["Criatura/planta: cacto (provisório)","novo"]
 };
 
 if (typeof document !== "undefined") (() => {

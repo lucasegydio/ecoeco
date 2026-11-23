@@ -38,7 +38,7 @@ td .ic{width:24px;height:24px;color:var(--creme);display:block}
 @media(max-width:560px){.mx{grid-template-columns:70px repeat(4,1fr);gap:18px 2px}.mx .b{--d:48px}}
 </style></head><body><main>
 <h1>Família de ícones · ecoeco</h1>
-<p class="s">52 ícones de pincel: traço ~2,8 px numa grade de 32, ponto cheio recorrente, detalhe fino (1,9 px) e filtro <code>#pincel</code>. Rodada 1 da frente icones. Refs: Atlas Therapy e Sereth. Lucas pediu: refinar todos, reorganizar e criar novos na mesma identidade.</p>
+<p class="s">62 ícones de pincel: traço ~2,8 px numa grade de 32, ponto cheio recorrente, detalhe fino (1,9 px) e filtro <code>#pincel</code>. Rodada 1 da frente icones. Refs: Atlas Therapy e Sereth. Lucas pediu: refinar todos, reorganizar e criar novos na mesma identidade.</p>
 
 <h2>Família em tamanho real e na bolha</h2>
 <p class="s">Cada ícone em 32 px e dentro da bolha de vidro de 56 px. O nome só aparece aqui; no jogo ele sai no foco ou na pista.</p>
@@ -56,18 +56,17 @@ td .ic{width:24px;height:24px;color:var(--creme);display:block}
 <div class="sheet" style="overflow-x:auto"><table id="inv"></table></div>
 <h2>O que ainda falta</h2>
 <ul class="faltam s">
-<li><b>Passarela</b> e <b>Placa</b> como receitas: hoje usam <i>construir</i> e <i>placa</i>; criar versões próprias só se Lucas quiser distinguir ação de resultado.</li>
-<li>Criaturas e regiões dos próximos planetas (vulcânico, deserto): um glifo por bicho novo, no padrão de <i>brotinho/cinza/lagarto/rabanete</i>.</li>
-<li>Ícone de <b>Receitas individuais</b> (Canal, Passarela, Nave) e de <b>conquistas</b>, se o bestiário ganhar metas.</li>
+<li>Receitas Passarela/Nave e conquistas: feitas (4); Placa segue usando o ícone de material.</li>
+<li>Vulcânico e deserto: região, material e criatura provisória (nomes dos bichos ainda não definidos); revisar com Lucas.</li>
 <li>Ícone do app (a frente inicio já fez) e marca: ficam fora desta família.</li>
 </ul>
 </main>
-<script src="icons.js?v=09fdc403"></script>
+<script src="icons.js?v=b1ba1ecd"></script>
 <script>
 const I=window.ECO_ICONS,M=window.ECO_ICON_META,G=window.ECO_ICON_GROUPS;
 const P={carinho:["#ffc2a8","#ff5f7e"],polinizar:["#fff0a0","#ff9f43"],minerar:["#ffcf8a","#e8572a"],construir:["#d6f5b0","#4fb06d"],plantar:["#f2ff9e","#5fcf4a"],canal:["#c9e6ff","#6a7bff"],
 fibra:["#e6ff86","#1fbf5b"],pedra:["#e4e0f2","#8a83a8"],semente:["#ffe39a","#d08a2a"],nucleo:["#ffb3d6","#ff4f86"],placa:["#bfe0ff","#4f63f2"],gota:["#c9e6ff","#6a7bff"],fruto:["#ffd0a8","#ff7a4a"]};
-const GP={acoes:["#ffe2b0","#ff9a4a"],menu:["#e2d0ff","#8a5cf0"],materiais:["#e6ff86","#1fbf5b"],estados:["#ffc2d8","#ff5f9e"],eco:["#ffe2b0","#ff9a4a"],bestiario:["#d6f5b0","#4fb06d"]};
+const GP={acoes:["#ffe2b0","#ff9a4a"],menu:["#e2d0ff","#8a5cf0"],materiais:["#e6ff86","#1fbf5b"],estados:["#ffc2d8","#ff5f9e"],eco:["#ffe2b0","#ff9a4a"],bestiario:["#d6f5b0","#4fb06d"],receitas2:["#d6f5b0","#4fb06d"],vulcanico:["#ffcf8a","#e8572a"],deserto:["#ffe9a0","#e0a030"]};
 const grp=n=>G.find(g=>g[2].includes(n))[0];
 const col=n=>P[n]||GP[grp(n)];
 const svg=n=>`<svg class="ic" viewBox="0 0 32 32" aria-hidden="true"><g filter="url(#pincel)">${I[n]}</g></svg>`;
